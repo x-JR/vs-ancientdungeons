@@ -1,0 +1,13 @@
+{
+    "type": "code",
+    "modid": "th3dungeon",
+    "name": "Th3Dungeon",
+    "authors": [
+        "Th3Dilli"
+    ],
+    "description": "A mod to bring procedural dungeon creation to vintage story",
+    "version": "0.0.1",
+    "dependencies": {
+        "game": "1.13.4"
+    }
+}

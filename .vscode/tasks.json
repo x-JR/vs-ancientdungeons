@@ -1,0 +1,93 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build (Debug)",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake"]
+    },
+    {
+      "label": "build (Release)",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--configuration=Release"]
+    },
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=Clean"]
+    },
+    {
+      "label": "clean (Package)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=CleanPackage"]
+    },
+    {
+      "label": "package (Debug)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=Package"]
+    },
+    {
+      "label": "package (Release)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=Package", "--configuration=Release"]
+    },
+    {
+      "label": "deploy (Debug)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=Deploy"]
+    },
+    {
+      "label": "deploy (Release)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=Deploy", "--configuration=Release"]
+    },
+    {
+      "label": "deploy (Remmina,Debug)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=DeployRemmina"]
+    },
+    {
+      "label": "deploy (Remmina,Release)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["cake", "--target=DeployRemmina", "--configuration=Release"]
+    },
+    {
+      "label": "run server",
+      "type": "shell",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["package (Debug)"],
+      "command": "mono $VINTAGE_STORY_SERVER_DEV/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DEV_DATA --addModPath ${workspaceFolder}/bin/packages/mods"
+    },
+    {
+      "label": "run server (Debug)",
+      "type": "shell",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": ["package (Debug)"],
+      "command": "mono --debug --debugger-agent=transport=dt_socket,server=y,address=127.0.0.1:55555 $VINTAGE_STORY_SERVER_DEV/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DEV_DATA --addModPath ${workspaceFolder}/bin/packages/mods"
+    }
+  ]
+}
