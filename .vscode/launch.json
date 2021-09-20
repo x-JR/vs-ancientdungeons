@@ -12,7 +12,8 @@
         "${env:VINTAGE_STORY_SERVER_DEV_DATA}",
         "--addModPath",
         "${workspaceFolder}/bin/packages/mods"
-      ]
+      ],
+      "console": "integratedTerminal"
     },
     {
       "name": "Launch Client (Mono)",
