@@ -54,6 +54,11 @@ namespace Th3Dungeon
       _creativeBlockId = _api.WorldManager.GetBlockId(new AssetLocation("game:creativeblock-0"));
 
       // _api.RegisterCommand("spawnstruct", "spawn all structures", string.Empty, OnSpawnStructures);
+      _api.RegisterCommand("logpos", "spawn all structures", string.Empty, (IServerPlayer player, int groupId, CmdArgs args) =>
+      {
+        Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
+        connector.Place(_chunkGenBlockAccessor, _api.World, player.Entity.Pos.AsBlockPos, true);
+      });
     }
 
     private void OnWorldGenBlockAccessor(IChunkProviderThread chunkProvider)
@@ -65,7 +70,13 @@ namespace Th3Dungeon
     {
       _chunkRand = new LCGRandom(_api.WorldManager.Seed);
       // assets = _api.Assets.GetMany<BlockSchematicStructure>(_api.Logger, "worldgen/schematics");
-      // connector = _api.Assets.Get<BlockSchematicStructure>(new AssetLocation("th3dungeon:worldgen/dungeon/connector"));
+      connector = _api.Assets.Get<BlockSchematicStructure>(new AssetLocation("worldgen/schematics/overground/civicruins/prtcv1.json"));
+      // connector = _api.Assets.Get<BlockSchematicStructure>(new AssetLocation("th3dungeon:worldgen/dungeon/connector.json"));
+      connector.Init(_chunkGenBlockAccessor);
+      Mod.Logger.VerboseDebug($"connector: {connector.Indices.Count}");
+      // connector = _api.Assets.GetMany<BlockSchematicStructure>(_api.Logger, "worldgen/dungeon", "th3dungeon");
+
+
       // foreach (BlockSchematicStructure asset in assets.Values)
       // {
       //   asset.Init(_chunkGenBlockAccessor);
@@ -79,6 +90,7 @@ namespace Th3Dungeon
       // Get the region x and z from the current chunk to generate
       int RegionX = chunkX * _chunkSize / _regionSize;
       int RegionZ = chunkZ * _chunkSize / _regionSize;
+      IMapChunk mapChunk = chunks[0].MapChunk;
 
       _chunkRand.InitPositionSeed(RegionX, RegionZ);
 
@@ -89,125 +101,51 @@ namespace Th3Dungeon
       // calculate the chunk x and z from the random pos
       int chunkx = x / _chunkSize;
       int chunkz = z / _chunkSize;
-      // Mod.Logger.VerboseDebug($"Spawn Chunkx: {chunkx} , Chunkz: {chunkz} , ChunkX: {chunkX} , ChunkZ: {chunkZ} , RegionX: {RegionX} , RegionZ: {RegionZ}");
+
+      int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(new BlockPos(x, 0, z));
 
       // if current chunk has the spawn position make it spawn
       if (chunkx == chunkX && chunkz == chunkZ)
       {
-        Mod.Logger.VerboseDebug("found chunk to spawn stuff in");
-        for (int dx = -1; dx < 1; dx++)
+        BlockPos start = new BlockPos(x, height, z);
+        height += connector.SizeY;
+        connector.Place(_chunkGenBlockAccessor, _api.World, start, true);
+        x %= _chunkSize;
+        z %= _chunkSize;
+        Mod.Logger.VerboseDebug($"pos::{start} /tp {chunkX * _chunkSize + x - _api.WorldManager.MapSizeX / 2} 201 {chunkZ * _chunkSize + z - _api.WorldManager.MapSizeZ / 2}");
+        for (int y = height; y < 200; y++)
         {
-          x = (x + dx) % _chunkSize;
-          for (int dz = -1; dz < 1; dz++)
-          {
-            z = (z + dz) % _chunkSize;
-            for (int y = 100; y < 200; y++)
-            {
-              int chunkY = y % _chunkSize;
-              int index3d = (((chunkY * _chunkSize) + z) * _chunkSize) + x;
-              int chunkColIndex = y / _chunkSize;
+          int chunkY = y % _chunkSize;
+          int index3d = (((chunkY * _chunkSize) + z) * _chunkSize) + x;
+          int chunkColIndex = y / _chunkSize;
 
-              chunks[chunkColIndex].Blocks[index3d] = _creativeBlockId;
-            }
+          chunks[chunkColIndex].Blocks[index3d] = _creativeBlockId;
+        }
+
+        // create big flat on top for visibility
+        int ytop = 200;
+        int xn, zn;
+        for (int dx = -2; dx <= 2; dx++)
+        {
+          xn = (x + dx) % _chunkSize;
+          for (int dz = -2; dz <= 2; dz++)
+          {
+            zn = (z + dz) % _chunkSize;
+            int chunkY = ytop % _chunkSize;
+            int index3d = (((chunkY * _chunkSize) + zn) * _chunkSize) + xn;
+            int chunkColIndex = ytop / _chunkSize;
+
+            chunks[chunkColIndex].Blocks[index3d] = _creativeBlockId;
+            mapChunk.RainHeightMap[zn * _chunkSize + xn] = (ushort)ytop;
           }
         }
+
       }
-
-      // for (int dx = -_chunkRange; dx <= _chunkRange; dx++)
-      // {
-      //   for (int dz = -_chunkRange; dz <= _chunkRange; dz++)
-      //   {
-      //     _chunkRand.InitPositionSeed(chunkX + dx, chunkZ + dz);
-      //     GeneratePartial(chunks, chunkX, chunkZ, dx, dz);
-      //   }
-      // }
-    }
-
-    public virtual void GeneratePartial(IServerChunk[] chunks, int chunkX, int chunkZ, int basePosX, int basePosZ)
-    {
-      // int quantityDungeons = _chunkRand.NextInt(100) < 50 ? 1 : 0;
-
-      // while (quantityDungeons-- > 0)
-      // {
-
-      //   int x = basePosX * _chunkSize + _chunkRand.NextInt(_chunkSize);
-      //   if (x >= 0 && x < _chunkSize)
-      //   {
-      //     for (int z = 0; z < _chunkSize; z++)
-      //     {
-      //       for (int y = 100; y < 150; y++)
-      //       {
-
-      //         int chunkY = y % _chunkSize;
-      //         int index3d = (((chunkY * _chunkSize) + z) * _chunkSize) + x;
-      //         int chunkColIndex = y / _chunkSize;
-
-      //         chunks[chunkColIndex].Blocks[index3d] = _creativeBlockId;
-      //       }
-      //     }
-      //   }
-
-      // }
-      GenDungeon(chunkX, chunkZ);
-
     }
 
     private void GenDungeon(int chunkX, int chunkZ)
     {
 
-    }
-
-    private void OnChunkColumnGeneration(IServerChunk[] chunks, int chunkX, int chunkZ, ITreeAttribute chunkGenParams = null)
-    {
-      // IMapRegion region = chunks[0].MapChunk.MapRegion;
-
-      // for (int y = 100; y < 150; y++)
-      // {
-      //   int x = _chunkSize / 2;
-      //   int z = x;
-
-      //   int chunkY = y % _chunkSize;
-      //   int index3d = (((chunkY * _chunkSize) + z) * _chunkSize) + x;
-      //   int chunkColIndex = y / _chunkSize;
-
-      //   chunks[chunkColIndex].Blocks[index3d] = _creativeBlockId;
-      // }
-      if (!generated)
-      {
-        // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
-        generated = true;
-        GenDungeon(chunkX, chunkZ);
-      }
-    }
-
-    private void GenDungeonTest(int chunkX, int chunkZ, ITreeAttribute chunkGenParams = null)
-    {
-      // _chunkRand.InitPositionSeed(chunkX, chunkZ);
-      // int dx = Rand.NextInt(_chunkSize);
-      // int dz = Rand.NextInt(_chunkSize);
-      int mid = _api.WorldManager.MapSizeX / 2;
-      BlockPos pos = new BlockPos(mid + _chunkSize / 2 - 500, 120, mid + _chunkSize / 2);
-      Mod.Logger.VerboseDebug($"struc count: {assets.Values.Count}");
-      foreach (KeyValuePair<AssetLocation, BlockSchematicStructure> structure in assets)
-      {
-        // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
-        // structure.Value.Init(_chunkGenBlockAccessor);
-        // if (structure.Value.PlaceRespectingBlockLayers(_chunkGenBlockAccessor, _api.World, pos, 1, 1, 1, 1, new int[0], false) == 1)
-
-        int ret = structure.Value.Place(_chunkGenBlockAccessor, _api.World, pos, true);
-        Mod.Logger.VerboseDebug($"placed : {structure.Key.GetName()} : {ret}");
-        // if (ret == 1)
-        // {
-        //   Mod.Logger.VerboseDebug($"placed : {structure.Key.GetName()}");
-        // }
-        // else
-        // {
-        //   Mod.Logger.VerboseDebug($"failed : {structure.Key.GetName()}");
-        // }
-        pos.X += structure.Value.SizeX;
-        // ret = structure.Place(_chunkGenBlockAccessor, _api.World, pos, true);
-        // Mod.Logger.VerboseDebug($"placed : {ret}");
-      }
     }
 
     private void OnSpawnStructures(IServerPlayer player, int groupId, CmdArgs args)
