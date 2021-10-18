@@ -16,6 +16,20 @@
       "console": "integratedTerminal"
     },
     {
+      "name": "Launch Server (delete, Mono)",
+      "type": "mono",
+      "request": "launch",
+      "preLaunchTask": "delete (Debug)",
+      "program": "${env:VINTAGE_STORY_SERVER_DEV}/VintagestoryServer.exe",
+      "args": [
+        "--dataPath",
+        "${env:VINTAGE_STORY_SERVER_DEV_DATA}",
+        "--addModPath",
+        "${workspaceFolder}/bin/packages/mods"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Launch Client (Mono)",
       "type": "mono",
       "request": "launch",
