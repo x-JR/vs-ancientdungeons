@@ -62,7 +62,6 @@ namespace Th3Dungeon
           AssetLocation blockCode = BlockCodes[storedBlockid];
 
           Block newBlock = blockAccessor.GetBlock(blockCode);
-          // Mod.Logger.VerboseDebug(newBlock.Code.ToString());
 
           if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
 
