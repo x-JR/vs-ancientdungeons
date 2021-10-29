@@ -6,7 +6,6 @@ namespace Th3Dungeon
 {
   class Th3BlockSchematic : BlockSchematic
   {
-
     int _chunkSize;
 
     public Mod Mod { get; private set; }
@@ -70,7 +69,6 @@ namespace Th3Dungeon
 
           Block oldBlock = blockAccessor.GetBlock(curPos);
           placed += handler(blockAccessor, curPos, oldBlock, newBlock);
-
 
           if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
           {

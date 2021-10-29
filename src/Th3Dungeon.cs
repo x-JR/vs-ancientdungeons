@@ -5,7 +5,6 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.API.Util;
 using Vintagestory.ServerMods;
 
 namespace Th3Dungeon
@@ -15,15 +14,11 @@ namespace Th3Dungeon
 
     private ICoreServerAPI _api;
 
-    IWorldGenBlockAccessor _chunkGenBlockAccessor;
-
-    private int _creativeBlockId;
+    private IWorldGenBlockAccessor _chunkGenBlockAccessor;
 
     public LCGRandom _chunkRand;
 
     private int _chunkSize;
-    private int _regionSize;
-    private bool generated = false;
 
     private Dictionary<AssetLocation, BlockSchematicStructure> assets;
 
@@ -46,19 +41,15 @@ namespace Th3Dungeon
       _api = api;
 
       _chunkSize = api.WorldManager.ChunkSize;
-      _regionSize = api.WorldManager.RegionSize;
       _api.Event.GetWorldgenBlockAccessor(OnWorldGenBlockAccessor);
       _api.Event.InitWorldGenerator(InitWorldGen, "standard");
 
       _api.Event.ChunkColumnGeneration(GenChunkColumn, EnumWorldGenPass.TerrainFeatures, "standard");
 
-      _creativeBlockId = _api.WorldManager.GetBlockId(new AssetLocation("game:creativeblock-0"));
-
       // _api.RegisterCommand("spawnstruct", "spawn all structures", string.Empty, OnSpawnStructures);
       _api.RegisterCommand("logpos", "spawn all structures", string.Empty, (IServerPlayer player, int groupId, CmdArgs args) =>
       {
         Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
-        connector.Place(_chunkGenBlockAccessor, _api.World, player.Entity.Pos.AsBlockPos, true);
       });
     }
 
@@ -83,6 +74,7 @@ namespace Th3Dungeon
       // }
       // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
     }
+
     protected void GenChunkColumn(IServerChunk[] chunks, int chunkX, int chunkZ, ITreeAttribute chunkGenParams = null)
     {
       for (int dx = -_chunkRange; dx <= _chunkRange; dx++)
@@ -109,6 +101,7 @@ namespace Th3Dungeon
         BlockPos start = new BlockPos(x, 0, z);
         int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(start);
         // + 1 so that the height map on that pos does not update which results in all chunks after first being one structure size higher
+        // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
         start.Add(1, height, 1);
         // start.Y = height;
 

@@ -1,0 +1,61 @@
+{
+  "code": "th3doorway",
+  "class": "Block",
+  "variantgroups": [
+    {
+      "code": "side",
+      "loadFromProperties": "abstract/horizontalorientation"
+    }
+  ],
+  "behaviors": [
+    {
+      "name": "HorizontalOrientable"
+    }
+  ],
+  "shapebytype": {
+    "*-north": {
+      "base": "game:block/basic/cube",
+      "rotateY": 0
+    },
+    "*-east": {
+      "base": "game:block/basic/cube",
+      "rotateY": 270
+    },
+    "*-south": {
+      "base": "game:block/basic/cube",
+      "rotateY": 180
+    },
+    "*-west": {
+      "base": "game:block/basic/cube",
+      "rotateY": 90
+    }
+  },
+  "creativeinventory": {
+    "general": [
+      "*"
+    ]
+  },
+  "renderPass": "meta",
+  "blockmaterial": "Meta",
+  "replaceable": 900,
+  "lightAbsorption": 0,
+  "textures": {
+    "all": {
+      "base": "block/meta/door-side"
+    },
+    "up": {
+      "base": "block/meta/door"
+    },
+    "down": {
+      "base": "block/meta/door"
+    }
+  },
+  "resistance": 0.25,
+  "sideopaque": {
+    "all": false
+  },
+  "sidesolid": {
+    "all": false
+  },
+  "collisionbox": null
+}
