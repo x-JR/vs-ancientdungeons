@@ -40,7 +40,7 @@
         "-o",
         "modding test world",
         "--dataPath",
-        "${env:VINTAGE_STORY_SERVER_DEV_DATA}",
+        "${env:VINTAGE_STORY_SERVER_DEV_DATA_PRE}",
         "--addModPath",
         "${workspaceFolder}/bin/packages/mods"
       ]
@@ -53,7 +53,7 @@
       "program": "${env:VINTAGE_STORY}/Vintagestory.exe",
       "args": [
         "--dataPath",
-        "${env:VINTAGE_STORY_SERVER_DEV_DATA}",
+        "${env:VINTAGE_STORY_SERVER_DEV_DATA_PRE}",
         "--addModPath",
         "${workspaceFolder}/bin/packages/mods"
       ]
@@ -65,7 +65,7 @@
       "program": "${env:VINTAGE_STORY}/Vintagestory.exe",
       "args": [
         "--dataPath",
-        "${env:VINTAGE_STORY_SERVER_DEV_DATA}",
+        "${env:VINTAGE_STORY_SERVER_DEV_DATA_PRE}",
         "--addModPath",
         "${workspaceFolder}/bin/packages/mods"
       ]
