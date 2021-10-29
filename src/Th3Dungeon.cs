@@ -90,33 +90,27 @@ namespace Th3Dungeon
         for (int dz = -_chunkRange; dz <= _chunkRange; dz++)
         {
           _chunkRand.InitPositionSeed(chunkX + dx, chunkZ + dz);
-          GenDungeon(chunks, chunkX, chunkZ, dx, dz);
+          GenDungeon(chunkX, chunkZ, dx, dz);
         }
       }
     }
 
-    protected void GenDungeon(IServerChunk[] chunks, int chunkX, int chunkZ, int dx, int dz)
+    protected void GenDungeon(int chunkX, int chunkZ, int dx, int dz)
     {
-      if (_chunkRand.NextInt(1000) < 2)
+      int chunkXd = chunkX + dx;
+      int chunkZd = chunkZ + dz;
+      // if (_chunkRand.NextInt(1000) > 9998)
+      // spawn dungeon in first chunk
+      if (chunkXd == 16000 && chunkZd == 16000)
       {
-        int chunkXd = chunkX + dx;
-        int chunkZd = chunkZ + dz;
-
         int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
         int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
 
         BlockPos start = new BlockPos(x, 0, z);
         int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(start);
-        start.Y = height;
-
-        // if current chunk has the spawn position make it spawn
-        if (dx == 0 && dz == 0)
-        {
-          x %= _chunkSize;
-          z %= _chunkSize;
-          generated = true;
-          Mod.Logger.VerboseDebug($"pos::{start} /tp {chunkXd * _chunkSize + x - _api.WorldManager.MapSizeX / 2} {height} {chunkZd * _chunkSize + z - _api.WorldManager.MapSizeZ / 2}");
-        }
+        // + 1 so that the height map on that pos does not update which results in all chunks after first being one structure size higher
+        start.Add(1, height, 1);
+        // start.Y = height;
 
         connector.Place(_chunkGenBlockAccessor, _api.World, start, chunkX, chunkZ);
 
