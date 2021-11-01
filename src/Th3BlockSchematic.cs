@@ -9,7 +9,7 @@ namespace Th3Dungeon
   {
     private int _chunkSize;
 
-    private List<Block> DoorBlocks;
+    private Block DoorNorth, DoorEast, DoorSouth, DoorWest;
 
     private List<BlockPos> Doors;
 
@@ -20,20 +20,18 @@ namespace Th3Dungeon
       base.Init(blockAccessor);
       this.Mod = Mod;
       _chunkSize = blockAccessor.ChunkSize;
+      DoorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
+      DoorEast = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east"));
+      DoorSouth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south"));
+      DoorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
+
+      Doors = new List<BlockPos>();
     }
 
     public void LoadMeta(IBlockAccessor blockAccessor, IWorldAccessor worldForResolve, string fileNameForLogging)
     {
       LoadMetaInformationAndValidate(blockAccessor, worldForResolve, fileNameForLogging);
-      DoorBlocks = new List<Block>
-      {
-        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north")),
-        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east")),
-        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south")),
-        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"))
-      };
 
-      Doors = new List<BlockPos>();
       for (int i = 0; i < BlockIds.Count; i++)
       {
         int storedBlockid = BlockIds[i];
@@ -41,7 +39,7 @@ namespace Th3Dungeon
         AssetLocation blockCode = BlockCodes[storedBlockid];
         Block newBlock = blockAccessor.GetBlock(blockCode);
 
-        if (DoorBlocks.Contains(newBlock))
+        if (IsDoor(newBlock))
         {
           uint index = Indices[i];
           int dx = (int)(index & 0x1ff);
@@ -50,6 +48,47 @@ namespace Th3Dungeon
           Doors.Add(new BlockPos(dx, dy, dz));
         }
       }
+    }
+
+    protected new int PlaceReplaceAllReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+      return 1;
+    }
+
+    protected new int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (oldBlock.Replaceable < newBlock.Replaceable)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
+    private new int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (newBlock.BlockId != 0)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
+    protected new int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (oldBlock.BlockId == 0)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
+    private bool IsDoor(Block newBlock)
+    {
+      return newBlock == DoorNorth || newBlock == DoorEast || newBlock == DoorSouth || newBlock == DoorWest;
     }
 
     public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ, bool replaceMetaBlocks = true)
