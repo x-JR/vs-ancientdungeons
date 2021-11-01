@@ -20,7 +20,7 @@ namespace Th3Dungeon
 
     private int _chunkSize;
 
-    private Dictionary<AssetLocation, BlockSchematicStructure> assets;
+    private Dictionary<AssetLocation, Th3BlockSchematic> assets;
 
     private Th3BlockSchematic connector;
 
@@ -61,17 +61,17 @@ namespace Th3Dungeon
     private void InitWorldGen()
     {
       _chunkRand = new LCGRandom(_api.WorldManager.Seed);
-      // assets = _api.Assets.GetMany<BlockSchematicStructure>(_api.Logger, "worldgen/schematics");
       connector = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation("th3dungeon", "worldgen/dungeon/connector.json"));
       connector.Init(_chunkGenBlockAccessor, Mod);
-      connector.LoadMetaInformationAndValidate(_chunkGenBlockAccessor, _api.World, "worldgen/dungeon/connector.json");
-      // connector = _api.Assets.GetMany<BlockSchematic>(_api.Logger, "worldgen/dungeon", "th3dungeon");
+      connector.LoadMeta(_chunkGenBlockAccessor, _api.World, "worldgen/dungeon/connector.json");
 
-
-      // foreach (BlockSchematic asset in assets.Values)
-      // {
-      //   asset.Init(_chunkGenBlockAccessor);
-      // }
+      assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/schematics");
+      assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/dungeon", "th3dungeon");
+      foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> asset in assets)
+      {
+        asset.Value.Init(_chunkGenBlockAccessor, Mod);
+        asset.Value.LoadMeta(_chunkGenBlockAccessor, _api.World, asset.Key.ToString());
+      }
       // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
     }
 
@@ -140,7 +140,7 @@ namespace Th3Dungeon
       pos.X = sx;
       pos.Z = sz;
       int sizeX = offset, sizeZ = offset;
-      foreach (KeyValuePair<AssetLocation, BlockSchematicStructure> structure in assets)
+      foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> structure in assets)
       {
         // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
         // structure.Value.Init(_worldBlockAccessor);

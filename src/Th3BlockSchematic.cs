@@ -1,12 +1,17 @@
+using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
 namespace Th3Dungeon
 {
-  class Th3BlockSchematic : BlockSchematic
+  internal class Th3BlockSchematic : BlockSchematic
   {
-    int _chunkSize;
+    private int _chunkSize;
+
+    private List<Block> DoorBlocks;
+
+    private List<BlockPos> Doors;
 
     public Mod Mod { get; private set; }
 
@@ -15,6 +20,36 @@ namespace Th3Dungeon
       base.Init(blockAccessor);
       this.Mod = Mod;
       _chunkSize = blockAccessor.ChunkSize;
+    }
+
+    public void LoadMeta(IBlockAccessor blockAccessor, IWorldAccessor worldForResolve, string fileNameForLogging)
+    {
+      LoadMetaInformationAndValidate(blockAccessor, worldForResolve, fileNameForLogging);
+      DoorBlocks = new List<Block>
+      {
+        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north")),
+        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east")),
+        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south")),
+        blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"))
+      };
+
+      Doors = new List<BlockPos>();
+      for (int i = 0; i < BlockIds.Count; i++)
+      {
+        int storedBlockid = BlockIds[i];
+
+        AssetLocation blockCode = BlockCodes[storedBlockid];
+        Block newBlock = blockAccessor.GetBlock(blockCode);
+
+        if (DoorBlocks.Contains(newBlock))
+        {
+          uint index = Indices[i];
+          int dx = (int)(index & 0x1ff);
+          int dy = (int)((index >> 20) & 0x1ff);
+          int dz = (int)((index >> 10) & 0x1ff);
+          Doors.Add(new BlockPos(dx, dy, dz));
+        }
+      }
     }
 
     public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ, bool replaceMetaBlocks = true)
@@ -103,6 +138,7 @@ namespace Th3Dungeon
           int storedBlockid = DecorIds[i];
           byte faceIndex = (byte)(storedBlockid >> 24);
           if (faceIndex > 5) continue;
+
           BlockFacing face = BlockFacing.ALLFACES[faceIndex];
           storedBlockid &= 0xFFFFFF;
 
