@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
@@ -5,27 +6,25 @@ using Vintagestory.API.Server;
 
 namespace Th3Dungeon
 {
-  internal class Th3BlockSchematic : BlockSchematic
+  public class Th3BlockSchematic : BlockSchematic
   {
     private int _chunkSize;
 
     private Block DoorNorth, DoorEast, DoorSouth, DoorWest;
 
-    private List<BlockPos> Doors;
+    public List<Th3DoorPos> Doors;
 
-    public Mod Mod { get; private set; }
-
-    public void Init(IBlockAccessor blockAccessor, Mod Mod)
+    public new void Init(IBlockAccessor blockAccessor)
     {
       base.Init(blockAccessor);
-      this.Mod = Mod;
       _chunkSize = blockAccessor.ChunkSize;
+
       DoorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
       DoorEast = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east"));
       DoorSouth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south"));
       DoorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
 
-      Doors = new List<BlockPos>();
+      Doors = new List<Th3DoorPos>();
     }
 
     public void LoadMeta(IBlockAccessor blockAccessor, IWorldAccessor worldForResolve, string fileNameForLogging)
@@ -45,45 +44,42 @@ namespace Th3Dungeon
           int dx = (int)(index & 0x1ff);
           int dy = (int)((index >> 20) & 0x1ff);
           int dz = (int)((index >> 10) & 0x1ff);
-          Doors.Add(new BlockPos(dx, dy, dz));
+
+          BlockFacing facing = null;
+
+          if (blockCode.Path == "th3doorway-north")
+          {
+            facing = BlockFacing.NORTH;
+          }
+          else if (blockCode.Path == "th3doorway-east")
+          {
+            facing = BlockFacing.EAST;
+          }
+          else if (blockCode.Path == "th3doorway-south")
+          {
+            facing = BlockFacing.SOUTH;
+          }
+          else if (blockCode.Path == "th3doorway-west")
+          {
+            facing = BlockFacing.WEST;
+          }
+          if (facing != null)
+          {
+            // TODO -1 temp fix
+            Doors.Add(new Th3DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
+          }
         }
       }
-    }
 
-    protected new int PlaceReplaceAllReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
-    {
-      blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
-      return 1;
-    }
-
-    protected new int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
-    {
-      if (oldBlock.Replaceable < newBlock.Replaceable)
-      {
-        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
-        return 1;
-      }
-      return 0;
-    }
-
-    private new int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
-    {
-      if (newBlock.BlockId != 0)
-      {
-        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
-        return 1;
-      }
-      return 0;
-    }
-
-    protected new int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
-    {
-      if (oldBlock.BlockId == 0)
-      {
-        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
-        return 1;
-      }
-      return 0;
+      // replace all doorblocks with filler blocks
+      // foreach (KeyValuePair<int, AssetLocation> block in BlockCodes)
+      // {
+      //   if (block.Value.Path.Contains("th3doorway"))
+      //   {
+      //     BlockCodes[block.Key].Domain = "game";
+      //     BlockCodes[block.Key].Path = "meta-filler";
+      //   }
+      // }
     }
 
     private bool IsDoor(Block newBlock)
@@ -197,5 +193,23 @@ namespace Th3Dungeon
         }
       }
     }
+    public new Th3BlockSchematic ClonePacked()
+    {
+      return new Th3BlockSchematic
+      {
+        SizeX = SizeX,
+        SizeY = SizeY,
+        SizeZ = SizeZ,
+        GameVersion = GameVersion,
+        BlockCodes = new Dictionary<int, AssetLocation>(BlockCodes),
+        ItemCodes = new Dictionary<int, AssetLocation>(ItemCodes),
+        Indices = new List<uint>(Indices),
+        BlockIds = new List<int>(BlockIds),
+        BlockEntities = new Dictionary<uint, string>(BlockEntities),
+        Entities = new List<string>(Entities),
+        ReplaceMode = ReplaceMode
+      };
+    }
   }
+
 }

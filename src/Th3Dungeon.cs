@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.ServerMods;
 
 namespace Th3Dungeon
 {
@@ -20,11 +20,13 @@ namespace Th3Dungeon
 
     private int _chunkSize;
 
-    private Dictionary<AssetLocation, Th3BlockSchematic> assets;
+    private List<Th3DungeonRoom> Rooms;
+
+    private List<Th3DoorPos> DoorPos;
 
     private Th3BlockSchematic connector;
 
-    private readonly int _chunkRange = 7;
+    private readonly int _chunkRange = 1;
 
     public override bool ShouldLoad(EnumAppSide side)
     {
@@ -61,16 +63,19 @@ namespace Th3Dungeon
     private void InitWorldGen()
     {
       _chunkRand = new LCGRandom(_api.WorldManager.Seed);
-      connector = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation("th3dungeon", "worldgen/dungeon/connector.json"));
-      connector.Init(_chunkGenBlockAccessor, Mod);
-      connector.LoadMeta(_chunkGenBlockAccessor, _api.World, "worldgen/dungeon/connector.json");
+      // connector = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation("th3dungeon", "worldgen/dungeon/connector.json"));
+      // connector.Init(_chunkGenBlockAccessor);
+      // connector.LoadMeta(_chunkGenBlockAccessor, _api.World, "worldgen/dungeon/connector.json");
 
-      assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/schematics");
-      assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/dungeon", "th3dungeon");
+      Rooms = new List<Th3DungeonRoom>();
+      DoorPos = new List<Th3DoorPos>();
+
+      var assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/dungeon", "th3dungeon");
       foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> asset in assets)
       {
-        asset.Value.Init(_chunkGenBlockAccessor, Mod);
-        asset.Value.LoadMeta(_chunkGenBlockAccessor, _api.World, asset.Key.ToString());
+        Rooms.Add(new Th3DungeonRoom(asset.Value, _api, _chunkGenBlockAccessor, asset.Key.Path));
+        // asset.Value.Init(_chunkGenBlockAccessor, Mod);
+        // asset.Value.LoadMeta(_chunkGenBlockAccessor, _api.World, asset.Key.ToString());
       }
       // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
     }
@@ -95,8 +100,10 @@ namespace Th3Dungeon
       // spawn dungeon in first chunk
       if (chunkXd == 16000 && chunkZd == 16000)
       {
-        int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
-        int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+        // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+        // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+        int x = chunkXd * _chunkSize + 16;
+        int z = chunkZd * _chunkSize + 16;
 
         BlockPos start = new BlockPos(x, 0, z);
         int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(start);
@@ -105,62 +112,106 @@ namespace Th3Dungeon
         start.Add(1, height, 1);
         // start.Y = height;
 
-        connector.Place(_chunkGenBlockAccessor, _api.World, start, chunkX, chunkZ);
+        // connector.Place(_chunkGenBlockAccessor, _api.World, start, chunkX, chunkZ);
+        Place(Rooms.First(), start.Copy(), chunkX, chunkZ, BlockFacing.NORTH);
+        start.Add(10, 0, 0);
+        Place(Rooms.First(), start.Copy(), chunkX, chunkZ, BlockFacing.EAST);
+        start.Add(10, 0, 0);
+        Place(Rooms.First(), start.Copy(), chunkX, chunkZ, BlockFacing.SOUTH);
+        start.Add(10, 0, 0);
+        Place(Rooms.First(), start.Copy(), chunkX, chunkZ, BlockFacing.WEST);
 
-        for (int i = 0; i < 100; i++)
-        {
-          int dir = _chunkRand.NextInt(2);
-          if (dir == 0)
+        // for (int i = 1; i <= 1; i++)
+        // {
+        //   if (DoorPos.Count > 0)
+        //   {
+        //     // int next = _chunkRand.NextInt(DoorPos.Count);
+        //     var pos = DoorPos[0];
+
+        //     Place(Rooms.First(), pos.Position, chunkX, chunkZ, pos.Facing);
+        //     DoorPos.Remove(pos);
+        //   }
+        // }
+      }
+    }
+
+    public void Place(Th3DungeonRoom room, BlockPos startPos, int chunkX, int chunkZ, BlockFacing facing)
+    {
+      Th3BlockSchematic schematic;
+      switch (facing.Code)
+      {
+        case "north":
           {
-            start.X += connector.SizeX;
+            schematic = room.rotations[2];
+            break;
           }
-          else
+        case "east":
           {
-            start.Z += connector.SizeZ;
+            schematic = room.rotations[3];
+            break;
           }
-          connector.Place(_chunkGenBlockAccessor, _api.World, start, chunkX, chunkZ);
-        }
+        case "south":
+          {
+            schematic = room.rotations[0];
+            break;
+          }
+        case "west":
+          {
+            schematic = room.rotations[1];
+            break;
+          }
+        default:
+          {
+            schematic = room.rotations[0];
+            Mod.Logger.VerboseDebug("wrong facing :: defaulting to north");
+            break;
+          }
+      }
+      schematic.Place(_chunkGenBlockAccessor, _api.World, startPos, chunkX, chunkZ);
+      foreach (Th3DoorPos doorpos in schematic.Doors)
+      {
+        DoorPos.Add(new Th3DoorPos(new BlockPos(startPos.X + doorpos.Position.X, startPos.Y + doorpos.Position.Y, startPos.Z + doorpos.Position.Z), doorpos.Facing));
       }
     }
 
     private void OnSpawnStructures(IServerPlayer player, int groupId, CmdArgs args)
     {
 
-      player.SendMessage(GlobalConstants.GeneralChatGroup, "loaded assets", EnumChatType.CommandSuccess);
+      //   player.SendMessage(GlobalConstants.GeneralChatGroup, "loaded assets", EnumChatType.CommandSuccess);
 
-      Mod.Logger.VerboseDebug("loaded assets: " + assets.Count);
-      BlockPos pos = new BlockPos();
-      int x = 0, z = 0;
-      int sx = player.Entity.Pos.AsBlockPos.X - 200;
-      int sz = player.Entity.Pos.AsBlockPos.Z - 200;
-      pos.Y = player.Entity.Pos.AsBlockPos.Y;
-      int offset = args.PopInt(20) ?? 20;
-      int rowmax = args.PopInt(400) ?? 400;
+      //   Mod.Logger.VerboseDebug("loaded assets: " + Schematics.Count);
+      //   BlockPos pos = new BlockPos();
+      //   int x = 0, z = 0;
+      //   int sx = player.Entity.Pos.AsBlockPos.X - 200;
+      //   int sz = player.Entity.Pos.AsBlockPos.Z - 200;
+      //   pos.Y = player.Entity.Pos.AsBlockPos.Y;
+      //   int offset = args.PopInt(20) ?? 20;
+      //   int rowmax = args.PopInt(400) ?? 400;
 
-      pos.X = sx;
-      pos.Z = sz;
-      int sizeX = offset, sizeZ = offset;
-      foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> structure in assets)
-      {
-        // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
-        // structure.Value.Init(_worldBlockAccessor);
-        structure.Value.Place(_chunkGenBlockAccessor, _api.World, pos, true);
-        sizeX = Math.Max(sizeX, structure.Value.SizeX + 2);
-        sizeZ = Math.Max(sizeZ, structure.Value.SizeZ + 2);
-        if (x >= rowmax)
-        {
-          x = 0;
-          z += Math.Max(offset, sizeZ);
-          sizeX = offset;
-          sizeZ = offset;
-        }
-        else
-        {
-          x += Math.Max(offset, sizeX);
-        }
-        pos.X = sx + x;
-        pos.Z = sz + z;
-      }
+      //   pos.X = sx;
+      //   pos.Z = sz;
+      //   int sizeX = offset, sizeZ = offset;
+      //   foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> structure in Schematics)
+      //   {
+      //     // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
+      //     // structure.Value.Init(_worldBlockAccessor);
+      //     structure.Value.Place(_chunkGenBlockAccessor, _api.World, pos, true);
+      //     sizeX = Math.Max(sizeX, structure.Value.SizeX + 2);
+      //     sizeZ = Math.Max(sizeZ, structure.Value.SizeZ + 2);
+      //     if (x >= rowmax)
+      //     {
+      //       x = 0;
+      //       z += Math.Max(offset, sizeZ);
+      //       sizeX = offset;
+      //       sizeZ = offset;
+      //     }
+      //     else
+      //     {
+      //       x += Math.Max(offset, sizeX);
+      //     }
+      //     pos.X = sx + x;
+      //     pos.Z = sz + z;
+      //   }
     }
   }
 }
