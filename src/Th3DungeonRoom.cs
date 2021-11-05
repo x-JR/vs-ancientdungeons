@@ -6,22 +6,22 @@ namespace Th3Dungeon
 {
   public class Th3DungeonRoom
   {
-    public readonly Th3BlockSchematic[] rotations;
+    public readonly Th3BlockSchematic[] Rotations;
 
     public Th3DungeonRoom(Th3BlockSchematic schematic, ICoreServerAPI api, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
     {
-      rotations = new Th3BlockSchematic[4];
-      rotations[0] = schematic.ClonePacked();
+      Rotations = new Th3BlockSchematic[4];
+      Rotations[0] = schematic.ClonePacked();
 
       for (int k = 0; k < 4; k++)
       {
         if (k > 0)
         {
-          rotations[k] = rotations[0].ClonePacked();
-          rotations[k].TransformWhilePacked(api.World, EnumOrigin.MiddleCenter, k * 90);
+          Rotations[k] = Rotations[0].ClonePacked();
+          Rotations[k].TransformWhilePacked(api.World, EnumOrigin.MiddleCenter, k * 90);
         }
-        rotations[k].Init(_chunkGenBlockAccessor);
-        rotations[k].LoadMeta(_chunkGenBlockAccessor, api.World, fileName);
+        Rotations[k].Init(_chunkGenBlockAccessor);
+        Rotations[k].LoadMeta(_chunkGenBlockAccessor, api.World, fileName);
       }
     }
   }

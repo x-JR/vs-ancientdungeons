@@ -65,8 +65,8 @@ namespace Th3Dungeon
           }
           if (facing != null)
           {
-            // TODO -1 temp fix
-            Doors.Add(new Th3DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
+            //   Doors.Add(new Th3DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
+            Doors.Add(new Th3DoorPos(new BlockPos(dx, dy, dz), facing));
           }
         }
       }
