@@ -12,7 +12,7 @@ string packageFolderOut = $"{packages}/mods";
 string zipFileName = $"{name}_{version}.zip";
 string zipfile = $"{packageFolderOut}/{zipFileName}";
 
-string serverData = EnvironmentVariable("VINTAGE_STORY_SERVER_DEV_DATA");
+string serverData = EnvironmentVariable("VINTAGE_STORY_SERVER_DATA_MODDING");
 
 
 
@@ -22,59 +22,60 @@ string serverData = EnvironmentVariable("VINTAGE_STORY_SERVER_DEV_DATA");
 Task("CleanPackage")
     .Does(() =>
 {
-    CleanDirectory(packageFolder);
-    CleanDirectory(packageFolderOut);
+  CleanDirectory(packageFolder);
+  CleanDirectory(packageFolderOut);
 });
 
 Task("Clean")
     .IsDependentOn("CleanPackage")
     .Does(() =>
 {
-    CleanDirectory("bin/Debug");
-    CleanDirectory("bin/Release");
+  CleanDirectory("bin/Debug");
+  CleanDirectory("bin/Release");
 });
 
 Task("Build")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    DotNetCoreBuild($"{name}.csproj", new DotNetCoreBuildSettings
-    {
-        Configuration = configuration
-    });
+  DotNetCoreBuild($"{name}.csproj", new DotNetCoreBuildSettings
+  {
+    Configuration = configuration
+  });
 });
+
 
 Task("Package")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    EnsureDirectoryExists(packages);
-    EnsureDirectoryExists(packageFolder);
-    EnsureDirectoryExists(packageFolderOut);
-    if (configuration == "Release")
+  EnsureDirectoryExists(packages);
+  EnsureDirectoryExists(packageFolder);
+  EnsureDirectoryExists(packageFolderOut);
+  if (configuration == "Release")
+  {
+    if (FileExists($"{packageFolder}/{name}.pdb"))
     {
-        if (FileExists($"{packageFolder}/{name}.pdb"))
-        {
-            DeleteFile($"{packageFolder}/{name}.pdb");
-        }
+      DeleteFile($"{packageFolder}/{name}.pdb");
     }
-    CopyFiles($"bin/{configuration}/*", $"{packageFolder}/");
-    CopyDirectory("resources/", packageFolder);
-    Zip(packageFolder, zipfile);
+  }
+  CopyFiles($"bin/{configuration}/*", $"{packageFolder}/");
+  CopyDirectory("resources/", packageFolder);
+  Zip(packageFolder, zipfile);
 });
 
 Task("Deploy")
     .IsDependentOn("Package")
     .Does(() =>
 {
-    if (DirectoryExists(serverData))
-    {
-        CopyFile(zipfile, $"{serverData}/Mods/{zipFileName}");
-    }
-    else
-    {
-        throw new Exception($"Server Data directory enviroment variabel is not set: {serverData}");
-    }
+  if (DirectoryExists(serverData))
+  {
+    CopyFile(zipfile, $"{serverData}/Mods/{zipFileName}");
+  }
+  else
+  {
+    throw new Exception($"Server Data directory enviroment variabel is not set: {serverData}");
+  }
 });
 
 //////////////////////////////////////////////////////////////////////

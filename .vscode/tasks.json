@@ -112,7 +112,7 @@
         "isDefault": true
       },
       "dependsOn": ["package (Debug)"],
-      "command": "mono $VINTAGE_STORY_SERVER_DEV/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DEV_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
+      "command": "mono $VINTAGE_STORY_SERVER/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -130,7 +130,7 @@
         "isDefault": true
       },
       "dependsOn": ["delete (Debug)"],
-      "command": "mono $VINTAGE_STORY_SERVER_DEV/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DEV_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
+      "command": "mono $VINTAGE_STORY_SERVER/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
       "presentation": {
         "echo": true,
         "reveal": "silent",
