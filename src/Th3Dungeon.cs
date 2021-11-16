@@ -125,7 +125,7 @@ namespace Th3Dungeon
         // int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.nextSpawn.Position);
         // + 1 so that the height map on that pos does not update which results in all chunks after first being one structure size higher
         // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
-        data.nextSpawn.Position.Add(1, 109, 1);
+        data.nextSpawn.Position.Add(1, 125, 1);
         // previousRoom.Y = height;
 
         //choose initial room

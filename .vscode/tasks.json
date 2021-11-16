@@ -92,9 +92,7 @@
       "dependsOn": ["package (Debug)"],
       "type": "shell",
       "command": "rm",
-      "args": [
-        "/home/dilli/drive_linux/servers/vintagestory/dev/data/Saves/default.vcdbs"
-      ],
+      "args": ["${env:VINTAGE_STORY_SERVER_DATA_MODDING}/Saves/default.vcdbs"],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -112,7 +110,13 @@
         "isDefault": true
       },
       "dependsOn": ["package (Debug)"],
-      "command": "mono $VINTAGE_STORY_SERVER/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
+      "command": "mono ${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "args": [
+        "--dataPath",
+        "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
+        "--addModPath",
+        "${workspaceFolder}/bin/packages/mods"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -130,7 +134,13 @@
         "isDefault": true
       },
       "dependsOn": ["delete (Debug)"],
-      "command": "mono $VINTAGE_STORY_SERVER/VintagestoryServer.exe --dataPath $VINTAGE_STORY_SERVER_DATA --addModPath ${workspaceFolder}/bin/packages/mods",
+      "command": "mono ${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "args": [
+        "--dataPath",
+        "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
+        "--addModPath",
+        "${workspaceFolder}/bin/packages/mods"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
