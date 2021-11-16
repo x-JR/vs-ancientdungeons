@@ -6,6 +6,7 @@ using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.API.Util;
 
 namespace Th3Dungeon
 {
@@ -19,6 +20,8 @@ namespace Th3Dungeon
     public LCGRandom _chunkRand;
 
     private int _chunkSize;
+
+    private int _regionSize;
 
     private List<Th3DungeonRoom> RoomsStraight;
 
@@ -43,6 +46,8 @@ namespace Th3Dungeon
       _api = api;
 
       _chunkSize = api.WorldManager.ChunkSize;
+      _regionSize = api.WorldManager.RegionSize;
+
       _api.Event.GetWorldgenBlockAccessor(OnWorldGenBlockAccessor);
       _api.Event.InitWorldGenerator(InitWorldGen, "standard");
 
@@ -97,31 +102,59 @@ namespace Th3Dungeon
         for (int dz = -_chunkRange; dz <= _chunkRange; dz++)
         {
           _chunkRand.InitPositionSeed(chunkX + dx, chunkZ + dz);
-          GenDungeon(data, chunkX, chunkZ, dx, dz);
+          GenDungeon(data, chunks, chunkX, chunkZ, dx, dz);
         }
       }
     }
 
-    protected void GenDungeon(Th3DungeonData data, int chunkX, int chunkZ, int dx, int dz)
+    protected void GenDungeon(Th3DungeonData data, IServerChunk[] chunks, int chunkX, int chunkZ, int dx, int dz)
     {
+
       int chunkXd = chunkX + dx;
       int chunkZd = chunkZ + dz;
       // if (_chunkRand.NextInt(1000) > 9998)
       // spawn dungeon in first chunk
-      if (chunkXd == 16000 && chunkZd == 16000)
+      // TODO find fix for gettin height in not yet generated chunks
+      if ((chunkXd == 16000 && chunkZd == 16000) || (chunkXd == 16011 && chunkZd == 16011))
       {
+        if (dx == 0 && dz == 0)
+        {
+          Mod.Logger.Debug($"nextSpawn: {chunkXd} : {chunkZd}");
+        }
         // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
         // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
         int x = chunkXd * _chunkSize + 15;
         int z = chunkZd * _chunkSize + 15;
 
-        data.nextSpawn.Position = new BlockPos(x, 0, z);
-        //TODO height
-        // int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.nextSpawn.Position);
-        // + 1 so that the height map on that pos does not update which results in all chunks after first being one structure size higher
+        // Get the region x and z from the current chunk to generate
+        int RegionX = chunkXd * _chunkSize / _regionSize;
+        int RegionZ = chunkZd * _chunkSize / _regionSize;
+
         // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
-        data.nextSpawn.Position.Add(1, 125, 1);
-        // previousRoom.Y = height;
+        data.nextSpawn.Position = new BlockPos(x, 0, z);
+        var region = _chunkGenBlockAccessor.GetMapRegion(RegionX, RegionZ);
+        byte[] moddatabyte = region.GetModdata("dungeonlist");
+        int height;
+        if (moddatabyte != null)
+        {
+          Dictionary<BlockPos, int> moddata = SerializerUtil.Deserialize<Dictionary<BlockPos, int>>(moddatabyte);
+          if (!moddata.TryGetValue(data.nextSpawn.Position, out height))
+          {
+            height = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.nextSpawn.Position);
+            moddata.Add(data.nextSpawn.Position, height);
+            moddatabyte = SerializerUtil.Serialize(moddata);
+            region.SetModdata("dungeonlist", moddatabyte);
+          }
+        }
+        else
+        {
+          height = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.nextSpawn.Position);
+          Dictionary<BlockPos, int> moddata = new Dictionary<BlockPos, int>();
+          moddata.Add(data.nextSpawn.Position, height);
+          moddatabyte = SerializerUtil.Serialize(moddata);
+          region.SetModdata("dungeonlist", moddatabyte);
+        }
+        data.nextSpawn.Position.Add(0, height, 0);
 
         //choose initial room
         data.nextSpawn.Room = RoomsStraight.First();
@@ -129,7 +162,7 @@ namespace Th3Dungeon
         data.nextSpawn.Facing = BlockFacing.NORTH;
         //spawn initial room
         Place(data, chunkX, chunkZ);
-        if (chunkXd == 16000 && chunkZd == 16000 && dx == 0 && dz == 0)
+        if ((chunkXd == 16000 && chunkZd == 16000 || chunkXd == 16011 && chunkZd == 16011) && dx == 0 && dz == 0)
         {
           Mod.Logger.Debug($"nextSpawn: {data.nextSpawn.Position} : {data.nextSpawn.Facing.Code}");
         }
@@ -141,7 +174,7 @@ namespace Th3Dungeon
             //choos next room to spawn
             data.nextSpawn.Room = ChooseRoom();
             // get spawn pos offset from next room and previouse room and previous facing
-            GetNextSpawnPos(data, chunkXd == 16000 && chunkZd == 16000 && dx == 0 && dz == 0);
+            GetNextSpawnPos(data);
 
             Place(data, chunkX, chunkZ);
           }
@@ -166,12 +199,14 @@ namespace Th3Dungeon
       } // updown
       else
       {
-        nir = _chunkRand.NextInt(RoomsUpDown.Count);
-        return RoomsUpDown.ElementAt(nir);
+        // nir = _chunkRand.NextInt(RoomsUpDown.Count);
+        // return RoomsUpDown.ElementAt(nir);
+        nir = _chunkRand.NextInt(RoomsTurn.Count);
+        return RoomsTurn.ElementAt(nir);
       }
     }
 
-    private void GetNextSpawnPos(Th3DungeonData data, bool log)
+    private void GetNextSpawnPos(Th3DungeonData data, bool log = false)
     {
       //choose next dorr post to gen next room
       int ni = _chunkRand.NextInt(data.DoorPos.Count);
