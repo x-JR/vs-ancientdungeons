@@ -193,6 +193,37 @@ namespace Th3Dungeon
         }
       }
     }
+
+    protected override int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (oldBlock.Replaceable < newBlock.Replaceable)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
+    protected override int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (newBlock.BlockId != 0)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
+    protected override int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+    {
+      if (oldBlock.BlockId == 0)
+      {
+        blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+        return 1;
+      }
+      return 0;
+    }
+
     public new Th3BlockSchematic ClonePacked()
     {
       return new Th3BlockSchematic
