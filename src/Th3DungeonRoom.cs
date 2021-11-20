@@ -8,7 +8,7 @@ namespace Th3Dungeon
   {
     public readonly Th3BlockSchematic[] Rotations;
 
-    public Th3DungeonRoom(Th3BlockSchematic schematic, ICoreServerAPI api, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
+    public Th3DungeonRoom(ICoreServerAPI api, Th3BlockSchematic schematic, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
     {
       Rotations = new Th3BlockSchematic[4];
       Rotations[0] = schematic.ClonePacked();
