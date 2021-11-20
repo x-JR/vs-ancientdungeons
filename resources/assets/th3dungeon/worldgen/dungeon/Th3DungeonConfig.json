@@ -1,11 +1,11 @@
 {
-  "ChunkRange": 5,
-  "RoomsToGenerate": 60,
+  "ChunkRange": 6,
+  "RoomsToGenerate": 50,
   "StartRoom": "th3dungeon:worldgen/dungeon/turn/conn.json",
   "categories": [
     {
       "name": "straight",
-      "chance": 0.6
+      "chance": 0.4
     },
     {
       "name": "turn",
@@ -13,6 +13,10 @@
     },
     {
       "name": "updown",
+      "chance": 0.2
+    },
+    {
+      "name": "rooms",
       "chance": 0.2
     }
   ]
