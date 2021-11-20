@@ -134,6 +134,11 @@ namespace Th3Dungeon
         data.NextSpawn.Room = StartRoom;
         // choose intital rotation
         data.Schematic = data.NextSpawn.Room.Rotations[0];
+
+        // add start room to overlap check
+        Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+        data.GeneratedRooms.Add(area);
+
         //spawn initial room
         Place(data, chunkX, chunkZ);
         if (dx == 0 && dz == 0)

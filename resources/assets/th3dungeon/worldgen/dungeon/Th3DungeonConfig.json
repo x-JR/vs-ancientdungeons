@@ -1,7 +1,7 @@
 {
   "ChunkRange": 6,
   "RoomsToGenerate": 50,
-  "StartRoom": "th3dungeon:worldgen/dungeon/turn/conn.json",
+  "StartRoom": "th3dungeon:worldgen/dungeon/start.json",
   "categories": [
     {
       "name": "straight",
