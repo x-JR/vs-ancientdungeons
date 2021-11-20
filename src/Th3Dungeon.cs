@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Vintagestory.API.Common;
@@ -51,7 +52,6 @@ namespace Th3Dungeon
       {
         Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
       });
-      Mod.Logger.VerboseDebug("_api.World.SeaLevel: " + _api.World.SeaLevel);
     }
 
     private void OnWorldGenBlockAccessor(IChunkProviderThread chunkProvider)
@@ -124,33 +124,38 @@ namespace Th3Dungeon
         int z = chunkZd * _chunkSize + 15;
 
         // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
-        data.nextSpawn.Position = new BlockPos(x, 0, z);
+        data.NextSpawn.Position = new BlockPos(x, 0, z);
 
         // TODO check if there is better way to optain a heigh in not generated chunks
-        data.nextSpawn.Position.Add(0, _api.World.SeaLevel + 20, 0);
+        data.NextSpawn.Position.Add(0, _api.World.SeaLevel + 20, 0);
 
         //choose initial room
-        data.nextSpawn.Room = StartRoom;
-        //choose initial Facing
-        data.nextSpawn.Facing = BlockFacing.NORTH;
+        data.NextSpawn.Room = StartRoom;
+        // choose intital rotation
+        data.Schematic = data.NextSpawn.Room.Rotations[0];
         //spawn initial room
         Place(data, chunkX, chunkZ);
-        if (chunkXd == 16000 && chunkZd == 16000 && dx == 0 && dz == 0)
+        if (dx == 0 && dz == 0)
         {
-          Mod.Logger.Debug($"nextSpawn: {data.nextSpawn.Position} : {data.nextSpawn.Facing.Code}");
+          Mod.Logger.Debug($"nextSpawn: {data.NextSpawn.Position} ");
         }
+        int a = 0;
 
         for (int i = 0; i < Th3DungeonConfig.RoomsToGenerate; i++)
         {
           if (data.DoorPos.Count > 0)
           {
-            //choos next room to spawn
-            data.nextSpawn.Room = ChooseRoom(chunkXd == 16000 && chunkZd == 16000 && dx == 0 && dz == 0);
             // get spawn pos offset from next room and previouse room and previous facing
-            GetNextSpawnPos(data);
-
-            Place(data, chunkX, chunkZ);
+            if (GetNext(data, dx == 0 && dz == 0))
+            {
+              a++;
+              Place(data, chunkX, chunkZ);
+            }
           }
+        }
+        if (dx == 0 && dz == 0)
+        {
+          Mod.Logger.VerboseDebug($"placed: {a}");
         }
       }
     }
@@ -177,102 +182,101 @@ namespace Th3Dungeon
       return StartRoom;
     }
 
-    private void GetNextSpawnPos(Th3DungeonData data)
+    private bool GetNext(Th3DungeonData data, bool log)
     {
+
+      //choos next room to spawn
+      data.NextSpawn.Room = ChooseRoom(log);
+
+
       //choose next door pos to gen next room
       int ni = _chunkRand.NextInt(data.DoorPos.Count);
       Th3DoorPos current = data.DoorPos.ElementAt(ni);
       data.DoorPos.Remove(current);
 
       //add the door offset to the position => will result in new block position where the next door needs to be
-      data.nextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
+      data.NextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
 
       // search for next facing
-      bool found = false;
       // iterate over the 4 possible rotations of the room
       // make the rotaions random and not in order
       int index;
       int start = _chunkRand.NextInt(4);
-      for (int i = 0; i < 4 && !found; i++)
+      for (int i = 0; i < 4; i++)
       {
         index = (start + i) % 4;
-        for (int j = 0; j < data.nextSpawn.Room.Rotations[index].Doors.Count && !found; j++)
+        for (int j = 0; j < data.NextSpawn.Room.Rotations[index].Doors.Count; j++)
         {
-          Th3DoorPos nex = data.nextSpawn.Room.Rotations[index].Doors[j];
+          Th3DoorPos nex = data.NextSpawn.Room.Rotations[index].Doors[j];
           if (nex.Facing.Equals(current.Facing.Opposite))
           {
             switch (index)
             {
               case 0:// south
                 {
-                  data.nextSpawn.Facing = BlockFacing.SOUTH;
+                  data.Schematic = data.NextSpawn.Room.Rotations[index];
                   break;
                 }
               case 1:// west
                 {
-                  data.nextSpawn.Facing = BlockFacing.WEST;
+                  data.Schematic = data.NextSpawn.Room.Rotations[index];
                   break;
                 }
               case 2:// north
                 {
-                  data.nextSpawn.Facing = BlockFacing.NORTH;
+                  data.Schematic = data.NextSpawn.Room.Rotations[index];
                   break;
                 }
               case 3:// east
                 {
-                  data.nextSpawn.Facing = BlockFacing.EAST;
+                  data.Schematic = data.NextSpawn.Room.Rotations[index];
                   break;
                 }
             }
             // the new spawn position is the original new door position - the offset from the origin of the door position
-            data.nextSpawn.Position = data.nextSpawn.OrigPosition - nex.Position;
-            found = true;
-            break;
+            data.NextSpawn.Position = data.NextSpawn.OrigPosition - nex.Position;
+
+
+            // get area that the new room will occupie
+            Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+
+            // if is valid add new location to blocked area else find another one
+            if (CanSpawn(data, area))
+            {
+              data.GeneratedRooms.Add(area);
+              return true;
+            }
           }
         }
       }
+      return false;
+    }
+
+    private bool CanSpawn(Th3DungeonData data, Cuboidi area)
+    {
+      for (int i = data.GeneratedRooms.Count - 1; i > 0; i--)
+      {
+        var room = data.GeneratedRooms[i];
+        if (room.Intersects(area))
+        {
+          return false;
+        }
+      }
+      return true;
     }
 
     public void Place(Th3DungeonData data, int chunkX, int chunkZ)
     {
-      Th3BlockSchematic schematic;
-      // get the correct next room rotation based on the 
-      switch (data.nextSpawn.Facing.Code)
-      {
-        case "north":
-          {
-            schematic = data.nextSpawn.Room.Rotations[2];
-            break;
-          }
-        case "east":
-          {
-            schematic = data.nextSpawn.Room.Rotations[3];
-            break;
-          }
-        case "south":
-          {
-            schematic = data.nextSpawn.Room.Rotations[0];
-            break;
-          }
-        case "west":
-          {
-            schematic = data.nextSpawn.Room.Rotations[1];
-            break;
-          }
-        default:
-          {
-            schematic = data.nextSpawn.Room.Rotations[0];
-            Mod.Logger.VerboseDebug("wrong facing :: defaulting to north");
-            break;
-          }
-      }
-      schematic.Place(_chunkGenBlockAccessor, _api.World, data.nextSpawn.Position, chunkX, chunkZ);
-      foreach (Th3DoorPos doorpos in schematic.Doors)
+      // Th3BlockSchematic schematic;
+      // get the correct next room rotation based on the facing
+      // schematic = GetRoomRotation(data);
+      data.Schematic.Place(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
+      foreach (Th3DoorPos doorpos in data.Schematic.Doors)
       {
         // only add the doors positions that was not the spawn position of the current room
-        if (!(data.nextSpawn.Position + doorpos.Position).Equals(data.nextSpawn.OrigPosition))
+        if (!(data.NextSpawn.Position + doorpos.Position).Equals(data.NextSpawn.OrigPosition))
         {
-          data.DoorPos.Add(new Th3DoorPos(data.nextSpawn.Position + doorpos.Position, doorpos.Facing));
+          data.DoorPos.Add(new Th3DoorPos(data.NextSpawn.Position + doorpos.Position, doorpos.Facing));
         }
       }
     }

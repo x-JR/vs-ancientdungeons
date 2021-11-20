@@ -11,19 +11,16 @@ namespace Th3Dungeon
 
     public BlockPos OrigPosition;
 
-    public BlockFacing Facing;
-
     public Th3SpawnTransform()
     {
       Position = new BlockPos();
       OrigPosition = new BlockPos();
     }
 
-    public Th3SpawnTransform(Th3DungeonRoom room, BlockPos position, BlockFacing facing)
+    public Th3SpawnTransform(Th3DungeonRoom room, BlockPos position)
     {
       Room = room;
       Position = position;
-      Facing = facing;
     }
   }
 }

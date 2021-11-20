@@ -1,6 +1,6 @@
 {
   "ChunkRange": 5,
-  "RoomsToGenerate": 30,
+  "RoomsToGenerate": 60,
   "StartRoom": "th3dungeon:worldgen/dungeon/turn/conn.json",
   "categories": [
     {
