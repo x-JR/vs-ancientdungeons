@@ -110,8 +110,9 @@
         "isDefault": true
       },
       "dependsOn": ["package (Debug)"],
-      "command": "mono ${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "command": "mono",
       "args": [
+        "${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
         "--addModPath",
@@ -134,8 +135,9 @@
         "isDefault": true
       },
       "dependsOn": ["delete (Debug)"],
-      "command": "mono ${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "command": "mono",
       "args": [
+        "${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
         "--addModPath",
