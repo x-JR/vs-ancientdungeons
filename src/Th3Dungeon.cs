@@ -190,10 +190,8 @@ namespace Th3Dungeon
 
     private bool GetNext(Th3DungeonData data, bool log)
     {
-
       //choos next room to spawn
       data.NextSpawn.Room = ChooseRoom(log);
-
 
       //choose next door pos to gen next room
       int ni = _chunkRand.NextInt(data.DoorPos.Count);
@@ -260,9 +258,8 @@ namespace Th3Dungeon
 
     private bool CanSpawn(Th3DungeonData data, Cuboidi area)
     {
-      for (int i = data.GeneratedRooms.Count - 1; i > 0; i--)
+      foreach (Cuboidi room in data.GeneratedRooms)
       {
-        var room = data.GeneratedRooms[i];
         if (room.Intersects(area))
         {
           return false;
