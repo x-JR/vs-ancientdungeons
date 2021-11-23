@@ -90,3 +90,5 @@ use the worldedit fill tool to fill your rooms with the `game:meta-filler` block
 to spawn the meta-filler block type `/giveblock meta-filler`
 
 to be able to see the meta blocks you placed and to remove them you need to press ctrl + f4
+
+if you have any questions feel free to DM me (Th3Dilli on Vintagestory server)
