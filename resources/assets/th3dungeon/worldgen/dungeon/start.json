@@ -9,6 +9,8 @@
     "7574": "game:meta-filler",
     "7590": "th3dungeon:th3doorway-west",
     "284": "game:torchholder-aged-filled-west",
+    "6953": "game:chest-east",
+    "5065": "game:lootvessel-tool",
     "902": "game:stonepathstairs-up-north-free",
     "272": "game:torchholder-aged-filled-north",
     "280": "game:torchholder-aged-filled-south",
@@ -1927,7 +1929,7 @@
     7574,
     7574,
     7574,
-    7574,
+    6953,
     846,
     846,
     7574,
@@ -2095,7 +2097,7 @@
     7574,
     7574,
     7574,
-    7574,
+    5065,
     846,
     846,
     7574,
@@ -3553,7 +3555,9 @@
   ],
   "DecorIndices": [],
   "DecorIds": [],
-  "BlockEntities": {},
+  "BlockEntities": {
+    "1061891": "!<d@[F*Q*Y#64c-E,TfC\"98E%!<d@[F*^@'#64o6@VfsmCI<#NAI;p\\ATMrFARTY%\"po!]G%GQ5DfU+(#'\"^#Dfg%+!!!!'\"`nKuFE7E^\"Uo!]E^FS\\@r\"GMA7Z*XBOu7,/S/@3F9MehH#R=%@rH1\"@;p:!A2+2nD.Rd%6#L=OA_R_e5QC"
+  },
   "Entities": [],
   "ReplaceMode": 2
 }
