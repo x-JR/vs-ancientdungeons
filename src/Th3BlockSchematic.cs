@@ -152,10 +152,10 @@ namespace Th3Dungeon
 
       if (!(blockAccessor is IBlockAccessorRevertable))
       {
-        PlaceEntitiesAndBlockEntities(blockAccessor, worldForCollectibleResolve, startPos);
+        PlaceEntitiesAndBlockEntities(blockAccessor, worldForCollectibleResolve, startPos, chunkX, chunkZ);
       }
 
-      PlaceDecors(blockAccessor, startPos, false, chunkX, chunkZ);
+      PlaceDecors(blockAccessor, startPos, true, chunkX, chunkZ);
       return placed;
     }
 

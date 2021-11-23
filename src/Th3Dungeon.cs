@@ -277,8 +277,6 @@ namespace Th3Dungeon
       // get the correct next room rotation based on the facing
       // schematic = GetRoomRotation(data);
       data.Schematic.Place(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
-      data.Schematic.PlaceEntitiesAndBlockEntities(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
-      data.Schematic.PlaceDecors(_chunkGenBlockAccessor, data.NextSpawn.Position, true, chunkX, chunkZ);
 
       foreach (Th3DoorPos doorpos in data.Schematic.Doors)
       {
@@ -300,8 +298,6 @@ namespace Th3Dungeon
       while (pos.Y < height)
       {
         Stairs.Rotations[index].Place(_chunkGenBlockAccessor, _api.World, pos, chunkX, chunkZ);
-        Stairs.Rotations[index].PlaceEntitiesAndBlockEntities(_chunkGenBlockAccessor, _api.World, pos, chunkX, chunkZ);
-        Stairs.Rotations[index].PlaceDecors(_chunkGenBlockAccessor, pos, true, chunkX, chunkZ);
 
         pos.Add(0, y, 0);
         index = (index + 1) % 4;
