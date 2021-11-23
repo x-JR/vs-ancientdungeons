@@ -25,7 +25,11 @@ namespace Th3Dungeon
 
     private Th3DungeonRoom StartRoom;
 
+    private Th3DungeonRoom Stairs;
+
     private int _chunkRange = 5;
+
+    private IBlockAccessor _worldBlockAccessor;
 
     public override bool ShouldLoad(EnumAppSide side)
     {
@@ -42,17 +46,18 @@ namespace Th3Dungeon
       _api = api;
 
       _chunkSize = api.WorldManager.ChunkSize;
+      _worldBlockAccessor = _api.World.BlockAccessor;
 
       _api.Event.GetWorldgenBlockAccessor(OnWorldGenBlockAccessor);
       _api.Event.InitWorldGenerator(InitWorldGen, "standard");
 
       _api.Event.ChunkColumnGeneration(GenChunkColumn, EnumWorldGenPass.TerrainFeatures, "standard");
 
-      // _api.RegisterCommand("spawnstruct", "spawn all structures", string.Empty, OnSpawnStructures);
-      _api.RegisterCommand("logpos", "spawn all structures", string.Empty, (IServerPlayer player, int groupId, CmdArgs args) =>
-      {
-        Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
-      });
+      _api.RegisterCommand("spawnstruct", "spawn all structures", string.Empty, OnSpawnStructures);
+      // _api.RegisterCommand("logpos", "spawn all structures", string.Empty, (IServerPlayer player, int groupId, CmdArgs args) =>
+      // {
+      //   Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
+      // });
     }
 
     private void OnWorldGenBlockAccessor(IChunkProviderThread chunkProvider)
@@ -78,6 +83,8 @@ namespace Th3Dungeon
 
       var startRoom = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.StartRoom));
       StartRoom = new Th3DungeonRoom(_api, startRoom, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoom);
+      var stairs = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.Stairs));
+      Stairs = new Th3DungeonRoom(_api, stairs, _chunkGenBlockAccessor, Th3DungeonConfig.Stairs);
 
       foreach (var cat in Th3DungeonConfig.Categories)
       {
@@ -104,6 +111,7 @@ namespace Th3Dungeon
           GenDungeon(data, chunks, chunkX, chunkZ, dx, dz);
         }
       }
+      _chunkGenBlockAccessor.RunScheduledBlockLightUpdates();
     }
 
     protected void GenDungeon(Th3DungeonData data, IServerChunk[] chunks, int chunkX, int chunkZ, int dx, int dz)
@@ -115,10 +123,6 @@ namespace Th3Dungeon
       // spawn dungeon in first chunk
       if (chunkXd == 16000 && chunkZd == 16000)
       {
-        if (dx == 0 && dz == 0)
-        {
-          Mod.Logger.Debug($"nextSpawn: {chunkXd} : {chunkZd}");
-        }
         // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
         // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
         int x = chunkXd * _chunkSize + 15;
@@ -128,7 +132,7 @@ namespace Th3Dungeon
         data.NextSpawn.Position = new BlockPos(x, 0, z);
 
         // TODO check if there is better way to optain a heigh in not generated chunks
-        data.NextSpawn.Position.Add(0, _api.World.SeaLevel + 20, 0);
+        data.NextSpawn.Position.Add(0, _api.World.SeaLevel - 20, 0);
 
         //choose initial room
         data.NextSpawn.Room = StartRoom;
@@ -141,10 +145,9 @@ namespace Th3Dungeon
 
         //spawn initial room
         Place(data, chunkX, chunkZ);
-        if (dx == 0 && dz == 0)
-        {
-          Mod.Logger.Debug($"nextSpawn: {data.NextSpawn.Position} ");
-        }
+
+        GenStairs(data.NextSpawn.Position.AddCopy(Th3DungeonConfig.StairsOffsetX, data.Schematic.SizeY, Th3DungeonConfig.StairsOffsetZ), chunkX, chunkZ);
+
         int a = 0;
 
         for (int i = 0; i < Th3DungeonConfig.RoomsToGenerate; i++)
@@ -274,6 +277,9 @@ namespace Th3Dungeon
       // get the correct next room rotation based on the facing
       // schematic = GetRoomRotation(data);
       data.Schematic.Place(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
+      data.Schematic.PlaceEntitiesAndBlockEntities(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
+      data.Schematic.PlaceDecors(_chunkGenBlockAccessor, data.NextSpawn.Position, true, chunkX, chunkZ);
+
       foreach (Th3DoorPos doorpos in data.Schematic.Doors)
       {
         // only add the doors positions that was not the spawn position of the current room
@@ -284,44 +290,62 @@ namespace Th3Dungeon
       }
     }
 
+    public void GenStairs(BlockPos pos, int chunkX, int chunkZ)
+    {
+      int index = 0, height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos) + 1;
+      //if height is 0 it means that this chunk is not yet generated so nothing todo here
+      if (height == 0) return;
+
+      int y = Stairs.Rotations[0].SizeY;
+      while (pos.Y < height)
+      {
+        Stairs.Rotations[index].Place(_chunkGenBlockAccessor, _api.World, pos, chunkX, chunkZ);
+        Stairs.Rotations[index].PlaceEntitiesAndBlockEntities(_chunkGenBlockAccessor, _api.World, pos, chunkX, chunkZ);
+        Stairs.Rotations[index].PlaceDecors(_chunkGenBlockAccessor, pos, true, chunkX, chunkZ);
+
+        pos.Add(0, y, 0);
+        index = (index + 1) % 4;
+      }
+    }
+
     private void OnSpawnStructures(IServerPlayer player, int groupId, CmdArgs args)
     {
 
-      //   player.SendMessage(GlobalConstants.GeneralChatGroup, "loaded assets", EnumChatType.CommandSuccess);
+      player.SendMessage(GlobalConstants.GeneralChatGroup, "loaded assets", EnumChatType.CommandSuccess);
 
-      //   Mod.Logger.VerboseDebug("loaded assets: " + Schematics.Count);
-      //   BlockPos pos = new BlockPos();
-      //   int x = 0, z = 0;
-      //   int sx = player.Entity.Pos.AsBlockPos.X - 200;
-      //   int sz = player.Entity.Pos.AsBlockPos.Z - 200;
-      //   pos.Y = player.Entity.Pos.AsBlockPos.Y;
-      //   int offset = args.PopInt(20) ?? 20;
-      //   int rowmax = args.PopInt(400) ?? 400;
+      BlockPos pos = new BlockPos();
+      int x = 0, z = 0;
+      int sx = player.Entity.Pos.AsBlockPos.X - 00;
+      int sz = player.Entity.Pos.AsBlockPos.Z - 00;
+      pos.Y = player.Entity.Pos.AsBlockPos.Y;
+      int offset = args.PopInt(20) ?? 20;
+      int rowmax = args.PopInt(400) ?? 400;
 
-      //   pos.X = sx;
-      //   pos.Z = sz;
-      //   int sizeX = offset, sizeZ = offset;
-      //   foreach (KeyValuePair<AssetLocation, Th3BlockSchematic> structure in Schematics)
-      //   {
-      //     // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
-      //     // structure.Value.Init(_worldBlockAccessor);
-      //     structure.Value.Place(_chunkGenBlockAccessor, _api.World, pos, true);
-      //     sizeX = Math.Max(sizeX, structure.Value.SizeX + 2);
-      //     sizeZ = Math.Max(sizeZ, structure.Value.SizeZ + 2);
-      //     if (x >= rowmax)
-      //     {
-      //       x = 0;
-      //       z += Math.Max(offset, sizeZ);
-      //       sizeX = offset;
-      //       sizeZ = offset;
-      //     }
-      //     else
-      //     {
-      //       x += Math.Max(offset, sizeX);
-      //     }
-      //     pos.X = sx + x;
-      //     pos.Z = sz + z;
-      //   }
+      pos.X = sx;
+      pos.Z = sz;
+      int sizeX = offset, sizeZ = offset;
+      foreach (Th3BlockSchematic structure in Stairs.Rotations)
+      {
+        // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
+        Mod.Logger.VerboseDebug($"struc: {pos}");
+        // structure.Value.Init(_worldBlockAccessor);
+        structure.Place(_worldBlockAccessor, _api.World, pos, true);
+        sizeX = Math.Max(sizeX, structure.SizeX + 2);
+        sizeZ = Math.Max(sizeZ, structure.SizeZ + 2);
+        if (x >= rowmax)
+        {
+          x = 0;
+          z += Math.Max(offset, sizeZ);
+          sizeX = offset;
+          sizeZ = offset;
+        }
+        else
+        {
+          x += Math.Max(offset, sizeX);
+        }
+        pos.X = sx + x;
+        pos.Z = sz + z;
+      }
     }
   }
 }

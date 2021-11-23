@@ -1,7 +1,10 @@
 {
   "ChunkRange": 6,
   "RoomsToGenerate": 50,
+  "StairsOffsetX": 6,
+  "StairsOffsetZ": 6,
   "StartRoom": "th3dungeon:worldgen/dungeon/start.json",
+  "Stairs": "th3dungeon:worldgen/dungeon/stairs.json",
   "categories": [
     {
       "name": "straight",
