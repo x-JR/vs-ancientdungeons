@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
+using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
@@ -145,7 +148,6 @@ namespace Th3Dungeon
             accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);
           }
         }
-
       }
 
       if (!(blockAccessor is IBlockAccessorRevertable))
@@ -222,6 +224,86 @@ namespace Th3Dungeon
         return 1;
       }
       return 0;
+    }
+
+    public void PlaceEntitiesAndBlockEntities(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ)
+    {
+      BlockPos curPos = new BlockPos();
+
+      int schematicSeed = worldForCollectibleResolve.Rand.Next();
+
+      foreach (var val in BlockEntities)
+      {
+        uint index = val.Key;
+        int dx = (int)(index & 0x1ff);
+        int dy = (int)((index >> 20) & 0x1ff);
+        int dz = (int)((index >> 10) & 0x1ff);
+
+        if ((dx + startPos.X) / _chunkSize == chunkX && (dz + startPos.Z) / _chunkSize == chunkZ)
+        {
+
+          curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
+
+          BlockEntity be = blockAccessor.GetBlockEntity(curPos);
+
+
+          // Block entities need to be manually initialized for world gen block access
+          if (be == null && blockAccessor is IWorldGenBlockAccessor)
+          {
+            Block block = blockAccessor.GetBlock(curPos);
+
+            if (block.EntityClass != null)
+            {
+              blockAccessor.SpawnBlockEntity(block.EntityClass, curPos);
+              be = blockAccessor.GetBlockEntity(curPos);
+            }
+          }
+
+          if (be != null)
+          {
+            Block block = blockAccessor.GetBlock(curPos);
+            if (block.EntityClass != worldForCollectibleResolve.ClassRegistry.GetBlockEntityClass(be.GetType()))
+            {
+              worldForCollectibleResolve.Logger.Warning("Could not import block entity data for schematic at {0}. There is already {1}, expected {2}. Probably overlapping ruins.", curPos, be.GetType(), block.EntityClass);
+              continue;
+            }
+
+            ITreeAttribute tree = DecodeBlockEntityData(val.Value);
+            tree.SetInt("posx", curPos.X);
+            tree.SetInt("posy", curPos.Y);
+            tree.SetInt("posz", curPos.Z);
+
+            be.FromTreeAttributes(tree, worldForCollectibleResolve);
+            be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+            be.Pos = curPos.Copy();
+          }
+        }
+      }
+
+      foreach (string entityData in Entities)
+      {
+        using (MemoryStream ms = new MemoryStream(Ascii85.Decode(entityData)))
+        {
+          BinaryReader reader = new BinaryReader(ms);
+
+          string className = reader.ReadString();
+          Entity entity = worldForCollectibleResolve.ClassRegistry.CreateEntity(className);
+
+          entity.FromBytes(reader, false);
+          entity.DidImportOrExport(startPos);
+
+          // Not ideal but whatever
+          if (blockAccessor is IWorldGenBlockAccessor)
+          {
+            (blockAccessor as IWorldGenBlockAccessor).AddEntity(entity);
+          }
+          else
+          {
+            worldForCollectibleResolve.SpawnEntity(entity);
+          }
+
+        }
+      }
     }
 
     public new Th3BlockSchematic ClonePacked()
