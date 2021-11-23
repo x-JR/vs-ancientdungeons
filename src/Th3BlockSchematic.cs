@@ -146,6 +146,7 @@ namespace Th3Dungeon
           if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
           {
             accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);
+            accessor.ExchangeBlock(newBlock.Id, curPos);
           }
         }
       }

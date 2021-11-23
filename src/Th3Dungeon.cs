@@ -111,7 +111,7 @@ namespace Th3Dungeon
           GenDungeon(data, chunks, chunkX, chunkZ, dx, dz);
         }
       }
-      _chunkGenBlockAccessor.RunScheduledBlockLightUpdates();
+      // _chunkGenBlockAccessor.RunScheduledBlockLightUpdates();
     }
 
     protected void GenDungeon(Th3DungeonData data, IServerChunk[] chunks, int chunkX, int chunkZ, int dx, int dz)
