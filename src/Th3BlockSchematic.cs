@@ -90,6 +90,20 @@ namespace Th3Dungeon
       return newBlock == DoorNorth || newBlock == DoorEast || newBlock == DoorSouth || newBlock == DoorWest;
     }
 
+    public int GetHeightAtPos(int dx, int dz)
+    {
+      int height = SizeY;
+      for (int dy = 0; dy < SizeY; dy++)
+      {
+        uint index = (uint)(dy << 20 | dz << 10 | dx);
+        if (Indices.Find(i => i == index) == 0)
+        {
+          height = dy;
+        }
+      }
+      return height;
+    }
+
     public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ, bool replaceMetaBlocks = true)
     {
       BlockPos curPos = new BlockPos();

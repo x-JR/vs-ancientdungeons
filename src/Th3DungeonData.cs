@@ -13,6 +13,8 @@ namespace Th3Dungeon
 
     public Th3BlockSchematic Schematic;
 
+    public bool Initialized;
+
     public Th3DungeonData()
     {
       DoorPos = new List<Th3DoorPos>();

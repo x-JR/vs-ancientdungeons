@@ -25,6 +25,8 @@ namespace Th3Dungeon
 
     private Th3DungeonRoom StartRoom;
 
+    private Th3DungeonRoom StartRoomTop;
+
     private Th3DungeonRoom Stairs;
 
     private int _chunkRange = 5;
@@ -83,6 +85,8 @@ namespace Th3Dungeon
 
       var startRoom = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.StartRoom));
       StartRoom = new Th3DungeonRoom(_api, startRoom, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoom);
+      var startRoomTop = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.StartRoomTop));
+      StartRoomTop = new Th3DungeonRoom(_api, startRoomTop, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoomTop);
       var stairs = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.Stairs));
       Stairs = new Th3DungeonRoom(_api, stairs, _chunkGenBlockAccessor, Th3DungeonConfig.Stairs);
 
@@ -137,16 +141,21 @@ namespace Th3Dungeon
         //choose initial room
         data.NextSpawn.Room = StartRoom;
         // choose intital rotation
-        data.Schematic = data.NextSpawn.Room.Rotations[0];
+        // int startRoomRotation = _chunkRand.NextInt(4);
+        int startRoomRotation = 0;
+        data.Schematic = data.NextSpawn.Room.Rotations[startRoomRotation];
 
         // add start room to overlap check
-        Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
-        data.GeneratedRooms.Add(area);
+        if (!data.Initialized)
+        {
+          Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+          data.GeneratedRooms.Add(area);
+        }
 
         //spawn initial room
         Place(data, chunkX, chunkZ);
 
-        GenStairs(data.NextSpawn.Position.AddCopy(Th3DungeonConfig.StairsOffsetX, data.Schematic.SizeY, Th3DungeonConfig.StairsOffsetZ), chunkX, chunkZ);
+        GenStairs(data, startRoomRotation, chunkX, chunkZ, chunkXd, chunkZd);
 
         int a = 0;
 
@@ -155,7 +164,7 @@ namespace Th3Dungeon
           if (data.DoorPos.Count > 0)
           {
             // get spawn pos offset from next room and previouse room and previous facing
-            if (GetNext(data, dx == 0 && dz == 0))
+            if (GetNext(data, chunkX, chunkZ, dx == 0 && dz == 0))
             {
               a++;
               Place(data, chunkX, chunkZ);
@@ -165,7 +174,9 @@ namespace Th3Dungeon
         if (dx == 0 && dz == 0)
         {
           Mod.Logger.VerboseDebug($"placed: {a}");
+          Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
         }
+        data.Initialized = true;
       }
     }
 
@@ -191,7 +202,7 @@ namespace Th3Dungeon
       return StartRoom;
     }
 
-    private bool GetNext(Th3DungeonData data, bool log)
+    private bool GetNext(Th3DungeonData data, int chunkX, int chunkZ, bool log)
     {
       //choos next room to spawn
       data.NextSpawn.Room = ChooseRoom(log);
@@ -250,7 +261,10 @@ namespace Th3Dungeon
             // if is valid add new location to blocked area else find another one
             if (CanSpawn(data, area))
             {
-              data.GeneratedRooms.Add(area);
+              if (!data.Initialized)
+              {
+                data.GeneratedRooms.Add(area);
+              }
               return true;
             }
           }
@@ -288,12 +302,27 @@ namespace Th3Dungeon
       }
     }
 
-    public void GenStairs(BlockPos pos, int chunkX, int chunkZ)
+    public void GenStairs(Th3DungeonData data, int startRoomRotation, int chunkX, int chunkZ, int chunkXd, int chunkZd)
     {
-      int index = 0, height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos) + 1;
+      BlockPos pos = data.NextSpawn.Position.AddCopy(Th3DungeonConfig.StairsOffsetX, data.Schematic.SizeY, Th3DungeonConfig.StairsOffsetZ);
       //if height is 0 it means that this chunk is not yet generated so nothing todo here
-      if (height == 0) return;
+      int index = startRoomRotation;
+      int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos);
 
+      if (height == 0) return;
+      if (pos.X / _chunkSize == chunkX && pos.Z / _chunkSize == chunkZ)
+      {
+        height += 1;
+      }
+      else
+      {
+        height -= data.Schematic.GetHeightAtPos(0, 0) - 1;
+      }
+      BlockPos startPos = null;
+      if (!data.Initialized)
+      {
+        startPos = pos.Copy();
+      }
       int y = Stairs.Rotations[0].SizeY;
       while (pos.Y < height)
       {
@@ -301,6 +330,22 @@ namespace Th3Dungeon
 
         pos.Add(0, y, 0);
         index = (index + 1) % 4;
+      }
+
+      if (!data.Initialized)
+      {
+        Cuboidi area = new Cuboidi(startPos, pos.AddCopy(Stairs.Rotations[index].SizeX, pos.Y, Stairs.Rotations[index].SizeZ));
+        data.GeneratedRooms.Add(area);
+      }
+      data.NextSpawn.Position.Y = pos.Y - 1;
+      data.Schematic = StartRoomTop.Rotations[startRoomRotation];
+      Place(data, chunkX, chunkZ);
+
+      // add start room to overlap check
+      if (!data.Initialized)
+      {
+        Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+        data.GeneratedRooms.Add(area);
       }
     }
 
