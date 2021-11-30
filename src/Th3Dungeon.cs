@@ -89,7 +89,6 @@ namespace Th3Dungeon
       StartRoomTop = new Th3DungeonRoom(_api, startRoomTop, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoomTop);
       var stairs = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.Stairs));
       Stairs = new Th3DungeonRoom(_api, stairs, _chunkGenBlockAccessor, Th3DungeonConfig.Stairs);
-
       foreach (var cat in Th3DungeonConfig.Categories)
       {
         var assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/dungeon/" + cat.Name, "th3dungeon");
@@ -132,18 +131,17 @@ namespace Th3Dungeon
         int x = chunkXd * _chunkSize + 15;
         int z = chunkZd * _chunkSize + 15;
 
-        // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
-        data.NextSpawn.Position = new BlockPos(x, 0, z);
-
-        // TODO check if there is better way to optain a heigh in not generated chunks
-        data.NextSpawn.Position.Add(0, _api.World.SeaLevel - 20, 0);
-
         //choose initial room
         data.NextSpawn.Room = StartRoom;
+
         // choose intital rotation
-        // int startRoomRotation = _chunkRand.NextInt(4);
-        int startRoomRotation = 0;
+        int startRoomRotation = _chunkRand.NextInt(4);
+        // int startRoomRotation = 3;
         data.Schematic = data.NextSpawn.Room.Rotations[startRoomRotation];
+
+        // can be done since _chunkRand.NextInt(_chunkSize) exludes the max - so it wont overflow
+        data.NextSpawn.Position = new BlockPos(x, _api.World.SeaLevel - 20, z);
+        data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
 
         // add start room to overlap check
         if (!data.Initialized)
@@ -155,7 +153,7 @@ namespace Th3Dungeon
         //spawn initial room
         Place(data, chunkX, chunkZ);
 
-        GenStairs(data, startRoomRotation, chunkX, chunkZ, chunkXd, chunkZd);
+        GenEntrance(data, x, z, startRoomRotation, chunkX, chunkZ);
 
         int a = 0;
 
@@ -164,7 +162,7 @@ namespace Th3Dungeon
           if (data.DoorPos.Count > 0)
           {
             // get spawn pos offset from next room and previouse room and previous facing
-            if (GetNext(data, chunkX, chunkZ, dx == 0 && dz == 0))
+            if (GetNext(data, dx == 0 && dz == 0))
             {
               a++;
               Place(data, chunkX, chunkZ);
@@ -180,7 +178,7 @@ namespace Th3Dungeon
       }
     }
 
-    private Th3DungeonRoom ChooseRoom(bool log)
+    private Th3DungeonRoom ChooseRoom(bool log = false)
     {
       float chance = _chunkRand.NextFloat();
       float chanceStart = 0;
@@ -202,10 +200,10 @@ namespace Th3Dungeon
       return StartRoom;
     }
 
-    private bool GetNext(Th3DungeonData data, int chunkX, int chunkZ, bool log)
+    private bool GetNext(Th3DungeonData data, bool log = false)
     {
       //choos next room to spawn
-      data.NextSpawn.Room = ChooseRoom(log);
+      data.NextSpawn.Room = ChooseRoom();
 
       //choose next door pos to gen next room
       int ni = _chunkRand.NextInt(data.DoorPos.Count);
@@ -302,43 +300,54 @@ namespace Th3Dungeon
       }
     }
 
-    public void GenStairs(Th3DungeonData data, int startRoomRotation, int chunkX, int chunkZ, int chunkXd, int chunkZd)
+    public void GenEntrance(Th3DungeonData data, int x, int z, int rotation, int chunkX, int chunkZ)
     {
-      BlockPos pos = data.NextSpawn.Position.AddCopy(Th3DungeonConfig.StairsOffsetX, data.Schematic.SizeY, Th3DungeonConfig.StairsOffsetZ);
+      int startY = data.Schematic.SizeY;
+      // get original start pos with out center adjustment for start room
+      data.Schematic = Stairs.Rotations[rotation];
+      data.NextSpawn.Position.Set(x, data.NextSpawn.Position.Y + startY, z);
+
       //if height is 0 it means that this chunk is not yet generated so nothing todo here
-      int index = startRoomRotation;
-      int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos);
+      int height = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.NextSpawn.Position);
+      // adjust after getting height
+      data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
 
       if (height == 0) return;
-      if (pos.X / _chunkSize == chunkX && pos.Z / _chunkSize == chunkZ)
+      if (x / _chunkSize == chunkX && z / _chunkSize == chunkZ)
       {
         height += 1;
       }
       else
       {
-        height -= data.Schematic.GetHeightAtPos(0, 0) - 1;
+        height -= StartRoomTop.Rotations[rotation].GetHeightAtPos(StartRoomTop.Rotations[rotation].SizeX / 2, StartRoomTop.Rotations[rotation].SizeZ / 2) - 1;
       }
+      // copy startpos for collision detection
       BlockPos startPos = null;
       if (!data.Initialized)
       {
-        startPos = pos.Copy();
+        startPos = data.NextSpawn.Position.Copy();
       }
-      int y = Stairs.Rotations[0].SizeY;
-      while (pos.Y < height)
-      {
-        Stairs.Rotations[index].Place(_chunkGenBlockAccessor, _api.World, pos, chunkX, chunkZ);
 
-        pos.Add(0, y, 0);
-        index = (index + 1) % 4;
+      int y = Stairs.Rotations[0].SizeY;
+      int rot = rotation;
+      while (data.NextSpawn.Position.Y < height)
+      {
+        Stairs.Rotations[rot].Place(_chunkGenBlockAccessor, _api.World, data.NextSpawn.Position, chunkX, chunkZ);
+
+        data.NextSpawn.Position.Y += y;
+        rot = (rot + 1) % 4;
       }
 
       if (!data.Initialized)
       {
-        Cuboidi area = new Cuboidi(startPos, pos.AddCopy(Stairs.Rotations[index].SizeX, pos.Y, Stairs.Rotations[index].SizeZ));
+        Cuboidi area = new Cuboidi(startPos, data.NextSpawn.Position.AddCopy(Stairs.Rotations[rot].SizeX, data.NextSpawn.Position.Y, Stairs.Rotations[rot].SizeZ));
         data.GeneratedRooms.Add(area);
       }
-      data.NextSpawn.Position.Y = pos.Y - 1;
-      data.Schematic = StartRoomTop.Rotations[startRoomRotation];
+      // set data for start room top
+      data.Schematic = StartRoomTop.Rotations[rotation];
+      data.NextSpawn.Position.Set(x, data.NextSpawn.Position.Y + Th3DungeonConfig.StartTopOffsetY, z);
+      data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
+
       Place(data, chunkX, chunkZ);
 
       // add start room to overlap check
@@ -365,24 +374,24 @@ namespace Th3Dungeon
       pos.X = sx;
       pos.Z = sz;
       int sizeX = offset, sizeZ = offset;
-      foreach (Th3BlockSchematic structure in Stairs.Rotations)
+      foreach (Th3BlockSchematic structure in StartRoomTop.Rotations)
       {
         // Mod.Logger.VerboseDebug($"struc: {structure.Key.GetName()}");
         Mod.Logger.VerboseDebug($"struc: {pos}");
         // structure.Value.Init(_worldBlockAccessor);
         structure.Place(_worldBlockAccessor, _api.World, pos, true);
-        sizeX = Math.Max(sizeX, structure.SizeX + 2);
-        sizeZ = Math.Max(sizeZ, structure.SizeZ + 2);
+        sizeX = Math.Max(sizeX, structure.SizeX);
+        sizeZ = Math.Max(sizeZ, structure.SizeZ);
         if (x >= rowmax)
         {
           x = 0;
-          z += Math.Max(offset, sizeZ);
+          z += sizeZ + offset;
           sizeX = offset;
           sizeZ = offset;
         }
         else
         {
-          x += Math.Max(offset, sizeX);
+          x += sizeX + offset;
         }
         pos.X = sx + x;
         pos.Z = sz + z;

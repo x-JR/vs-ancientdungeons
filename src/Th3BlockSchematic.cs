@@ -90,13 +90,16 @@ namespace Th3Dungeon
       return newBlock == DoorNorth || newBlock == DoorEast || newBlock == DoorSouth || newBlock == DoorWest;
     }
 
+    /// <summary>
+    /// Gets the height index at the position dx and dy in the schematic
+    /// </summary>
     public int GetHeightAtPos(int dx, int dz)
     {
-      int height = SizeY;
+      int height = 0;
       for (int dy = 0; dy < SizeY; dy++)
       {
         uint index = (uint)(dy << 20 | dz << 10 | dx);
-        if (Indices.Find(i => i == index) == 0)
+        if (Indices.Find(i => i == index) != 0)
         {
           height = dy;
         }
@@ -339,5 +342,4 @@ namespace Th3Dungeon
       };
     }
   }
-
 }

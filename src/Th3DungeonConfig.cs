@@ -21,13 +21,11 @@ namespace Th3Dungeon
     public string Stairs;
 
     [JsonProperty]
-    public int StairsOffsetX;
-
-    [JsonProperty]
-    public int StairsOffsetZ;
-
-    [JsonProperty]
     public string StartRoomTop;
+
+
+    [JsonProperty]
+    public int StartTopOffsetY;
   }
   class Th3DungeonRoomCategory
   {

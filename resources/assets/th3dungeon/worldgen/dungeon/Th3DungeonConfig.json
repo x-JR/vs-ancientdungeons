@@ -1,11 +1,10 @@
 {
   "ChunkRange": 5,
   "RoomsToGenerate": 50,
-  "StairsOffsetX": 6,
-  "StairsOffsetZ": 6,
-  "StartRoom": "th3dungeon:worldgen/dungeon/start.json",
-  "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop.json",
-  "Stairs": "th3dungeon:worldgen/dungeon/stairs.json",
+  "StartTopOffsetY": -1,
+  "StartRoom": "th3dungeon:worldgen/dungeon/start3.json",
+  "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop3.json",
+  "Stairs": "th3dungeon:worldgen/dungeon/stairs2.json",
   "categories": [
     {
       "name": "straight",
