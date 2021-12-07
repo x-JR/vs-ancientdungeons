@@ -6,7 +6,7 @@
       "type": "mono",
       "request": "launch",
       "preLaunchTask": "package (Debug)",
-      "program": "${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "program": "${env:VINTAGE_STORY_SERVER_MODDING}/VintagestoryServer.exe",
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
@@ -20,7 +20,7 @@
       "type": "mono",
       "request": "launch",
       "preLaunchTask": "delete (Debug)",
-      "program": "${env:VINTAGE_STORY_SERVER}/VintagestoryServer.exe",
+      "program": "${env:VINTAGE_STORY_SERVER_MODDING}/VintagestoryServer.exe",
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
@@ -34,7 +34,7 @@
       "type": "mono",
       "request": "launch",
       "preLaunchTask": "package (Debug)",
-      "program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+      "program": "${env:VINTAGE_STORY_MODDDING}/Vintagestory.exe",
       "args": [
         "-p",
         "-o",
@@ -50,7 +50,7 @@
       "type": "mono",
       "request": "launch",
       "preLaunchTask": "package (Debug)",
-      "program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+      "program": "${env:VINTAGE_STORY_MODDDING}/Vintagestory.exe",
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_DATA_MODDDING}",
@@ -62,7 +62,7 @@
       "name": "Launch Client no world no build (Mono)",
       "type": "mono",
       "request": "launch",
-      "program": "${env:VINTAGE_STORY}/Vintagestory.exe",
+      "program": "${env:VINTAGE_STORY_MODDDING}/Vintagestory.exe",
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_DATA_MODDDING}",
