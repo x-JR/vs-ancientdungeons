@@ -29,6 +29,8 @@ namespace Th3Dungeon
 
     private Th3DungeonRoom Stairs;
 
+    private Th3DungeonRoom EndRoom;
+
     private int _chunkRange = 5;
 
     private IBlockAccessor _worldBlockAccessor;
@@ -85,10 +87,15 @@ namespace Th3Dungeon
 
       var startRoom = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.StartRoom));
       StartRoom = new Th3DungeonRoom(_api, startRoom, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoom);
+
       var startRoomTop = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.StartRoomTop));
       StartRoomTop = new Th3DungeonRoom(_api, startRoomTop, _chunkGenBlockAccessor, Th3DungeonConfig.StartRoomTop);
+
       var stairs = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.Stairs));
       Stairs = new Th3DungeonRoom(_api, stairs, _chunkGenBlockAccessor, Th3DungeonConfig.Stairs);
+
+      var endroom = _api.Assets.Get<Th3BlockSchematic>(new AssetLocation(Th3DungeonConfig.EndRoom));
+      EndRoom = new Th3DungeonRoom(_api, endroom, _chunkGenBlockAccessor, Th3DungeonConfig.EndRoom);
       foreach (var cat in Th3DungeonConfig.Categories)
       {
         var assets = _api.Assets.GetMany<Th3BlockSchematic>(_api.Logger, "worldgen/dungeon/" + cat.Name, "th3dungeon");
@@ -173,8 +180,33 @@ namespace Th3Dungeon
         {
           Mod.Logger.VerboseDebug($"placed: {a}");
           Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+          Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
+        }
+        GenRoomEnd(data, chunkX, chunkZ, dx == 0 && dz == 0);
+        if (dx == 0 && dz == 0)
+        {
+          Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+          Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
         }
         data.Initialized = true;
+      }
+    }
+
+    private void GenRoomEnd(Th3DungeonData data, int chunkX, int chunkZ, bool log = false)
+    {
+      foreach (Th3DoorPos door in data.DoorPos)
+      {
+        if (GetNextEnd(data, door))
+        {
+          Place(data, chunkX, chunkZ);
+        }
+        else
+        {
+          if (log)
+          {
+            Mod.Logger.VerboseDebug($"failed end: {data.NextSpawn.Position}");
+          }
+        }
       }
     }
 
@@ -208,7 +240,6 @@ namespace Th3Dungeon
       //choose next door pos to gen next room
       int ni = _chunkRand.NextInt(data.DoorPos.Count);
       Th3DoorPos current = data.DoorPos.ElementAt(ni);
-      data.DoorPos.Remove(current);
 
       //add the door offset to the position => will result in new block position where the next door needs to be
       data.NextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
@@ -246,6 +277,69 @@ namespace Th3Dungeon
               case 3:// east
                 {
                   data.Schematic = data.NextSpawn.Room.Rotations[index];
+                  break;
+                }
+            }
+            // the new spawn position is the original new door position - the offset from the origin of the door position
+            data.NextSpawn.Position = data.NextSpawn.OrigPosition - nex.Position;
+
+
+            // get area that the new room will occupie
+            Cuboidi area = new Cuboidi(data.NextSpawn.Position, data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+
+            // if is valid add new location to blocked area else find another one
+            if (CanSpawn(data, area))
+            {
+              data.DoorPos.Remove(current);
+              if (!data.Initialized)
+              {
+                data.GeneratedRooms.Add(area);
+              }
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    private bool GetNextEnd(Th3DungeonData data, Th3DoorPos current)
+    {
+      //choos next room to spawn
+      data.NextSpawn.Room = EndRoom;
+
+      //add the door offset to the position => will result in new block position where the next door needs to be
+      data.NextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
+
+      // search for next facing
+      // iterate over the 4 possible rotations of the room
+      for (int i = 0; i < 4; i++)
+      {
+        for (int j = 0; j < data.NextSpawn.Room.Rotations[i].Doors.Count; j++)
+        {
+          Th3DoorPos nex = data.NextSpawn.Room.Rotations[i].Doors[j];
+          if (nex.Facing.Equals(current.Facing.Opposite))
+          {
+            switch (i)
+            {
+              case 0:// south
+                {
+                  data.Schematic = data.NextSpawn.Room.Rotations[i];
+                  break;
+                }
+              case 1:// west
+                {
+                  data.Schematic = data.NextSpawn.Room.Rotations[i];
+                  break;
+                }
+              case 2:// north
+                {
+                  data.Schematic = data.NextSpawn.Room.Rotations[i];
+                  break;
+                }
+              case 3:// east
+                {
+                  data.Schematic = data.NextSpawn.Room.Rotations[i];
                   break;
                 }
             }

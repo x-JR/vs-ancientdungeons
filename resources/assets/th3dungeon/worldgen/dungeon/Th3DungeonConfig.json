@@ -5,6 +5,7 @@
   "StartRoom": "th3dungeon:worldgen/dungeon/start3.json",
   "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop3.json",
   "Stairs": "th3dungeon:worldgen/dungeon/stairs2.json",
+  "EndRoom": "th3dungeon:worldgen/dungeon/end.json",
   "categories": [
     {
       "name": "straight",

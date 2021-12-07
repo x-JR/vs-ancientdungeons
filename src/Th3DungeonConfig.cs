@@ -21,6 +21,9 @@ namespace Th3Dungeon
     public string Stairs;
 
     [JsonProperty]
+    public string EndRoom;
+
+    [JsonProperty]
     public string StartRoomTop;
 
 
