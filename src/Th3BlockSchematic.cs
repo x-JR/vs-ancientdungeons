@@ -208,7 +208,7 @@ namespace Th3Dungeon
           IWorldChunk chunk = blockAccessor.GetChunkAtBlockPos(curPos);
           if (chunk == null) continue;
           if (synchronize) blockAccessor.MarkChunkDecorsModified(curPos);
-          chunk.AddDecor(blockAccessor, newBlock, curPos, face);
+          chunk.SetDecor(blockAccessor, newBlock, curPos, face);
           chunk.MarkModified();
         }
       }

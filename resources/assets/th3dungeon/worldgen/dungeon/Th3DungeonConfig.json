@@ -2,8 +2,8 @@
   "ChunkRange": 5,
   "RoomsToGenerate": 50,
   "StartTopOffsetY": -1,
-  "StartRoom": "th3dungeon:worldgen/dungeon/start3.json",
-  "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop3.json",
+  "StartRoom": "th3dungeon:worldgen/dungeon/start2.json",
+  "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop2.json",
   "Stairs": "th3dungeon:worldgen/dungeon/stairs2.json",
   "EndRoom": "th3dungeon:worldgen/dungeon/end.json",
   "categories": [

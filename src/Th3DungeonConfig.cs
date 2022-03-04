@@ -3,39 +3,29 @@ using Newtonsoft.Json;
 
 namespace Th3Dungeon
 {
-  class Th3DungeonConfig
-  {
-    [JsonProperty]
-    public List<Th3DungeonRoomCategory> Categories;
+    class Th3DungeonConfig
+    {
+        public List<Th3DungeonRoomCategory> Categories;
 
-    [JsonProperty]
-    public int ChunkRange;
+        public int ChunkRange;
 
-    [JsonProperty]
-    public int RoomsToGenerate;
+        public int RoomsToGenerate;
 
-    [JsonProperty]
-    public string StartRoom;
+        public string StartRoom;
 
-    [JsonProperty]
-    public string Stairs;
+        public string Stairs;
 
-    [JsonProperty]
-    public string EndRoom;
+        public string EndRoom;
 
-    [JsonProperty]
-    public string StartRoomTop;
+        public string StartRoomTop;
 
 
-    [JsonProperty]
-    public int StartTopOffsetY;
-  }
-  class Th3DungeonRoomCategory
-  {
-    [JsonProperty]
-    public string Name;
+        public int StartTopOffsetY;
+    }
+    class Th3DungeonRoomCategory
+    {
+        public string Name;
 
-    [JsonProperty]
-    public float Chance;
-  }
+        public float Chance;
+    }
 }
