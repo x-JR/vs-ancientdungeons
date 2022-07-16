@@ -1,11 +1,14 @@
+// #define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.Client.NoObf;
 
 namespace Th3Dungeon
 {
@@ -35,9 +38,27 @@ namespace Th3Dungeon
 
         private IBlockAccessor _worldBlockAccessor;
 
+#if DEBUG_WIREFRAME
+        private DrawWireframeCube drawWireframeCube;
+
+        private ClientMain game;
+
+        private IServerNetworkChannel serverNetworkChannel;
+
+        public List<Cuboidi> GeneratedRoomsC;
+
+        IClientNetworkChannel clientNetworkChannel;
+
+        private Vec4f Col = new Vec4f(255f, 255f, 0f, 255f);
+#endif
+
         public override bool ShouldLoad(EnumAppSide side)
         {
+#if DEBUG_WIREFRAME
+            return true;
+#else
             return side == EnumAppSide.Server;
+#endif
         }
 
         public override double ExecuteOrder()
@@ -62,8 +83,54 @@ namespace Th3Dungeon
             // {
             //   Mod.Logger.VerboseDebug(player.Entity.Pos.AsBlockPos.ToString());
             // });
+#if DEBUG_WIREFRAME
+            serverNetworkChannel = api.Network.RegisterChannel("th3dungeon-debug");
+            serverNetworkChannel.RegisterMessageType(typeof(List<Cuboidi>));
+            _api.Event.PlayerNowPlaying += OnPlayerNowPlaying;
+#endif
+        }
+#if DEBUG_WIREFRAME
+        private void OnPlayerNowPlaying(IServerPlayer byPlayer)
+        {
+            serverNetworkChannel.SendPacket(GeneratedRoomsC, byPlayer);
         }
 
+        public override void StartClientSide(ICoreClientAPI api)
+        {
+            game = (ClientMain)api.World;
+            drawWireframeCube = new DrawWireframeCube(game);
+            DummyRenderer dummyRenderer = new DummyRenderer
+            {
+                action = OnRender
+            };
+
+            api.Event.RegisterRenderer(dummyRenderer, EnumRenderStage.Opaque, "dungeon-render");
+
+            clientNetworkChannel = api.Network.RegisterChannel("th3dungeon-debug");
+            clientNetworkChannel.RegisterMessageType(typeof(List<Cuboidi>));
+            clientNetworkChannel.SetMessageHandler<List<Cuboidi>>(OnGeneratedRoomsReceiving);
+        }
+
+        private void OnGeneratedRoomsReceiving(List<Cuboidi> rooms)
+        {
+            GeneratedRoomsC = rooms;
+        }
+
+        private void OnRender(float obj)
+        {
+            if (GeneratedRoomsC != null)
+            {
+
+                foreach (var room in GeneratedRoomsC)
+                {
+                    float halfSizeX = room.SizeX / 2f;
+                    float halfSizeY = room.SizeY / 2f;
+                    float halfSizeZ = room.SizeZ / 2f;
+                    drawWireframeCube.Render(game, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ, halfSizeX, halfSizeY, halfSizeZ, 4f, Col);
+                }
+            }
+        }
+#endif
         private void OnWorldGenBlockAccessor(IChunkProviderThread chunkProvider)
         {
             _chunkGenBlockAccessor = chunkProvider.GetBlockAccessor(true);
@@ -200,10 +267,13 @@ namespace Th3Dungeon
                 if (dx == 0 && dz == 0)
                 {
                     Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+#if DEBUG_WIREFRAME
+                    GeneratedRoomsC = data.GeneratedRooms;
+#endif
                 }
                 if (!data.Initialized)
                 {
-                data.Initialized = true;
+                    data.Initialized = true;
                 }
             }
         }
@@ -248,7 +318,7 @@ namespace Th3Dungeon
                     Th3DoorPos nex = data.NextSpawn.Room.Rotations[index].Doors[j];
                     if (nex.Facing.Equals(current.Facing.Opposite))
                     {
-                                    data.Schematic = data.NextSpawn.Room.Rotations[index];
+                        data.Schematic = data.NextSpawn.Room.Rotations[index];
                         // the new spawn position is the original new door position - the offset from the origin of the door position
                         data.NextSpawn.Position = data.NextSpawn.OrigPosition - nex.Position;
 
@@ -359,8 +429,8 @@ namespace Th3Dungeon
 
         private void GenRoomEnds(Th3DungeonData data, int chunkX, int chunkZ, bool log = false)
         {
-                //choos next room to spawn
-                data.NextSpawn.Room = EndRoom;
+            //choos next room to spawn
+            data.NextSpawn.Room = EndRoom;
             foreach (Th3DoorPos door in data.DoorPos)
             {
                 if (GetNext(data, door, false, false))
