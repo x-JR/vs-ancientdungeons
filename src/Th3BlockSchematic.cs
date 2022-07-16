@@ -149,7 +149,7 @@ namespace Th3Dungeon
                     curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
 
                     Block oldBlock = blockAccessor.GetBlock(curPos);
-                    placed += handler(blockAccessor, curPos, oldBlock, newBlock);
+                    placed += handler(blockAccessor, curPos, newBlock);
 
                     if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
                     {
@@ -205,7 +205,7 @@ namespace Th3Dungeon
             }
         }
 
-        protected override int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
         {
             if (oldBlock.Replaceable < newBlock.Replaceable)
             {
@@ -215,7 +215,7 @@ namespace Th3Dungeon
             return 0;
         }
 
-        protected override int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
         {
             if (newBlock.BlockId != 0)
             {
@@ -225,7 +225,7 @@ namespace Th3Dungeon
             return 0;
         }
 
-        protected override int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
         {
             if (oldBlock.BlockId == 0)
             {
