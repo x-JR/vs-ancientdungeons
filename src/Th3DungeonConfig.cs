@@ -1,28 +1,46 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Th3Dungeon
 {
-    class Th3DungeonConfig
+    public class Th3DungeonConfig
     {
+        public List<DungeonConfig> Dungeons;
+    }
+
+    public class DungeonConfig
+    {
+        public string Name;
+
         public List<Th3DungeonRoomCategory> Categories;
 
         public int ChunkRange;
 
         public int RoomsToGenerate;
 
-        public string StartRoom;
+        public string StartRoomPath;
 
-        public string Stairs;
+        public string StairsPath;
 
-        public string EndRoom;
+        public string EndRoomPath;
 
-        public string StartRoomTop;
-
+        public string StartRoomTopPath;
 
         public int StartTopOffsetY;
+
+        public bool GenerateEntrance;
+
+        public Dictionary<string, List<Th3DungeonRoom>> Rooms;
+
+        public Th3DungeonRoom StartRoom;
+
+        public Th3DungeonRoom StartRoomTop;
+
+        public Th3DungeonRoom Stairs;
+
+        public Th3DungeonRoom EndRoom;
     }
-    class Th3DungeonRoomCategory
+
+    public class Th3DungeonRoomCategory
     {
         public string Name;
 

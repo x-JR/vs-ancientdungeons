@@ -3,23 +3,25 @@ using Vintagestory.API.MathTools;
 
 namespace Th3Dungeon
 {
-  public class Th3DungeonData
-  {
-    public Th3SpawnTransform NextSpawn;
-
-    public List<Th3DoorPos> DoorPos;
-
-    public List<Cuboidi> GeneratedRooms;
-
-    public Th3BlockSchematic Schematic;
-
-    public bool Initialized;
-
-    public Th3DungeonData()
+    public class Th3DungeonData
     {
-      DoorPos = new List<Th3DoorPos>();
-      NextSpawn = new Th3SpawnTransform();
-      GeneratedRooms = new List<Cuboidi>();
+        public Th3SpawnTransform NextSpawn;
+
+        public List<Th3DoorPos> DoorPos;
+
+        public List<Cuboidi> GeneratedRooms;
+
+        public Th3BlockSchematic Schematic;
+
+        public DungeonConfig DungeonConfig;
+
+        public bool Initialized;
+
+        public Th3DungeonData()
+        {
+            DoorPos = new List<Th3DoorPos>();
+            NextSpawn = new Th3SpawnTransform();
+            GeneratedRooms = new List<Cuboidi>();
+        }
     }
-  }
 }

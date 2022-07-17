@@ -1,27 +1,59 @@
 {
-  "ChunkRange": 5,
-  "RoomsToGenerate": 50,
-  "StartTopOffsetY": -1,
-  "StartRoom": "th3dungeon:worldgen/dungeon/start2.json",
-  "StartRoomTop": "th3dungeon:worldgen/dungeon/starttop2.json",
-  "Stairs": "th3dungeon:worldgen/dungeon/stairs2.json",
-  "EndRoom": "th3dungeon:worldgen/dungeon/end.json",
-  "categories": [
+  "Dungeons": [
     {
-      "name": "straight",
-      "chance": 0.4
+      "Name": "noentrance",
+      "ChunkRange": 5,
+      "RoomsToGenerate": 20,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/noentrance/end.json",
+      "GenerateEntrance": false,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.4
+        },
+        {
+          "name": "turn",
+          "chance": 0.2
+        },
+        {
+          "name": "updown",
+          "chance": 0.2
+        },
+        {
+          "name": "rooms",
+          "chance": 0.2
+        }
+      ]
     },
     {
-      "name": "turn",
-      "chance": 0.2
-    },
-    {
-      "name": "updown",
-      "chance": 0.2
-    },
-    {
-      "name": "rooms",
-      "chance": 0.2
+      "Name": "default",
+      "ChunkRange": 5,
+      "RoomsToGenerate": 50,
+      "StartTopOffsetY": -1,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop2.json",
+      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs2.json",
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end.json",
+      "GenerateEntrance": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.4
+        },
+        {
+          "name": "turn",
+          "chance": 0.2
+        },
+        {
+          "name": "updown",
+          "chance": 0.2
+        },
+        {
+          "name": "rooms",
+          "chance": 0.2
+        }
+      ]
     }
   ]
 }
