@@ -172,8 +172,7 @@ namespace Th3Dungeon
         {
             Th3DungeonData data = new Th3DungeonData();
             _chunkRand.InitPositionSeed(chunkX, chunkZ);
-            int dr = _chunkRand.NextInt(Th3DungeonConfig.Dungeons.Count);
-            _chunkRange = Th3DungeonConfig.Dungeons[dr].ChunkRange;
+            _chunkRange = ChooseDungeon().ChunkRange;
             for (int dx = -_chunkRange; dx <= _chunkRange; dx++)
             {
                 for (int dz = -_chunkRange; dz <= _chunkRange; dz++)
@@ -188,6 +187,10 @@ namespace Th3Dungeon
         {
             int chunkXd = chunkX + dx;
             int chunkZd = chunkZ + dz;
+
+            // keep choosedungeon as the first call for random
+            data.DungeonConfig = ChooseDungeon();
+
             if (_chunkRand.NextInt(1000) > 995)
             // spawn dungeon in first chunk
             // if (chunkXd == 16000 && chunkZd == 16000)
@@ -196,9 +199,6 @@ namespace Th3Dungeon
                 // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
                 int x = chunkXd * _chunkSize + 15;
                 int z = chunkZd * _chunkSize + 15;
-
-                int dr = _chunkRand.NextInt(Th3DungeonConfig.Dungeons.Count);
-                data.DungeonConfig = Th3DungeonConfig.Dungeons[dr];
 
                 //choose initial room
                 data.NextSpawn.Room = data.DungeonConfig.StartRoom;
@@ -258,7 +258,7 @@ namespace Th3Dungeon
                 {
                     Mod.Logger.VerboseDebug($"placed: {a}");
                     Mod.Logger.VerboseDebug($"pos: {x} {z}");
-                    Mod.Logger.VerboseDebug($"/tp: {512000 - x} 120 {512000 - z}");
+                    Mod.Logger.VerboseDebug($"/tp {x - 512000} 120 {z - 512000}");
                     Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
                     Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
                 }
@@ -299,6 +299,22 @@ namespace Th3Dungeon
             }
             Mod.Logger.Error($"Picking default room StartRoom: {chance}");
             return data.DungeonConfig.StartRoom;
+        }
+
+        private DungeonConfig ChooseDungeon()
+        {
+            float chance = _chunkRand.NextFloat();
+            float chanceStart = 0;
+
+            foreach (DungeonConfig dungeon in Th3DungeonConfig.Dungeons)
+            {
+                if (chance >= chanceStart && chance < chanceStart + dungeon.Chance)
+                {
+                    return dungeon;
+                }
+                chanceStart += dungeon.Chance;
+            }
+            return Th3DungeonConfig.Dungeons.FirstOrDefault();
         }
 
         private bool GetNext(Th3DungeonData data, Th3DoorPos current, bool randStart = true, bool removeDoorPos = true)

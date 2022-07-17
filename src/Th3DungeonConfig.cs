@@ -11,6 +11,8 @@ namespace Th3Dungeon
     {
         public string Name;
 
+        public float Chance;
+
         public List<Th3DungeonRoomCategory> Categories;
 
         public int ChunkRange;

@@ -2,7 +2,8 @@
   "Dungeons": [
     {
       "Name": "noentrance",
-      "ChunkRange": 5,
+      "Chance": 0.8,
+      "ChunkRange": 4,
       "RoomsToGenerate": 20,
       "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
       "EndRoomPath": "th3dungeon:worldgen/dungeon/noentrance/end.json",
@@ -28,7 +29,8 @@
     },
     {
       "Name": "default",
-      "ChunkRange": 5,
+      "Chance": 0.2,
+      "ChunkRange": 6,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
       "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
