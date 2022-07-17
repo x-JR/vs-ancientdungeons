@@ -186,103 +186,96 @@ namespace Th3Dungeon
 
         protected void GenDungeon(Th3DungeonData data, int chunkX, int chunkZ, int dx, int dz)
         {
-            try
+            int chunkXd = chunkX + dx;
+            int chunkZd = chunkZ + dz;
+            if (_chunkRand.NextInt(1000) > 995)
+            // spawn dungeon in first chunk
+            // if (chunkXd == 16000 && chunkZd == 16000)
             {
-                int chunkXd = chunkX + dx;
-                int chunkZd = chunkZ + dz;
-                if (_chunkRand.NextInt(1000) > 995)
-                // spawn dungeon in first chunk
-                // if (chunkXd == 16000 && chunkZd == 16000)
+                // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+                // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+                int x = chunkXd * _chunkSize + 15;
+                int z = chunkZd * _chunkSize + 15;
+
+                int dr = _chunkRand.NextInt(Th3DungeonConfig.Dungeons.Count);
+                data.DungeonConfig = Th3DungeonConfig.Dungeons[dr];
+
+                //choose initial room
+                data.NextSpawn.Room = data.DungeonConfig.StartRoom;
+
+                // choose intital rotation
+                // int startRoomRotation = _chunkRand.NextInt(4);
+                int startRoomRotation = 0;
+                data.Schematic = data.NextSpawn.Room.Rotations[startRoomRotation];
+
+                // take sealevel since that should be consistant (surface will change depending if blocks are added ontop while generating)
+                data.NextSpawn.Position = new BlockPos(x, _api.World.SeaLevel - 20, z);
+
+                // add start room to overlap check
+                if (!data.Initialized)
                 {
-                    // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
-                    // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
-                    int x = chunkXd * _chunkSize + 15;
-                    int z = chunkZd * _chunkSize + 15;
+                    BlockPos collisionPos = data.NextSpawn.Position.Copy();
+                    collisionPos.X -= data.Schematic.SizeX / 2;
+                    collisionPos.Z -= data.Schematic.SizeZ / 2;
+                    Cuboidi area = new Cuboidi(collisionPos, collisionPos.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
+                    data.GeneratedRooms.Add(area);
+                }
 
-                    int dr = _chunkRand.NextInt(Th3DungeonConfig.Dungeons.Count);
-                    data.DungeonConfig = Th3DungeonConfig.Dungeons[dr];
+                //adjust start pos after intial room cuboid is added
+                data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
 
-                    //choose initial room
-                    data.NextSpawn.Room = data.DungeonConfig.StartRoom;
+                //spawn initial room
+                Place(data, chunkX, chunkZ);
 
-                    // choose intital rotation
-                    // int startRoomRotation = _chunkRand.NextInt(4);
-                    int startRoomRotation = 0;
-                    data.Schematic = data.NextSpawn.Room.Rotations[startRoomRotation];
+                if (data.DungeonConfig.GenerateEntrance)
+                {
+                    GenEntrance(data, x, z, data.Schematic.SizeY, startRoomRotation, chunkX, chunkZ);
+                }
 
-                    // take sealevel since that should be consistant (surface will change depending if blocks are added ontop while generating)
-                    data.NextSpawn.Position = new BlockPos(x, _api.World.SeaLevel - 20, z);
+                int a = 0;
 
-                    // add start room to overlap check
-                    if (!data.Initialized)
+                for (int i = 0; i < data.DungeonConfig.RoomsToGenerate; i++)
+                {
+                    if (data.DoorPos.Count > 0)
                     {
-                        BlockPos collisionPos = data.NextSpawn.Position.Copy();
-                        collisionPos.X -= data.Schematic.SizeX / 2;
-                        collisionPos.Z -= data.Schematic.SizeZ / 2;
-                        Cuboidi area = new Cuboidi(collisionPos, collisionPos.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY, data.Schematic.SizeZ));
-                        data.GeneratedRooms.Add(area);
-                    }
+                        //choos next room to spawn
+                        data.NextSpawn.Room = ChooseRoom(data);
 
-                    //adjust start pos after intial room cuboid is added
-                    data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
+                        //choose next door pos to gen next room
+                        int ni = _chunkRand.NextInt(data.DoorPos.Count);
+                        Th3DoorPos current = data.DoorPos.ElementAt(ni);
 
-                    //spawn initial room
-                    Place(data, chunkX, chunkZ);
-
-                    if (data.DungeonConfig.GenerateEntrance)
-                    {
-                        GenEntrance(data, x, z, data.Schematic.SizeY, startRoomRotation, chunkX, chunkZ);
-                    }
-
-                    int a = 0;
-
-                    for (int i = 0; i < data.DungeonConfig.RoomsToGenerate; i++)
-                    {
-                        if (data.DoorPos.Count > 0)
+                        // get spawn pos offset from next room and previouse room and previous facing
+                        if (GetNext(data, current))
                         {
-                            //choos next room to spawn
-                            data.NextSpawn.Room = ChooseRoom(data);
-
-                            //choose next door pos to gen next room
-                            int ni = _chunkRand.NextInt(data.DoorPos.Count);
-                            Th3DoorPos current = data.DoorPos.ElementAt(ni);
-
-                            // get spawn pos offset from next room and previouse room and previous facing
-                            if (GetNext(data, current))
-                            {
-                                a++;
-                                Place(data, chunkX, chunkZ);
-                            }
+                            a++;
+                            Place(data, chunkX, chunkZ);
                         }
                     }
+                }
 
-                    if (dx == 0 && dz == 0)
-                    {
-                        Mod.Logger.VerboseDebug($"placed: {a}");
-                        Mod.Logger.VerboseDebug($"pos: {x} {z}");
-                        Mod.Logger.VerboseDebug($"/tp: {512000 - x} 120 {512000 - z}");
-                        Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
-                        Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
-                    }
+                if (dx == 0 && dz == 0)
+                {
+                    Mod.Logger.VerboseDebug($"placed: {a}");
+                    Mod.Logger.VerboseDebug($"pos: {x} {z}");
+                    Mod.Logger.VerboseDebug($"/tp: {512000 - x} 120 {512000 - z}");
+                    Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+                    Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
+                }
 
-                    GenRoomEnds(data, chunkX, chunkZ, dx == 0 && dz == 0);
+                GenRoomEnds(data, chunkX, chunkZ, dx == 0 && dz == 0);
 
-                    if (dx == 0 && dz == 0)
-                    {
-                        Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+                if (dx == 0 && dz == 0)
+                {
+                    Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
 #if DEBUG_WIREFRAME
                     GeneratedRoomsC = data.GeneratedRooms;
 #endif
-                    }
-                    if (!data.Initialized)
-                    {
-                        data.Initialized = true;
-                    }
                 }
-            }
-            catch (Exception e)
-            {
-                _api.Logger.VerboseDebug("re");
+                if (!data.Initialized)
+                {
+                    data.Initialized = true;
+                }
             }
         }
 
