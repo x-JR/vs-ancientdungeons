@@ -121,16 +121,21 @@ namespace Th3Dungeon
 
 
             DungeonsConfig = _api.Assets.Get(new AssetLocation("th3dungeon", "worldgen/dungeon/Th3DungeonConfig.json")).ToObject<DungeonsConfig>();
-
+            float sum = 0;
+            DungeonsConfig.Dungeons.ForEach((dungeon) => sum += dungeon.Chance);
+            if (sum != 1)
+            {
+                Mod.Logger.Fatal($"DungeonsConfigs do not add up to 1. [{sum}]");
+            }
             DungeonsConfig.Dungeons.ForEach(dungeon =>
             {
 
                 dungeon.Rooms = new Dictionary<string, List<DungeonRoom>>();
-                float sum = 0;
+                sum = 0;
                 dungeon.Categories.ForEach((cat) => sum += cat.Chance);
                 if (sum != 1)
                 {
-                    Mod.Logger.Fatal($"DungeonConfig categories do not add up to 1. [{sum}]");
+                    Mod.Logger.Fatal($"DungeonConfig {dungeon.Name} categories do not add up to 1. [{sum}]");
                 }
 
                 var startRoom = _api.Assets.Get<BlockSchematic>(new AssetLocation(dungeon.StartRoomPath));
