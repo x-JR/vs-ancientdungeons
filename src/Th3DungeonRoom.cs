@@ -3,13 +3,13 @@ using Vintagestory.API.Server;
 
 namespace Th3Dungeon
 {
-    public class Th3DungeonRoom
+    public class DungeonRoom
     {
-        public readonly Th3BlockSchematic[] Rotations;
+        public readonly BlockSchematic[] Rotations;
 
-        public Th3DungeonRoom(ICoreServerAPI api, Th3BlockSchematic schematic, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
+        public DungeonRoom(ICoreServerAPI api, BlockSchematic schematic, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
         {
-            Rotations = new Th3BlockSchematic[4];
+            Rotations = new BlockSchematic[4];
             Rotations[0] = schematic.ClonePacked();
 
             for (int k = 0; k < 4; k++)

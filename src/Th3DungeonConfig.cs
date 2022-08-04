@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Th3Dungeon
 {
-    public class Th3DungeonConfig
+    public class DungeonsConfig
     {
         public List<DungeonConfig> Dungeons;
     }
@@ -13,7 +13,7 @@ namespace Th3Dungeon
 
         public float Chance;
 
-        public List<Th3DungeonRoomCategory> Categories;
+        public List<DungeonRoomCategory> Categories;
 
         public int ChunkRange;
 
@@ -31,18 +31,18 @@ namespace Th3Dungeon
 
         public bool GenerateEntrance;
 
-        public Dictionary<string, List<Th3DungeonRoom>> Rooms;
+        public Dictionary<string, List<DungeonRoom>> Rooms;
 
-        public Th3DungeonRoom StartRoom;
+        public DungeonRoom StartRoom;
 
-        public Th3DungeonRoom StartRoomTop;
+        public DungeonRoom StartRoomTop;
 
-        public Th3DungeonRoom Stairs;
+        public DungeonRoom Stairs;
 
-        public Th3DungeonRoom EndRoom;
+        public DungeonRoom EndRoom;
     }
 
-    public class Th3DungeonRoomCategory
+    public class DungeonRoomCategory
     {
         public string Name;
 

@@ -1,27 +1,37 @@
 using System.Collections.Generic;
+using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
 namespace Th3Dungeon
 {
-    public class Th3DungeonData
+    public class DungeonData
     {
-        public Th3SpawnTransform NextSpawn;
+        public SpawnTransform NextSpawn;
 
-        public List<Th3DoorPos> DoorPos;
+        public List<DoorPos> DoorPos;
 
         public List<Cuboidi> GeneratedRooms;
 
-        public Th3BlockSchematic Schematic;
+        public BlockSchematic Schematic;
 
         public DungeonConfig DungeonConfig;
 
+        public int ChunkX { get; }
+
+        public int ChunkZ { get; }
+
         public bool Initialized;
 
-        public Th3DungeonData()
+        public List<GeneratedStructure> GeneratedStructures;
+
+        public DungeonData(int chunkX, int chunkZ, List<GeneratedStructure> generatedStructures)
         {
-            DoorPos = new List<Th3DoorPos>();
-            NextSpawn = new Th3SpawnTransform();
+            DoorPos = new List<DoorPos>();
+            NextSpawn = new SpawnTransform();
             GeneratedRooms = new List<Cuboidi>();
+            ChunkX = chunkX;
+            ChunkZ = chunkZ;
+            GeneratedStructures = generatedStructures;
         }
     }
 }

@@ -8,13 +8,13 @@ using Vintagestory.API.Server;
 
 namespace Th3Dungeon
 {
-    public class Th3BlockSchematic : BlockSchematic
+    public class BlockSchematic : Vintagestory.API.Common.BlockSchematic
     {
         private int _chunkSize;
 
         private Block DoorNorth, DoorEast, DoorSouth, DoorWest;
 
-        public List<Th3DoorPos> Doors;
+        public List<DoorPos> Doors;
 
         public new void Init(IBlockAccessor blockAccessor)
         {
@@ -26,7 +26,7 @@ namespace Th3Dungeon
             DoorSouth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south"));
             DoorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
 
-            Doors = new List<Th3DoorPos>();
+            Doors = new List<DoorPos>();
         }
 
         public void LoadMeta(IBlockAccessor blockAccessor, IWorldAccessor worldForResolve, string fileNameForLogging)
@@ -67,8 +67,8 @@ namespace Th3Dungeon
                     }
                     if (facing != null)
                     {
-                        //   Doors.Add(new Th3DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
-                        Doors.Add(new Th3DoorPos(new BlockPos(dx, dy, dz), facing));
+                        //   Doors.Add(new DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
+                        Doors.Add(new DoorPos(new BlockPos(dx, dy, dz), facing));
                     }
                 }
             }
@@ -315,9 +315,9 @@ namespace Th3Dungeon
             }
         }
 
-        public new Th3BlockSchematic ClonePacked()
+        public new BlockSchematic ClonePacked()
         {
-            return new Th3BlockSchematic
+            return new BlockSchematic
             {
                 SizeX = SizeX,
                 SizeY = SizeY,
