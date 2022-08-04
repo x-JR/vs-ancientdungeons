@@ -6,7 +6,9 @@
       "problemMatcher": "$msCompile",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake"],
+      "args": [
+        "cake"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -21,7 +23,10 @@
       "problemMatcher": "$msCompile",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake", "--configuration=Release"],
+      "args": [
+        "cake",
+        "--configuration=Release"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -35,7 +40,10 @@
       "label": "package (Debug)",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake", "--target=Package"],
+      "args": [
+        "cake",
+        "--target=Package"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -49,7 +57,11 @@
       "label": "package (Release)",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake", "--target=Package", "--configuration=Release"],
+      "args": [
+        "cake",
+        "--target=Package",
+        "--configuration=Release"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -63,7 +75,10 @@
       "label": "deploy (Debug)",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake", "--target=Deploy"],
+      "args": [
+        "cake",
+        "--target=Deploy"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -77,7 +92,11 @@
       "label": "deploy (Release)",
       "type": "shell",
       "command": "dotnet",
-      "args": ["cake", "--target=Deploy", "--configuration=Release"],
+      "args": [
+        "cake",
+        "--target=Deploy",
+        "--configuration=Release"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -89,10 +108,14 @@
     },
     {
       "label": "delete (Debug)",
-      "dependsOn": ["package (Debug)"],
+      "dependsOn": [
+        "package (Debug)"
+      ],
       "type": "shell",
       "command": "rm",
-      "args": ["${env:VINTAGE_STORY_SERVER_DATA_MODDING}/Saves/default.vcdbs"],
+      "args": [
+        "${env:VINTAGE_STORY_SERVER_DATA_MODDING}/Saves/default.vcdbs"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -109,9 +132,12 @@
         "kind": "build",
         "isDefault": true
       },
-      "dependsOn": ["package (Debug)"],
+      "dependsOn": [
+        "package (Debug)"
+      ],
       "command": "mono",
       "args": [
+        "--debug",
         "${env:VINTAGE_STORY_SERVER_MODDING}/VintagestoryServer.exe",
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
@@ -134,9 +160,12 @@
         "kind": "build",
         "isDefault": true
       },
-      "dependsOn": ["delete (Debug)"],
+      "dependsOn": [
+        "delete (Debug)"
+      ],
       "command": "mono",
       "args": [
+        "--debug",
         "${env:VINTAGE_STORY_SERVER_MODDING}/VintagestoryServer.exe",
         "--dataPath",
         "${env:VINTAGE_STORY_SERVER_DATA_MODDING}",
