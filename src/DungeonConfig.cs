@@ -5,6 +5,8 @@ namespace Th3Dungeon
     public class DungeonsConfig
     {
         public List<DungeonConfig> Dungeons;
+
+        public int ChunkRange;
     }
 
     public class DungeonConfig
@@ -14,8 +16,6 @@ namespace Th3Dungeon
         public float Chance;
 
         public List<DungeonRoomCategory> Categories;
-
-        public int ChunkRange;
 
         public int RoomsToGenerate;
 

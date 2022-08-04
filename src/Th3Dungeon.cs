@@ -127,6 +127,8 @@ namespace Th3Dungeon
             {
                 Mod.Logger.Fatal($"DungeonsConfigs do not add up to 1. [{sum}]");
             }
+            _chunkRange = DungeonsConfig.ChunkRange;
+            
             DungeonsConfig.Dungeons.ForEach(dungeon =>
             {
 
@@ -171,8 +173,6 @@ namespace Th3Dungeon
         {
             DungeonData data = new DungeonData(chunkX, chunkZ, chunks[0].MapChunk.MapRegion.GeneratedStructures);
 
-            _chunkRand.InitPositionSeed(chunkX, chunkZ);
-            _chunkRange = ChooseDungeon().ChunkRange;
             for (int dx = -_chunkRange; dx <= _chunkRange; dx++)
             {
                 for (int dz = -_chunkRange; dz <= _chunkRange; dz++)
