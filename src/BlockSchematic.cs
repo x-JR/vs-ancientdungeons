@@ -105,23 +105,30 @@ namespace Th3Dungeon
             switch (ReplaceMode)
             {
                 case EnumReplaceMode.ReplaceAll:
-                    if (replaceMetaBlocks) handler = PlaceReplaceAllReplaceMeta;
-                    else handler = PlaceReplaceAllKeepMeta;
+                    handler = PlaceReplaceAll;
+                    for (int i = 0; i < SizeX; i++)
+                    {
+                        for (int j = 0; j < SizeY; j++)
+                        {
+                            for (int k = 0; k < SizeZ; k++)
+                            {
+                                curPos.Set(i + startPos.X, j + startPos.Y, k + startPos.Z);
+                                blockAccessor.SetBlock(0, curPos);
+                            }
+                        }
+                    }
                     break;
 
                 case EnumReplaceMode.Replaceable:
-                    if (replaceMetaBlocks) handler = PlaceReplaceableReplaceMeta;
-                    else handler = PlaceReplaceableKeepMeta;
+                    handler = PlaceReplaceable;
                     break;
 
                 case EnumReplaceMode.ReplaceAllNoAir:
-                    if (replaceMetaBlocks) handler = PlaceReplaceAllNoAirReplaceMeta;
-                    else handler = PlaceReplaceAllNoAirKeepMeta;
+                    handler = PlaceReplaceAllNoAir;
                     break;
 
                 case EnumReplaceMode.ReplaceOnlyAir:
-                    if (replaceMetaBlocks) handler = PlaceReplaceOnlyAirReplaceMeta;
-                    else handler = PlaceReplaceOnlyAirKeepMeta;
+                    handler = PlaceReplaceOnlyAir;
                     break;
             }
 
@@ -149,7 +156,7 @@ namespace Th3Dungeon
                     curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
 
                     Block oldBlock = blockAccessor.GetBlock(curPos);
-                    placed += handler(blockAccessor, curPos, newBlock);
+                    placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
 
                     if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
                     {
@@ -163,8 +170,6 @@ namespace Th3Dungeon
             {
                 PlaceEntitiesAndBlockEntities(blockAccessor, worldForCollectibleResolve, startPos, chunkX, chunkZ);
             }
-
-            PlaceDecors(blockAccessor, startPos, true, chunkX, chunkZ);
             return placed;
         }
 
@@ -205,31 +210,31 @@ namespace Th3Dungeon
             }
         }
 
-        protected int PlaceReplaceableReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
         {
-            if (oldBlock.Replaceable < newBlock.Replaceable)
+            if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, 4).Replaceable > newBlock.Replaceable)
             {
-                blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
         }
 
-        protected int PlaceReplaceAllNoAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
         {
             if (newBlock.BlockId != 0)
             {
-                blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
         }
 
-        protected int PlaceReplaceOnlyAirReplaceMeta(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock)
+        protected int PlaceReplaceOnlyAir(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
         {
-            if (oldBlock.BlockId == 0)
+            if (blockAccessor.GetMostSolidBlock(pos).BlockId == 0)
             {
-                blockAccessor.SetBlock((newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
@@ -305,10 +310,15 @@ namespace Th3Dungeon
                     if (blockAccessor is IWorldGenBlockAccessor)
                     {
                         (blockAccessor as IWorldGenBlockAccessor).AddEntity(entity);
+                        entity.OnInitialized += delegate
+                        {
+                            entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                        };
                     }
                     else
                     {
                         worldForCollectibleResolve.SpawnEntity(entity);
+				        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
                     }
 
                 }
