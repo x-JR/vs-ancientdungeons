@@ -1,11 +1,13 @@
 //#define DEBUG_WIREFRAME
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
-using Vintagestory.GameContent;
+using Vintagestory.Client.NoObf;
 
 namespace Th3Dungeon
 {
@@ -30,13 +32,25 @@ namespace Th3Dungeon
 
         private IServerNetworkChannel serverNetworkChannel;
 
-        public List<Cuboidi> GeneratedRoomsC;
+        private List<Cuboidi> GeneratedRoomsC;
 
-        IClientNetworkChannel clientNetworkChannel;
+        private IClientNetworkChannel clientNetworkChannel;
 
-        private readonly Vec4f DebugColor = new Vec4f(255f, 255f, 0f, 255f);
+        private readonly Vec4f DebugColor = new Vec4f(1f, 1f, 0f, 1f);
+
+        private readonly Vec4f DebugColorH = new Vec4f(1f, 0f, 0f, 1f);
+
+        private bool DebugDungeonEnabled = true;
+
+        private bool DebugBoxesEnabled = true;
+
+        private readonly List<Cuboidi> DebugBoxes = new List<Cuboidi>
+                            {
+                                new Cuboidi(512000, 0, 512000, 512000 + 32, 256, 512000 + 32),
+                                new Cuboidi(512000, 4 * 32, 512000, 512000 + 32, 5 * 32, 512000 + 32),
+                                new Cuboidi(512000, 3 * 32, 512000, 512000 + 32, 4 * 32, 512000 + 32)
+                            };
 #endif
-
         public override bool ShouldLoad(EnumAppSide side)
         {
 #if DEBUG_WIREFRAME
@@ -68,6 +82,7 @@ namespace Th3Dungeon
             _api.Event.PlayerNowPlaying += OnPlayerNowPlaying;
 #endif
         }
+
 #if DEBUG_WIREFRAME
         private void OnPlayerNowPlaying(IServerPlayer byPlayer)
         {
@@ -77,13 +92,16 @@ namespace Th3Dungeon
         public override void StartClientSide(ICoreClientAPI api)
         {
             game = (ClientMain)api.World;
-            drawWireframeCube = new DrawWireframeCube(game);
+            drawWireframeCube = new DrawWireframeCube(game, -1);
             DummyRenderer dummyRenderer = new DummyRenderer
             {
-                action = OnRender
+                action = OnRender,
+                RenderOrder = 0.5
             };
 
             api.Event.RegisterRenderer(dummyRenderer, EnumRenderStage.Opaque, "dungeon-render");
+            api.RegisterCommand("debugboxes", string.Empty, string.Empty, (int groupId, CmdArgs args) => { DebugBoxesEnabled = !DebugBoxesEnabled; });
+            api.RegisterCommand("debugdungeon", string.Empty, string.Empty, (int groupId, CmdArgs args) => { DebugDungeonEnabled = !DebugDungeonEnabled; });
 
             clientNetworkChannel = api.Network.RegisterChannel("th3dungeon-debug");
             clientNetworkChannel.RegisterMessageType(typeof(List<Cuboidi>));
@@ -95,17 +113,27 @@ namespace Th3Dungeon
             GeneratedRoomsC = rooms;
         }
 
-        private void OnRender(float obj)
+        private void OnRender(float deltaTime)
         {
-            if (GeneratedRoomsC != null)
+            if (DebugDungeonEnabled && GeneratedRoomsC != null)
             {
-
                 foreach (var room in GeneratedRoomsC)
                 {
                     float halfSizeX = room.SizeX / 2f;
                     float halfSizeY = room.SizeY / 2f;
                     float halfSizeZ = room.SizeZ / 2f;
                     drawWireframeCube.Render(game, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ, halfSizeX, halfSizeY, halfSizeZ, 4f, DebugColor);
+                }
+            }
+
+            if (DebugBoxesEnabled && DebugBoxes != null)
+            {
+                foreach (var room in DebugBoxes)
+                {
+                    float halfSizeX = room.SizeX / 2f;
+                    float halfSizeY = room.SizeY / 2f;
+                    float halfSizeZ = room.SizeZ / 2f;
+                    drawWireframeCube.Render(game, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ, halfSizeX, halfSizeY, halfSizeZ, 4f, DebugColorH);
                 }
             }
         }
@@ -128,7 +156,7 @@ namespace Th3Dungeon
                 Mod.Logger.Fatal($"DungeonsConfigs do not add up to 1. [{sum}]");
             }
             _chunkRange = DungeonsConfig.ChunkRange;
-            
+
             DungeonsConfig.Dungeons.ForEach(dungeon =>
             {
 
