@@ -120,7 +120,7 @@ namespace Th3Dungeon
             _chunkRand = new LCGRandom(_api.WorldManager.Seed);
 
 
-            DungeonsConfig = _api.Assets.Get(new AssetLocation("th3dungeon", "worldgen/dungeon/Th3DungeonConfig.json")).ToObject<DungeonsConfig>();
+            DungeonsConfig = _api.Assets.Get(new AssetLocation(Mod.Info.ModID, "worldgen/dungeon/Th3DungeonConfig.json")).ToObject<DungeonsConfig>();
             float sum = 0;
             DungeonsConfig.Dungeons.ForEach((dungeon) => sum += dungeon.Chance);
             if (sum != 1)
@@ -156,7 +156,7 @@ namespace Th3Dungeon
                 dungeon.EndRoom = new DungeonRoom(_api, endroom, _chunkGenBlockAccessor, dungeon.EndRoomPath);
                 foreach (var cat in dungeon.Categories)
                 {
-                    var assets = _api.Assets.GetMany<BlockSchematic>(_api.Logger, "worldgen/dungeon/" + dungeon.Name + "/" + cat.Name, "th3dungeon");
+                    var assets = _api.Assets.GetMany<BlockSchematic>(_api.Logger, "worldgen/dungeon/" + dungeon.Name + "/" + cat.Name, Mod.Info.ModID);
                     var catRooms = new List<DungeonRoom>();
                     foreach (var asset in assets)
                     {
@@ -188,13 +188,11 @@ namespace Th3Dungeon
             int chunkXd = data.ChunkX + dx;
             int chunkZd = data.ChunkZ + dz;
 
-            // keep choosedungeon as the first call for random
-            data.DungeonConfig = ChooseDungeon();
-
             // if (_chunkRand.NextInt(1000) > 995)
             // spawn dungeon in first chunk
             if (chunkXd == 16000 && chunkZd == 16000)
             {
+                data.DungeonConfig = ChooseDungeon();
                 // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
                 // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
                 int x = chunkXd * _chunkSize + 15;
