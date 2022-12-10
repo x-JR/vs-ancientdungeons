@@ -40,34 +40,54 @@ for example a category with long straight rooms and a high chance will produce d
   // used to for the generation it will determine how big the dungeon can be from the center so 6 will allow a dungeon to be the size of 6 chunks to for each direction so 6 in north, east , south and west so total a 12 by 12 chunks
   // be carefull a too high value my slow worldgen drastically
   "ChunkRange": 6,
-  // the generator will try to generate that amount of rooms (may not be able to since collision with other dungeon parts)
-  "RoomsToGenerate": 50,
-  // those are offsets for the stairs room from the start room so you can make your own and customize how they are alligned
-  "StairsOffsetX": 6,
-  "StairsOffsetZ": 6,
-  // path to the start room
-  "StartRoom": "th3dungeon:worldgen/dungeon/start.json",
-  // path to the stars room (the stairs room is a partial room, this means ith will be stacked ontop of it and rotated 90 degrees each step until it reaches the top)
-  "Stairs": "th3dungeon:worldgen/dungeon/stairs.json",
-  // those are the main part of the dungeon define categories here that correspond to folder within the mod to load the rooms from
-  "categories": [
+  // if set to true will only spawn one dungoen at x=0 z=0
+  "Debug": true,
+  // if debug is false this is the chance that a dungeon can spanw in a chunk
+  "Chance": 0.0002,
+  "Dungeons": [
     {
-      // folder/category name
-      "name": "straight",
-      // chance for the room to spawn (all values need to add up to 1)
-      "chance": 0.4
-    },
-    {
-      "name": "turn",
-      "chance": 0.2
-    },
-    {
-      "name": "updown",
-      "chance": 0.2
-    },
-    {
-      "name": "rooms",
-      "chance": 0.2
+      // base path for this dungeon config, this folder should contain the category folders
+      "BasePath": "th3dungeon:worldgen/dungeon/noentrance/categories/",
+      // chance for this configuration to be choosen out of all , needs to add up to 1
+      "Chance": 0.1,
+      "SealevelOffset": -50,
+      // the generator will try to generate that amount of rooms (may not be able to since collision with other dungeon parts)
+      "RoomsToGenerate": 50,
+      // if a starttop room and starirs should be generated
+      "GenerateEntrance": true,
+      // to overlap the startroomtop with the stairs
+        "StartTopOffsetY": -1,
+      // path to the start room (room under ground sealevel + SealevelOffset)
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
+      // room on top of surface connects to start room (underground) witht the variable stairs room
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
+      // path to the stars room (the stairs room is a partial room, this means ith will be stacked ontop of it and rotated 90 degrees each step until it reaches the top)
+      "StairsPath": "th3dungeon:worldgen/dungeon/stairs.json",
+      // if stairs should be rotated usefull for stairs using ladders
+      "StairsRotation": true,
+      // path to folder where the endrooms are, they are used to close off open ends
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
+      // those are the main part of the dungeon define categories here that correspond to folder within the mod to load the rooms from
+      "categories": [
+        {
+          // BasePath/category name
+          "name": "straight",
+          // chance for the room to spawn (all values need to add up to 1)
+          "chance": 0.4
+        },
+        {
+          "name": "turn",
+          "chance": 0.2
+        },
+        {
+          "name": "updown",
+          "chance": 0.2
+        },
+        {
+          "name": "rooms",
+          "chance": 0.2
+        }
+      ]
     }
   ]
 }

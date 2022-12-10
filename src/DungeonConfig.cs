@@ -7,11 +7,15 @@ namespace Th3Dungeon
         public List<DungeonConfig> Dungeons;
 
         public int ChunkRange;
+
+        public bool Debug;
+
+        public float Chance;
     }
 
     public class DungeonConfig
     {
-        public string Name;
+        public string BasePath;
 
         public float Chance;
 
@@ -29,17 +33,21 @@ namespace Th3Dungeon
 
         public int StartTopOffsetY;
 
+        public int SealevelOffset;
+
         public bool GenerateEntrance;
+
+        public bool StairsRotation;
 
         public Dictionary<string, List<DungeonRoom>> Rooms;
 
-        public DungeonRoom StartRoom;
+        public List<DungeonRoom> StartRooms;
 
-        public DungeonRoom StartRoomTop;
+        public List<DungeonRoom> StartRoomsTop;
 
         public DungeonRoom Stairs;
 
-        public DungeonRoom EndRoom;
+        public List<DungeonRoom> EndRooms;
     }
 
     public class DungeonRoomCategory

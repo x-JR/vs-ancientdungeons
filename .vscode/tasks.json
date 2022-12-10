@@ -51,7 +51,8 @@
         "panel": "shared",
         "showReuseMessage": true,
         "clear": true
-      }
+      },
+      "problemMatcher": []
     },
     {
       "label": "package (Release)",

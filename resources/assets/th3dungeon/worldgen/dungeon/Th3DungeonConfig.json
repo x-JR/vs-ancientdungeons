@@ -1,12 +1,15 @@
 {
+  "ChunkRange": 6,
+  "Debug": true,
+  "Chance": 0.0002,
   "Dungeons": [
     {
-      "Name": "noentrance",
-      "Chance": 0.8,
-      "ChunkRange": 4,
+      "BasePath": "th3dungeon:worldgen/dungeon/noentrance/categories/",
+      "Chance": 0.1,
+      "SealevelOffset": -50,
       "RoomsToGenerate": 20,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/noentrance/end.json",
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
       "GenerateEntrance": false,
       "categories": [
         {
@@ -28,32 +31,33 @@
       ]
     },
     {
-      "Name": "default",
-      "Chance": 0.2,
-      "ChunkRange": 6,
+      "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
+      "Chance": 0.9,
+      "SealevelOffset": -50,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start2.json",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop2.json",
-      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs2.json",
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end.json",
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs7.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
       "GenerateEntrance": true,
       "categories": [
         {
           "name": "straight",
-          "chance": 0.4
+          "chance": 0.55
         },
         {
           "name": "turn",
-          "chance": 0.2
+          "chance": 0.15
         },
         {
           "name": "updown",
-          "chance": 0.2
+          "chance": 0.15
         },
         {
           "name": "rooms",
-          "chance": 0.2
+          "chance": 0.15
         }
       ]
     }
