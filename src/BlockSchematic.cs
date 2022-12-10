@@ -210,31 +210,31 @@ namespace Th3Dungeon
             }
         }
 
-        protected int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
+        override protected int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
             if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, 4).Replaceable > newBlock.Replaceable)
             {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
         }
 
-        protected int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
+        override protected int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
             if (newBlock.BlockId != 0)
             {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
         }
 
-        protected int PlaceReplaceOnlyAir(IBlockAccessor blockAccessor, BlockPos pos, Block oldBlock, Block newBlock, bool replaceMeta)
+        override protected int PlaceReplaceOnlyAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
             if (blockAccessor.GetMostSolidBlock(pos).BlockId == 0)
             {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock /* || IsDoor(newBlock) */)) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
