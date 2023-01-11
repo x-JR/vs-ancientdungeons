@@ -148,6 +148,10 @@ namespace Th3Dungeon
             _chunkRand = new LCGRandom(_api.WorldManager.Seed);
 
             DungeonsConfig = _api.LoadModConfig<DungeonsConfig>("Th3DungeonConfig.json");
+            if (DungeonsConfig == null)
+            {
+                Mod.Logger.Fatal($"DungeonsConfigs not found check your ModConfig folder and create a Th3DungeonConfig.json");
+            }
             float sum = 0;
             DungeonsConfig.Dungeons.ForEach((dungeon) => sum += dungeon.Chance);
             if (sum != 1)
@@ -235,7 +239,7 @@ namespace Th3Dungeon
                     GenDungeon(data, dx, dz);
                 }
             }
-            else if (_chunkRand.NextFloat() > DungeonsConfig.Chance)
+            else if (_chunkRand.NextFloat() <= DungeonsConfig.Chance)
             {
                 GenDungeon(data, dx, dz);
             }
