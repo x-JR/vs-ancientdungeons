@@ -40,9 +40,9 @@ namespace Th3Dungeon
 
         private readonly Vec4f DebugColorH = new Vec4f(1f, 0f, 0f, 1f);
 
-        private bool DebugDungeonEnabled = true;
+        private bool DebugDungeonEnabled = false;
 
-        private bool DebugBoxesEnabled = true;
+        private bool DebugBoxesEnabled = false;
 
         private readonly List<Cuboidi> DebugBoxes = new List<Cuboidi>
                             {
@@ -147,7 +147,8 @@ namespace Th3Dungeon
         {
             _chunkRand = new LCGRandom(_api.WorldManager.Seed);
 
-            DungeonsConfig = _api.LoadModConfig<DungeonsConfig>("Th3DungeonConfig.json");
+            // DungeonsConfig = _api.LoadModConfig<DungeonsConfig>("Th3DungeonConfig.json");
+            DungeonsConfig = _api.Assets.Get(new AssetLocation(Mod.Info.ModID, "worldgen/dungeon/Th3DungeonConfig.json")).ToObject<DungeonsConfig>();
             if (DungeonsConfig == null)
             {
                 Mod.Logger.Fatal($"DungeonsConfigs not found check your ModConfig folder and create a Th3DungeonConfig.json");
@@ -243,7 +244,6 @@ namespace Th3Dungeon
             {
                 GenDungeon(data, dx, dz);
             }
-
         }
 
         protected void GenDungeon(DungeonData data, int dx, int dz)
@@ -288,7 +288,7 @@ namespace Th3Dungeon
                 GenEntrance(data, x, z, data.Schematic.SizeY, startRoomRotation);
             }
 
-            int a = 0;
+            int placedRooms = 0;
 
             for (int i = 0; i < data.DungeonConfig.RoomsToGenerate; i++)
             {
@@ -304,15 +304,15 @@ namespace Th3Dungeon
                     // get spawn pos offset from next room and previouse room and previous facing
                     if (GetNext(data, current))
                     {
-                        a++;
+                        placedRooms++;
                         Place(data);
                     }
                 }
             }
 
-            if (DungeonsConfig.Debug && dx == 0 && dz == 0)
+            if (dx == 0 && dz == 0)
             {
-                Mod.Logger.VerboseDebug($"placed: {a}");
+                Mod.Logger.VerboseDebug($"placed: {placedRooms}");
                 Mod.Logger.VerboseDebug($"pos: {x} {z}");
                 Mod.Logger.VerboseDebug($"/tp {x - 512000} 120 {z - 512000}");
                 Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
@@ -321,11 +321,15 @@ namespace Th3Dungeon
 
             GenRoomEnds(data, dx == 0 && dz == 0);
 
-            if (DungeonsConfig.Debug && dx == 0 && dz == 0)
+            if (dx == 0 && dz == 0)
             {
-                Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
+                // Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
 #if DEBUG_WIREFRAME
-                GeneratedRoomsC = data.GeneratedRooms;
+                if(GeneratedRoomsC == null){
+                    GeneratedRoomsC = new List<Cuboidi>();
+                }
+                GeneratedRoomsC.AddRange(data.GeneratedRooms);
+                serverNetworkChannel.BroadcastPacket(GeneratedRoomsC);
 #endif
             }
             if (!data.Initialized)
