@@ -6,6 +6,7 @@
     {
       "BasePath": "th3dungeon:worldgen/dungeon/noentrance/categories/",
       "Chance": 0.40,
+      "ReinforcementLevel": 20,
       "SealevelOffset": -50,
       "RoomsToGenerate": 20,
       "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
@@ -33,6 +34,7 @@
     {
       "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
       "Chance": 0.30,
+      "ReinforcementLevel": 10,
       "SealevelOffset": -50,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
@@ -64,6 +66,7 @@
     {
       "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
       "Chance": 0.30,
+      "ReinforcementLevel": 5,
       "SealevelOffset": -50,
       "RoomsToGenerate": 70,
       "StartTopOffsetY": -1,
