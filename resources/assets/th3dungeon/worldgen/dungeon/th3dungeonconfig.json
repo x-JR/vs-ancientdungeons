@@ -1,11 +1,11 @@
 {
   "ChunkRange": 6,
   "Debug": true,
-  "Chance": 0.0002,
+  "Chance": 0.001,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/dungeon/noentrance/categories/",
-      "Chance": 0.1,
+      "Chance": 0.40,
       "SealevelOffset": -50,
       "RoomsToGenerate": 20,
       "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
@@ -32,32 +32,63 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
-      "Chance": 0.9,
+      "Chance": 0.30,
       "SealevelOffset": -50,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
       "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
       "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs7.json",
+      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs2.json",
       "StairsRotation": true,
       "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
       "GenerateEntrance": true,
       "categories": [
         {
           "name": "straight",
-          "chance": 0.55
+          "chance": 0.2
         },
         {
           "name": "turn",
-          "chance": 0.15
+          "chance": 0.2
         },
         {
           "name": "updown",
-          "chance": 0.15
+          "chance": 0.2
         },
         {
           "name": "rooms",
-          "chance": 0.15
+          "chance": 0.4
+        }
+      ]
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
+      "Chance": 0.30,
+      "SealevelOffset": -50,
+      "RoomsToGenerate": 70,
+      "StartTopOffsetY": -1,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs2.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
+      "GenerateEntrance": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.3
+        },
+        {
+          "name": "turn",
+          "chance": 0.25
+        },
+        {
+          "name": "updown",
+          "chance": 0.25
+        },
+        {
+          "name": "rooms",
+          "chance": 0.2
         }
       ]
     }

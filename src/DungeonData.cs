@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
+using Vintagestory.API.Server;
+using Vintagestory.GameContent;
 
 namespace Th3Dungeon
 {
@@ -24,14 +26,19 @@ namespace Th3Dungeon
 
         public List<GeneratedStructure> GeneratedStructures;
 
-        public DungeonData(int chunkX, int chunkZ, List<GeneratedStructure> generatedStructures)
+        public IServerChunk[] Chunks;
+
+        public Dictionary<int, BlockReinforcement>[] Reinforcements;
+
+        public DungeonData(int chunkX, int chunkZ, IServerChunk[] chunks)
         {
             DoorPos = new List<DoorPos>();
             NextSpawn = new SpawnTransform();
             GeneratedRooms = new List<Cuboidi>();
             ChunkX = chunkX;
             ChunkZ = chunkZ;
-            GeneratedStructures = generatedStructures;
+            GeneratedStructures = chunks[0].MapChunk.MapRegion.GeneratedStructures;
+            Chunks = chunks;
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Th3Dungeon
 
         public float Chance;
 
+        public int ReinforcementLevel;
+
         public List<DungeonRoomCategory> Categories;
 
         public int RoomsToGenerate;

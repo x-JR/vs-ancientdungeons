@@ -6,7 +6,7 @@
         "Th3Dilli"
     ],
     "description": "A mod to bring procedural dungeon creation to vintage story",
-    "version": "0.0.2",
+    "version": "0.0.3-dev.2",
     "dependencies": {
         "game": "1.13.4"
     }

@@ -5,12 +5,14 @@ using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.GameContent;
 
 namespace Th3Dungeon
 {
     public class BlockSchematic : Vintagestory.API.Common.BlockSchematic
     {
         private int _chunkSize;
+        private int _worldHeight;
 
         private Block DoorNorth, DoorEast, DoorSouth, DoorWest;
 
@@ -20,6 +22,7 @@ namespace Th3Dungeon
         {
             base.Init(blockAccessor);
             _chunkSize = blockAccessor.ChunkSize;
+            _worldHeight = blockAccessor.MapSizeY;
 
             DoorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
             DoorEast = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east"));
@@ -96,7 +99,7 @@ namespace Th3Dungeon
             return height;
         }
 
-        public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ, bool replaceMetaBlocks = true)
+        public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, DungeonData data, bool replaceMetaBlocks = true)
         {
             BlockPos curPos = new BlockPos();
             int placed = 0;
@@ -112,7 +115,7 @@ namespace Th3Dungeon
                         {
                             for (int k = 0; k < SizeZ; k++)
                             {
-                                curPos.Set(i + startPos.X, j + startPos.Y, k + startPos.Z);
+                                curPos.Set(i + data.NextSpawn.Position.X, j + data.NextSpawn.Position.Y, k + data.NextSpawn.Position.Z);
                                 blockAccessor.SetBlock(0, curPos);
                             }
                         }
@@ -140,11 +143,14 @@ namespace Th3Dungeon
                 int dx = (int)(index & 0x1ff);
                 int dy = (int)((index >> 20) & 0x1ff);
                 int dz = (int)((index >> 10) & 0x1ff);
+                curPos.Set(dx + data.NextSpawn.Position.X, dy + data.NextSpawn.Position.Y, dz + data.NextSpawn.Position.Z);
 
-                if ((dx + startPos.X) / _chunkSize == chunkX && (dz + startPos.Z) / _chunkSize == chunkZ)
+                if (curPos.X / _chunkSize == data.ChunkX && curPos.Z / _chunkSize == data.ChunkZ)
                 {
-
-
+                    if (data.DungeonConfig.ReinforcementLevel > 0)
+                    {
+                        ReinforceBlock(data, curPos);
+                    }
                     int storedBlockid = BlockIds[i];
                     AssetLocation blockCode = BlockCodes[storedBlockid];
 
@@ -152,8 +158,6 @@ namespace Th3Dungeon
 
                     if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
 
-
-                    curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
 
                     Block oldBlock = blockAccessor.GetBlock(curPos);
                     placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
@@ -168,9 +172,41 @@ namespace Th3Dungeon
 
             if (!(blockAccessor is IBlockAccessorRevertable))
             {
-                PlaceEntitiesAndBlockEntities(blockAccessor, worldForCollectibleResolve, startPos, chunkX, chunkZ);
+                PlaceEntitiesAndBlockEntities(blockAccessor, worldForCollectibleResolve, data.NextSpawn.Position, data.ChunkX, data.ChunkZ);
             }
             return placed;
+        }
+
+        private void ReinforceBlock(DungeonData data, BlockPos pos)
+        {
+            int index3d = ((pos.Y % _chunkSize) << 16) | ((pos.Z % _chunkSize) << 8) | (pos.X % _chunkSize);
+            Dictionary<int, BlockReinforcement> reinforcmentsOfChunk;
+            if (data.Reinforcements == null)
+            {
+                data.Reinforcements = new Dictionary<int, BlockReinforcement>[data.Chunks.Length];
+                reinforcmentsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
+            }
+            else if (data.Reinforcements[pos.Y / _chunkSize] == null)
+            {
+                reinforcmentsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
+            }
+            else
+            {
+                reinforcmentsOfChunk = data.Reinforcements[pos.Y / _chunkSize];
+            }
+
+            if (reinforcmentsOfChunk is null)
+            {
+                reinforcmentsOfChunk = new Dictionary<int, BlockReinforcement>();
+            }
+            data.Reinforcements[pos.Y / _chunkSize] = reinforcmentsOfChunk;
+
+            reinforcmentsOfChunk[index3d] = new BlockReinforcement()
+            {
+                PlayerUID = "dungeon-UID",
+                LastPlayername = "th3dungeons",
+                Strength = data.DungeonConfig.ReinforcementLevel
+            };
         }
 
         public void PlaceDecors(IBlockAccessor blockAccessor, BlockPos startPos, bool synchronize, int chunkX, int chunkZ)
@@ -318,7 +354,7 @@ namespace Th3Dungeon
                     else
                     {
                         worldForCollectibleResolve.SpawnEntity(entity);
-				        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
                     }
 
                 }

@@ -35,6 +35,7 @@
       "request": "launch",
       "preLaunchTask": "package (Debug)",
       "program": "${env:VINTAGE_STORY_MODDING}/Vintagestory.exe",
+      "runtimeArgs": ["--debug"],
       "args": [
         "-p",
         "-o",
@@ -51,6 +52,7 @@
       "request": "launch",
       "preLaunchTask": "package (Debug)",
       "program": "${env:VINTAGE_STORY_MODDING}/Vintagestory.exe",
+      "runtimeArgs": ["--debug"],
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_DATA_MODDING}",
@@ -63,6 +65,7 @@
       "type": "mono",
       "request": "launch",
       "program": "${env:VINTAGE_STORY_MODDING}/Vintagestory.exe",
+      "runtimeArgs": ["--debug"],
       "args": [
         "--dataPath",
         "${env:VINTAGE_STORY_DATA_MODDING}",
