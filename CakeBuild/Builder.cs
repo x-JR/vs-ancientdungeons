@@ -6,7 +6,9 @@ using Cake.Frosting;
 using Cake.Json;
 using Vintagestory.API.Common;
 
-public static class Program
+namespace CakeBuild;
+
+public static class Builder
 {
     public static int Main(string[] args)
     {
@@ -47,7 +49,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        context.DotNetBuild($"../{context.Name}/{context.Name}.csproj",new DotNetBuildSettings(){Configuration = "Release"});
+        context.DotNetBuild($"../{context.Name}/{context.Name}.csproj",new DotNetBuildSettings{Configuration = "Release"});
     }
 }
 
@@ -60,6 +62,7 @@ public sealed class PackageTask : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(context.Packages);
         context.EnsureDirectoryExists(context.PackageFolder);
         context.EnsureDirectoryExists(context.PackageFolderOut);
+        context.CleanDirectory(context.PackageFolderOut);
         context.CopyFiles($"../{context.Name}/bin/Release/*", $"{context.PackageFolder}/");
         context.CopyDirectory("../resources/", context.PackageFolder);
         context.Zip(context.PackageFolder, context.ZipFile);

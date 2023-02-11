@@ -3,11 +3,12 @@
     "modid": "th3dungeon",
     "name": "Th3Dungeon",
     "authors": [
-        "Th3Dilli"
+        "Th3Dilli",
+        "NiclAss"
     ],
-    "description": "A mod to bring procedural dungeon creation to vintage story",
-    "version": "0.0.3-dev.2",
+    "description": "A mod to bring procedural dungeon creation to Vintage Story",
+    "version": "0.1.0",
     "dependencies": {
-        "game": "1.13.4"
+        "game": "1.16.0"
     }
 }

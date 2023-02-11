@@ -197,7 +197,7 @@ namespace th3dungeon
             }
             data.Reinforcements[pos.Y / _chunkSize] = reinforcementsOfChunk;
 
-            reinforcementsOfChunk[index3d] = new BlockReinforcement()
+            reinforcementsOfChunk[index3d] = new BlockReinforcement
             {
                 PlayerUID = "dungeon-UID",
                 LastPlayername = "th3dungeons",
@@ -245,7 +245,7 @@ namespace th3dungeon
         {
             if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, 4).Replaceable > newBlock.Replaceable)
             {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
@@ -255,7 +255,7 @@ namespace th3dungeon
         {
             if (newBlock.BlockId == 0) return 0;
             
-            blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
+            blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
             return 1;
         }
 
@@ -263,7 +263,7 @@ namespace th3dungeon
         {
             if (blockAccessor.GetMostSolidBlock(pos).BlockId != 0) return 0;
             
-            blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
+            blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
             return 1;
         }
 
