@@ -11,6 +11,8 @@ namespace th3dungeon.Data
         public bool Debug;
 
         public float Chance;
+
+        public bool ExcludeTh3Dungeons;
     }
 
     public class DungeonConfig
@@ -50,6 +52,8 @@ namespace th3dungeon.Data
         public DungeonRoom Stairs;
 
         public List<DungeonRoom> EndRooms;
+
+        public bool OnlyBelowSurface;
     }
 
     public class DungeonRoomCategory

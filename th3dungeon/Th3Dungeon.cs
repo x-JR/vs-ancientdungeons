@@ -1,4 +1,5 @@
 #define DEBUG_WIREFRAME
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using th3dungeon.Data;
@@ -122,8 +123,55 @@ namespace th3dungeon
         private void InitWorldGen()
         {
             _chunkRand = new LCGRandom(_api.WorldManager.Seed);
-            // DungeonsConfig = _api.LoadModConfig<DungeonsConfig>("th3dungeonconfig.json");
-            _dungeonsConfig = _api.Assets.Get(new AssetLocation(Mod.Info.ModID, "worldgen/dungeon/th3dungeonconfig.json")).ToObject<DungeonsConfig>();
+            DungeonsConfig modConfig = null;
+            try
+            {
+                modConfig = _api.LoadModConfig<DungeonsConfig>("th3dungeonconfig.json");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            if (modConfig?.Dungeons != null && modConfig.Dungeons.Count > 0)
+            {
+                _dungeonsConfig = modConfig;
+            }
+            else
+            {
+                _dungeonsConfig = new DungeonsConfig();
+                _dungeonsConfig.Chance = 0.0002f;
+                var dungeonsConfigs = _api.Assets.GetMany<DungeonsConfig>(Mod.Logger,"worldgen/dungeon/th3dungeonconfig.json");
+                
+                // merge all configs
+                var dungeonCount = dungeonsConfigs.Count;
+                if (modConfig != null && modConfig.ExcludeTh3Dungeons && dungeonsConfigs.Any(config => config.Key.Domain.Equals(Mod.Info.ModID)))
+                {
+                    dungeonCount--;
+                }
+                foreach (var dungeonConfig in dungeonsConfigs)
+                {
+                    if (modConfig != null && modConfig.ExcludeTh3Dungeons && dungeonConfig.Key.Domain.Equals(Mod.Info.ModID))
+                    {
+                        continue;
+                    }
+                    if (dungeonConfig.Value.ChunkRange > _dungeonsConfig.ChunkRange)
+                    {
+                        _dungeonsConfig.ChunkRange = dungeonConfig.Value.ChunkRange;
+                    }
+
+                    _dungeonsConfig.Debug = _dungeonsConfig.Debug || dungeonConfig.Value.Debug;
+
+                    _dungeonsConfig.Dungeons = new List<DungeonConfig>();
+                    foreach (var dungeon in dungeonConfig.Value.Dungeons)
+                    {
+                        dungeon.Chance /= dungeonCount;
+                        _dungeonsConfig.Dungeons.Add(dungeon);
+                    }
+                    
+                }
+            }
+            
             if (_dungeonsConfig == null)
             {
                 Mod.Logger.Fatal($"DungeonsConfigs not found check your ModConfig folder and create a th3dungeonconfig.json");
@@ -131,7 +179,8 @@ namespace th3dungeon
             }
             float sum = 0;
             _dungeonsConfig.Dungeons.ForEach(dungeon => sum += dungeon.Chance);
-            if (sum != 1f)
+            
+            if (Math.Abs(sum - 1f) > 0.001)
             {
                 Mod.Logger.Fatal($"DungeonsConfigs do not add up to 1. [{sum}]");
             }
@@ -143,7 +192,7 @@ namespace th3dungeon
                 dungeon.Rooms = new Dictionary<string, List<DungeonRoom>>();
                 sum = 0;
                 dungeon.Categories.ForEach(cat => sum += cat.Chance);
-                if (sum != 1f)
+                if (Math.Abs(sum - 1f) > 0.001)
                 {
                     Mod.Logger.Fatal($"DungeonConfig {dungeon.BasePath} categories do not add up to 1. [{sum}]");
                 }
@@ -185,7 +234,7 @@ namespace th3dungeon
                     dungeon.Rooms.Add(cat.Name, catRooms);
                 }
             });
-
+            Mod.Logger.Event($"{_dungeonsConfig.Dungeons.Count} Dungeons Loaded");
             // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
         }
 
@@ -399,8 +448,26 @@ namespace th3dungeon
             return false;
         }
 
-        private static bool CanSpawn(DungeonData data, Cuboidi area)
+        private bool CanSpawn(DungeonData data, Cuboidi area)
         {
+            if (data.DungeonConfig.OnlyBelowSurface)
+            {
+                var topPositions = new List<BlockPos>
+                {
+                    new BlockPos(area.X1, area.Y2, area.Z1),
+                    new BlockPos(area.X1, area.Y2, area.Z2),
+                    new BlockPos(area.X2, area.Y2, area.Z1),
+                    new BlockPos(area.X2, area.Y2, area.Z2)
+                };
+                
+                foreach (var pos in topPositions)
+                {
+                    var height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos);
+                    if (height <= pos.Y)
+                        return false;
+                }
+            }
+            
             return data.GeneratedRooms.All(room => !room.Intersects(area)) && data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
         }
 
