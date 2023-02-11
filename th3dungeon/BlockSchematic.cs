@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using System.IO;
+using th3dungeon.Data;
 using Vintagestory.API.Common;
-using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
 
-namespace Th3Dungeon
+namespace th3dungeon
 {
     public class BlockSchematic : Vintagestory.API.Common.BlockSchematic
     {
         private int _chunkSize;
         private int _worldHeight;
 
-        private Block DoorNorth, DoorEast, DoorSouth, DoorWest;
+        private Block _doorNorth, _doorEast, _doorSouth, _doorWest;
 
         public List<DoorPos> Doors;
 
@@ -24,10 +24,10 @@ namespace Th3Dungeon
             _chunkSize = blockAccessor.ChunkSize;
             _worldHeight = blockAccessor.MapSizeY;
 
-            DoorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
-            DoorEast = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east"));
-            DoorSouth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south"));
-            DoorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
+            _doorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
+            _doorEast = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-east"));
+            _doorSouth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-south"));
+            _doorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
 
             Doors = new List<DoorPos>();
         }
@@ -36,50 +36,47 @@ namespace Th3Dungeon
         {
             LoadMetaInformationAndValidate(blockAccessor, worldForResolve, fileNameForLogging);
 
-            for (int i = 0; i < BlockIds.Count; i++)
+            for (var i = 0; i < BlockIds.Count; i++)
             {
-                int storedBlockid = BlockIds[i];
+                var storedBlockId = BlockIds[i];
 
-                AssetLocation blockCode = BlockCodes[storedBlockid];
-                Block newBlock = blockAccessor.GetBlock(blockCode);
+                var blockCode = BlockCodes[storedBlockId];
+                var newBlock = blockAccessor.GetBlock(blockCode);
 
-                if (IsDoor(newBlock))
+                if (!IsDoor(newBlock)) continue;
+                
+                var index = Indices[i];
+                var dx = (int)(index & 0x1ff);
+                var dy = (int)((index >> 20) & 0x1ff);
+                var dz = (int)((index >> 10) & 0x1ff);
+
+                BlockFacing facing = null;
+
+                switch (blockCode.Path)
                 {
-                    uint index = Indices[i];
-                    int dx = (int)(index & 0x1ff);
-                    int dy = (int)((index >> 20) & 0x1ff);
-                    int dz = (int)((index >> 10) & 0x1ff);
-
-                    BlockFacing facing = null;
-
-                    if (blockCode.Path == "th3doorway-north")
-                    {
+                    case "th3doorway-north":
                         facing = BlockFacing.NORTH;
-                    }
-                    else if (blockCode.Path == "th3doorway-east")
-                    {
+                        break;
+                    case "th3doorway-east":
                         facing = BlockFacing.EAST;
-                    }
-                    else if (blockCode.Path == "th3doorway-south")
-                    {
+                        break;
+                    case "th3doorway-south":
                         facing = BlockFacing.SOUTH;
-                    }
-                    else if (blockCode.Path == "th3doorway-west")
-                    {
+                        break;
+                    case "th3doorway-west":
                         facing = BlockFacing.WEST;
-                    }
-                    if (facing != null)
-                    {
-                        //   Doors.Add(new DoorPos(new BlockPos(dx + facing.Normali.X, dy + facing.Normali.Y - 1, dz + facing.Normali.Z), facing));
-                        Doors.Add(new DoorPos(new BlockPos(dx, dy, dz), facing));
-                    }
+                        break;
+                }
+                if (facing != null)
+                {
+                    Doors.Add(new DoorPos(new BlockPos(dx, dy, dz), facing));
                 }
             }
         }
 
         private bool IsDoor(Block newBlock)
         {
-            return newBlock == DoorNorth || newBlock == DoorEast || newBlock == DoorSouth || newBlock == DoorWest;
+            return newBlock == _doorNorth || newBlock == _doorEast || newBlock == _doorSouth || newBlock == _doorWest;
         }
 
         /// <summary>
@@ -87,10 +84,10 @@ namespace Th3Dungeon
         /// </summary>
         public int GetHeightAtPos(int dx, int dz)
         {
-            int height = 0;
-            for (int dy = 0; dy < SizeY; dy++)
+            var height = 0;
+            for (var dy = 0; dy < SizeY; dy++)
             {
-                uint index = (uint)(dy << 20 | dz << 10 | dx);
+                var index = (uint)(dy << 20 | dz << 10 | dx);
                 if (Indices.Find(i => i == index) != 0)
                 {
                     height = dy;
@@ -101,19 +98,19 @@ namespace Th3Dungeon
 
         public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, DungeonData data, bool replaceMetaBlocks = true)
         {
-            BlockPos curPos = new BlockPos();
-            int placed = 0;
+            var curPos = new BlockPos();
+            var placed = 0;
 
             PlaceBlockDelegate handler = null;
             switch (ReplaceMode)
             {
                 case EnumReplaceMode.ReplaceAll:
                     handler = PlaceReplaceAll;
-                    for (int i = 0; i < SizeX; i++)
+                    for (var i = 0; i < SizeX; i++)
                     {
-                        for (int j = 0; j < SizeY; j++)
+                        for (var j = 0; j < SizeY; j++)
                         {
-                            for (int k = 0; k < SizeZ; k++)
+                            for (var k = 0; k < SizeZ; k++)
                             {
                                 curPos.Set(i + data.NextSpawn.Position.X, j + data.NextSpawn.Position.Y, k + data.NextSpawn.Position.Z);
                                 blockAccessor.SetBlock(0, curPos);
@@ -136,37 +133,36 @@ namespace Th3Dungeon
             }
 
 
-            for (int i = 0; i < Indices.Count; i++)
+            for (var i = 0; i < Indices.Count; i++)
             {
-                uint index = Indices[i];
+                var index = Indices[i];
 
-                int dx = (int)(index & 0x1ff);
-                int dy = (int)((index >> 20) & 0x1ff);
-                int dz = (int)((index >> 10) & 0x1ff);
+                var dx = (int)(index & 0x1ff);
+                var dy = (int)((index >> 20) & 0x1ff);
+                var dz = (int)((index >> 10) & 0x1ff);
                 curPos.Set(dx + data.NextSpawn.Position.X, dy + data.NextSpawn.Position.Y, dz + data.NextSpawn.Position.Z);
 
-                if (curPos.X / _chunkSize == data.ChunkX && curPos.Z / _chunkSize == data.ChunkZ)
+                if (curPos.X / _chunkSize != data.ChunkX || curPos.Z / _chunkSize != data.ChunkZ) continue;
+                
+                if (data.DungeonConfig.ReinforcementLevel > 0)
                 {
-                    if (data.DungeonConfig.ReinforcementLevel > 0)
-                    {
-                        ReinforceBlock(data, curPos);
-                    }
-                    int storedBlockid = BlockIds[i];
-                    AssetLocation blockCode = BlockCodes[storedBlockid];
+                    ReinforceBlock(data, curPos);
+                }
+                var storedBlockId = BlockIds[i];
+                var blockCode = BlockCodes[storedBlockId];
 
-                    Block newBlock = blockAccessor.GetBlock(blockCode);
+                var newBlock = blockAccessor.GetBlock(blockCode);
 
-                    if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
+                if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
 
 
-                    Block oldBlock = blockAccessor.GetBlock(curPos);
-                    placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
+                var oldBlock = blockAccessor.GetBlock(curPos);
+                placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
 
-                    if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
-                    {
-                        accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);
-                        accessor.ExchangeBlock(newBlock.Id, curPos);
-                    }
+                if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
+                {
+                    accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);
+                    accessor.ExchangeBlock(newBlock.Id, curPos);
                 }
             }
 
@@ -179,29 +175,29 @@ namespace Th3Dungeon
 
         private void ReinforceBlock(DungeonData data, BlockPos pos)
         {
-            int index3d = ((pos.Y % _chunkSize) << 16) | ((pos.Z % _chunkSize) << 8) | (pos.X % _chunkSize);
-            Dictionary<int, BlockReinforcement> reinforcmentsOfChunk;
+            var index3d = ((pos.Y % _chunkSize) << 16) | ((pos.Z % _chunkSize) << 8) | (pos.X % _chunkSize);
+            Dictionary<int, BlockReinforcement> reinforcementsOfChunk;
             if (data.Reinforcements == null)
             {
                 data.Reinforcements = new Dictionary<int, BlockReinforcement>[data.Chunks.Length];
-                reinforcmentsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
+                reinforcementsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
             }
             else if (data.Reinforcements[pos.Y / _chunkSize] == null)
             {
-                reinforcmentsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
+                reinforcementsOfChunk = data.Chunks[pos.Y / _chunkSize].GetModdata<Dictionary<int, BlockReinforcement>>("reinforcements");
             }
             else
             {
-                reinforcmentsOfChunk = data.Reinforcements[pos.Y / _chunkSize];
+                reinforcementsOfChunk = data.Reinforcements[pos.Y / _chunkSize];
             }
 
-            if (reinforcmentsOfChunk is null)
+            if (reinforcementsOfChunk is null)
             {
-                reinforcmentsOfChunk = new Dictionary<int, BlockReinforcement>();
+                reinforcementsOfChunk = new Dictionary<int, BlockReinforcement>();
             }
-            data.Reinforcements[pos.Y / _chunkSize] = reinforcmentsOfChunk;
+            data.Reinforcements[pos.Y / _chunkSize] = reinforcementsOfChunk;
 
-            reinforcmentsOfChunk[index3d] = new BlockReinforcement()
+            reinforcementsOfChunk[index3d] = new BlockReinforcement()
             {
                 PlayerUID = "dungeon-UID",
                 LastPlayername = "th3dungeons",
@@ -211,42 +207,41 @@ namespace Th3Dungeon
 
         public void PlaceDecors(IBlockAccessor blockAccessor, BlockPos startPos, bool synchronize, int chunkX, int chunkZ)
         {
-            BlockPos curPos = new BlockPos();
-            for (int i = 0; i < DecorIndices.Count; i++)
+            var curPos = new BlockPos();
+            for (var i = 0; i < DecorIndices.Count; i++)
             {
-                uint index = DecorIndices[i];
+                var index = DecorIndices[i];
 
-                int dx = (int)(index & 0x1ff);
-                int dy = (int)((index >> 20) & 0x1ff);
-                int dz = (int)((index >> 10) & 0x1ff);
+                var dx = (int)(index & 0x1ff);
+                var dy = (int)((index >> 20) & 0x1ff);
+                var dz = (int)((index >> 10) & 0x1ff);
 
-                if ((dx + startPos.X) / _chunkSize == chunkX && (dz + startPos.Z) / _chunkSize == chunkZ)
-                {
-                    int storedBlockid = DecorIds[i];
-                    byte faceIndex = (byte)(storedBlockid >> 24);
-                    if (faceIndex > 5) continue;
+                if ((dx + startPos.X) / _chunkSize != chunkX || (dz + startPos.Z) / _chunkSize != chunkZ) continue;
+                
+                var storedBlockId = DecorIds[i];
+                var faceIndex = (byte)(storedBlockId >> 24);
+                if (faceIndex > 5) continue;
 
-                    BlockFacing face = BlockFacing.ALLFACES[faceIndex];
-                    storedBlockid &= 0xFFFFFF;
+                var face = BlockFacing.ALLFACES[faceIndex];
+                storedBlockId &= 0xFFFFFF;
 
-                    AssetLocation blockCode = BlockCodes[storedBlockid];
+                var blockCode = BlockCodes[storedBlockId];
 
-                    Block newBlock = blockAccessor.GetBlock(blockCode);
+                var newBlock = blockAccessor.GetBlock(blockCode);
 
-                    if (newBlock == null) continue;
+                if (newBlock == null) continue;
 
-                    curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
+                curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
 
-                    IWorldChunk chunk = blockAccessor.GetChunkAtBlockPos(curPos);
-                    if (chunk == null) continue;
-                    if (synchronize) blockAccessor.MarkChunkDecorsModified(curPos);
-                    chunk.SetDecor(blockAccessor, newBlock, curPos, face);
-                    chunk.MarkModified();
-                }
+                var chunk = blockAccessor.GetChunkAtBlockPos(curPos);
+                if (chunk == null) continue;
+                if (synchronize) blockAccessor.MarkChunkDecorsModified(curPos);
+                chunk.SetDecor(blockAccessor, newBlock, curPos, face);
+                chunk.MarkModified();
             }
         }
 
-        override protected int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
+        protected override int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
             if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, 4).Replaceable > newBlock.Replaceable)
             {
@@ -256,96 +251,89 @@ namespace Th3Dungeon
             return 0;
         }
 
-        override protected int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
+        protected override int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
-            if (newBlock.BlockId != 0)
-            {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
-                return 1;
-            }
-            return 0;
+            if (newBlock.BlockId == 0) return 0;
+            
+            blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
+            return 1;
         }
 
-        override protected int PlaceReplaceOnlyAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
+        protected override int PlaceReplaceOnlyAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
-            if (blockAccessor.GetMostSolidBlock(pos).BlockId == 0)
-            {
-                blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
-                return 1;
-            }
-            return 0;
+            if (blockAccessor.GetMostSolidBlock(pos).BlockId != 0) return 0;
+            
+            blockAccessor.SetBlock((replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock))) ? empty : newBlock.BlockId, pos);
+            return 1;
         }
 
         public void PlaceEntitiesAndBlockEntities(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ)
         {
-            BlockPos curPos = new BlockPos();
+            var curPos = new BlockPos();
 
-            int schematicSeed = worldForCollectibleResolve.Rand.Next();
+            var schematicSeed = worldForCollectibleResolve.Rand.Next();
 
             foreach (var val in BlockEntities)
             {
-                uint index = val.Key;
-                int dx = (int)(index & 0x1ff);
-                int dy = (int)((index >> 20) & 0x1ff);
-                int dz = (int)((index >> 10) & 0x1ff);
+                var index = val.Key;
+                var dx = (int)(index & 0x1ff);
+                var dy = (int)((index >> 20) & 0x1ff);
+                var dz = (int)((index >> 10) & 0x1ff);
 
-                if ((dx + startPos.X) / _chunkSize == chunkX && (dz + startPos.Z) / _chunkSize == chunkZ)
+                if ((dx + startPos.X) / _chunkSize != chunkX || (dz + startPos.Z) / _chunkSize != chunkZ) continue;
+                
+                curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
+
+                var be = blockAccessor.GetBlockEntity(curPos);
+
+
+                // Block entities need to be manually initialized for world gen block access
+                if (be == null && blockAccessor is IWorldGenBlockAccessor)
                 {
+                    var block1 = blockAccessor.GetBlock(curPos);
 
-                    curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
-
-                    BlockEntity be = blockAccessor.GetBlockEntity(curPos);
-
-
-                    // Block entities need to be manually initialized for world gen block access
-                    if (be == null && blockAccessor is IWorldGenBlockAccessor)
+                    if (block1.EntityClass != null)
                     {
-                        Block block = blockAccessor.GetBlock(curPos);
-
-                        if (block.EntityClass != null)
-                        {
-                            blockAccessor.SpawnBlockEntity(block.EntityClass, curPos);
-                            be = blockAccessor.GetBlockEntity(curPos);
-                        }
-                    }
-
-                    if (be != null)
-                    {
-                        Block block = blockAccessor.GetBlock(curPos);
-                        if (block.EntityClass != worldForCollectibleResolve.ClassRegistry.GetBlockEntityClass(be.GetType()))
-                        {
-                            worldForCollectibleResolve.Logger.Warning("Could not import block entity data for schematic at {0}. There is already {1}, expected {2}. Probably overlapping ruins.", curPos, be.GetType(), block.EntityClass);
-                            continue;
-                        }
-
-                        ITreeAttribute tree = DecodeBlockEntityData(val.Value);
-                        tree.SetInt("posx", curPos.X);
-                        tree.SetInt("posy", curPos.Y);
-                        tree.SetInt("posz", curPos.Z);
-
-                        be.FromTreeAttributes(tree, worldForCollectibleResolve);
-                        be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
-                        be.Pos = curPos.Copy();
+                        blockAccessor.SpawnBlockEntity(block1.EntityClass, curPos);
+                        be = blockAccessor.GetBlockEntity(curPos);
                     }
                 }
+
+                if (be == null) continue;
+                
+                var block = blockAccessor.GetBlock(curPos);
+                if (block.EntityClass != worldForCollectibleResolve.ClassRegistry.GetBlockEntityClass(be.GetType()))
+                {
+                    worldForCollectibleResolve.Logger.Warning("Could not import block entity data for schematic at {0}. There is already {1}, expected {2}. Probably overlapping ruins.", curPos, be.GetType(), block.EntityClass);
+                    continue;
+                }
+
+                ITreeAttribute tree = DecodeBlockEntityData(val.Value);
+                tree.SetInt("posx", curPos.X);
+                tree.SetInt("posy", curPos.Y);
+                tree.SetInt("posz", curPos.Z);
+
+                be.FromTreeAttributes(tree, worldForCollectibleResolve);
+                be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                be.Pos = curPos.Copy();
             }
 
-            foreach (string entityData in Entities)
+            foreach (var entityData in Entities)
             {
-                using (MemoryStream ms = new MemoryStream(Ascii85.Decode(entityData)))
+                using (var ms = new MemoryStream(Ascii85.Decode(entityData)))
                 {
-                    BinaryReader reader = new BinaryReader(ms);
+                    var reader = new BinaryReader(ms);
 
-                    string className = reader.ReadString();
-                    Entity entity = worldForCollectibleResolve.ClassRegistry.CreateEntity(className);
+                    var className = reader.ReadString();
+                    var entity = worldForCollectibleResolve.ClassRegistry.CreateEntity(className);
 
                     entity.FromBytes(reader, false);
                     entity.DidImportOrExport(startPos);
 
                     // Not ideal but whatever
-                    if (blockAccessor is IWorldGenBlockAccessor)
+                    if (blockAccessor is IWorldGenBlockAccessor accessor)
                     {
-                        (blockAccessor as IWorldGenBlockAccessor).AddEntity(entity);
+                        accessor.AddEntity(entity);
                         entity.OnInitialized += delegate
                         {
                             entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);

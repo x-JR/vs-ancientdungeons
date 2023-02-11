@@ -1,26 +1,26 @@
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 
-namespace Th3Dungeon
+namespace th3dungeon.Data
 {
     public class DungeonRoom
     {
         public readonly BlockSchematic[] Rotations;
 
-        public DungeonRoom(ICoreServerAPI api, BlockSchematic schematic, IWorldGenBlockAccessor _chunkGenBlockAccessor, string fileName)
+        public DungeonRoom(ICoreServerAPI api, BlockSchematic schematic, IBlockAccessor chunkGenBlockAccessor, string fileName)
         {
             Rotations = new BlockSchematic[4];
             Rotations[0] = schematic.ClonePacked();
 
-            for (int k = 0; k < 4; k++)
+            for (var k = 0; k < 4; k++)
             {
                 if (k > 0)
                 {
                     Rotations[k] = Rotations[0].ClonePacked();
                     Rotations[k].TransformWhilePacked(api.World, EnumOrigin.MiddleCenter, k * 90);
                 }
-                Rotations[k].Init(_chunkGenBlockAccessor);
-                Rotations[k].LoadMeta(_chunkGenBlockAccessor, api.World, fileName);
+                Rotations[k].Init(chunkGenBlockAccessor);
+                Rotations[k].LoadMeta(chunkGenBlockAccessor, api.World, fileName);
             }
         }
     }

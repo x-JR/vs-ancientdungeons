@@ -1,6 +1,6 @@
 using Vintagestory.API.MathTools;
 
-namespace Th3Dungeon
+namespace th3dungeon.Data
 {
     public class SpawnTransform
     {

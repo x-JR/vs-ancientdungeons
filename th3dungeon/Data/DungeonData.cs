@@ -4,7 +4,7 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
 
-namespace Th3Dungeon
+namespace th3dungeon.Data
 {
     public class DungeonData
     {

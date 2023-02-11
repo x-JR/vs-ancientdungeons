@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Th3Dungeon
+namespace th3dungeon.Data
 {
     public class DungeonsConfig
     {
