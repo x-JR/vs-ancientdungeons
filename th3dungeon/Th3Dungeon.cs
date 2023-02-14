@@ -141,6 +141,7 @@ namespace th3dungeon
             {
                 _dungeonsConfig = new DungeonsConfig();
                 _dungeonsConfig.Chance = 0.0002f;
+                _dungeonsConfig.Dungeons = new List<DungeonConfig>();
                 var dungeonsConfigs = _api.Assets.GetMany<DungeonsConfig>(Mod.Logger,"worldgen/dungeon/th3dungeonconfig.json");
                 
                 // merge all configs
@@ -162,7 +163,6 @@ namespace th3dungeon
 
                     _dungeonsConfig.Debug = _dungeonsConfig.Debug || dungeonConfig.Value.Debug;
 
-                    _dungeonsConfig.Dungeons = new List<DungeonConfig>();
                     foreach (var dungeon in dungeonConfig.Value.Dungeons)
                     {
                         dungeon.Chance /= dungeonCount;
