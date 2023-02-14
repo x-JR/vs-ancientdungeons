@@ -155,8 +155,16 @@ namespace th3dungeon
 
                 if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
 
-
                 var oldBlock = blockAccessor.GetBlock(curPos);
+
+                if (data.DungeonConfig.ResolvedReplaceWithRockType != null && data.DungeonConfig.ResolvedReplaceWithRockType.TryGetValue(newBlock.Id, out var replaceByBlock))
+                {
+                    if (replaceByBlock.TryGetValue(oldBlock.Id, out var newBlockId))
+                    {
+                        newBlock = blockAccessor.GetBlock(newBlockId);
+                    }
+                }
+                
                 placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
 
                 if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)

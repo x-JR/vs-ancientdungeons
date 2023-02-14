@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Vintagestory.API.Common;
 
 namespace th3dungeon.Data
 {
@@ -54,6 +55,10 @@ namespace th3dungeon.Data
         public List<DungeonRoom> EndRooms;
 
         public bool OnlyBelowSurface;
+
+        public Dictionary<AssetLocation, AssetLocation> ReplaceWithRockType { get; set; }
+        
+        public Dictionary<int, Dictionary<int, int>> ResolvedReplaceWithRockType { get; set; }
     }
 
     public class DungeonRoomCategory

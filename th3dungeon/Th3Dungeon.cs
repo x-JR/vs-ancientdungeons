@@ -40,6 +40,8 @@ namespace th3dungeon
         private readonly Vec4f _debugColor = new Vec4f(1f, 1f, 0f, 1f);
 
         private bool _debugDungeonEnabled;
+        
+        private RockStrataConfig RockStrata { get; set; }
 #endif
         public override bool ShouldLoad(EnumAppSide side)
         {
@@ -132,6 +134,8 @@ namespace th3dungeon
             {
                 Console.WriteLine(e);
             }
+            
+            RockStrata = _api.Assets.Get<RockStrataConfig>(new AssetLocation("game:worldgen/rockstrata.json"));
 
             if (modConfig?.Dungeons != null && modConfig.Dungeons.Count > 0)
             {
@@ -168,7 +172,6 @@ namespace th3dungeon
                         dungeon.Chance /= dungeonCount;
                         _dungeonsConfig.Dungeons.Add(dungeon);
                     }
-                    
                 }
             }
             
@@ -188,7 +191,6 @@ namespace th3dungeon
 
             _dungeonsConfig.Dungeons.ForEach(dungeon =>
             {
-
                 dungeon.Rooms = new Dictionary<string, List<DungeonRoom>>();
                 sum = 0;
                 dungeon.Categories.ForEach(cat => sum += cat.Chance);
@@ -233,10 +235,43 @@ namespace th3dungeon
                     var catRooms = assets.Select(asset => new DungeonRoom(_api, asset.Value, _chunkGenBlockAccessor, asset.Key.Path)).ToList();
                     dungeon.Rooms.Add(cat.Name, catRooms);
                 }
+
+                if (dungeon.ReplaceWithRockType == null) return;
+                
+                dungeon.ResolvedReplaceWithRockType = new Dictionary<int, Dictionary<int, int>>();
+
+                foreach (var val in dungeon.ReplaceWithRockType)
+                {
+                    var blockIdByRockId = new Dictionary<int, int>();
+                    foreach (var strat in RockStrata.Variants)
+                    {
+                        var rockBlock = _api.World.GetBlock(strat.BlockCode);
+                        var resolvedLoc = val.Value.Clone();
+                        resolvedLoc.Path = resolvedLoc.Path.Replace("{rock}", rockBlock.LastCodePart());
+
+                        var resolvedBlock = _api.World.GetBlock(resolvedLoc);
+                        if (resolvedBlock == null) continue;
+                        blockIdByRockId[rockBlock.Id] = resolvedBlock.Id;
+
+                        var quartzBlock = _api.World.GetBlock(new AssetLocation("ore-quartz-" + rockBlock.LastCodePart()));
+                        if (quartzBlock != null)
+                        {
+                            blockIdByRockId[quartzBlock.Id] = resolvedBlock.Id;
+                        }
+                    }
+
+                    var sourceBlocks = _api.World.SearchBlocks(val.Key);
+                    foreach (var sourceBlock in sourceBlocks)
+                    {
+                        dungeon.ResolvedReplaceWithRockType[sourceBlock.Id] = blockIdByRockId;
+                    }
+                }
             });
             Mod.Logger.Event($"{_dungeonsConfig.Dungeons.Count} Dungeons Loaded");
-            // RuntimeEnv.DebugOutOfRangeBlockAccess = true;
+            // RuntimeEnv.DebugOutOfRangeBlockAccess = true; 1985799215
         }
+
+        
 
         private void GenChunkColumn(IServerChunk[] chunks, int chunkX, int chunkZ, ITreeAttribute chunkGenParams = null)
         {
@@ -500,12 +535,12 @@ namespace th3dungeon
                 height += 1;
                 // Mod.Logger.VerboseDebug($"height : {height} | {data.ChunkX} {chunkZ}");
             }
-            else
-            {
-                height -= startRoomTop.Rotations[rotation].GetHeightAtPos(startRoomTop.Rotations[rotation].SizeX / 2, startRoomTop.Rotations[rotation].SizeZ / 2) - 1;
-                // Mod.Logger.VerboseDebug($"height offset : {height} | {data.ChunkX} {chunkZ}");
-                return;
-            }
+            // else
+            // {
+            //     height -= startRoomTop.Rotations[rotation].GetHeightAtPos(startRoomTop.Rotations[rotation].SizeX / 2, startRoomTop.Rotations[rotation].SizeZ / 2) - 1;
+            //     // Mod.Logger.VerboseDebug($"height offset : {height} | {data.ChunkX} {chunkZ}");
+            //     return;
+            // }
 
             var y = data.DungeonConfig.Stairs.Rotations[0].SizeY;
             var rot = rotation;
