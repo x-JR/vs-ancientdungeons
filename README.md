@@ -139,7 +139,7 @@ for example a category with long straight rooms and a high chance will produce d
   // be carefull a too high value my slow worldgen drastically
   "ChunkRange": 6,
   // if set to 1 it will print spawnlocations in the debug log on the server
-  // when set to 2 it will log and also send visual debug boxes to the clients
+  // when set to 2 it will log and also send visual debug boxes to the clients (activate it with .debugdungeon)
   // if set to 3 it will only spawn one dungoen at x=0 z=0 + all previous debug
   "Debug": 1,
   // if debug is false this is the chance that a dungeon can spawn in a chunk
@@ -150,6 +150,9 @@ for example a category with long straight rooms and a high chance will produce d
       "BasePath": "th3dungeon:worldgen/th3dungeon/noentrance/categories/",
       // chance for this configuration to be choosen out of all , needs to add up to 1
       "Chance": 1,
+      // allows to set the reinforcement level like the plumb and square
+      // 0 => not reinforced , any other value will reinforce with that level
+      "ReinforcementLevel": 0,
       // this is where the dungeon will start underground and most of its rooms will be around that height
       // the value SealevelOffset is added to the sealevel, so a negative value will make sure the dungeon spawns underground
       "SealevelOffset": -50,

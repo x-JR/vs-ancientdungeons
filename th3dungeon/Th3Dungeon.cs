@@ -42,15 +42,6 @@ namespace th3dungeon
         private bool _debugDungeonEnabled;
 #endif
         private RockStrataConfig RockStrata { get; set; }
-        
-        public override bool ShouldLoad(EnumAppSide side)
-        {
-#if DEBUG_WIREFRAME
-            return true;
-#else
-            return side == EnumAppSide.Server;
-#endif
-        }
 
         public override double ExecuteOrder()
         {
@@ -78,7 +69,10 @@ namespace th3dungeon
 #if DEBUG_WIREFRAME
         private void OnPlayerNowPlaying(IServerPlayer byPlayer)
         {
-            _serverNetworkChannel.SendPacket(_generatedRoomsC, byPlayer);
+            if (_dungeonsConfig.Debug > 1 &&  _generatedRoomsC != null)
+            {
+                _serverNetworkChannel.SendPacket(_generatedRoomsC, byPlayer);
+            }
         }
 
         public override void StartClientSide(ICoreClientAPI api)
@@ -91,8 +85,18 @@ namespace th3dungeon
                 RenderOrder = 0.5
             };
 
-            api.Event.RegisterRenderer(dummyRenderer, EnumRenderStage.Opaque, "dungeon-render");
-            api.RegisterCommand("debugdungeon", string.Empty, string.Empty, (groupId, args) => { _debugDungeonEnabled = !_debugDungeonEnabled; });
+            api.RegisterCommand("debugdungeon", string.Empty, string.Empty, (groupId, args) =>
+            {
+                _debugDungeonEnabled = !_debugDungeonEnabled;
+                if (_debugDungeonEnabled)
+                {
+                    api.Event.RegisterRenderer(dummyRenderer, EnumRenderStage.Opaque, "dungeon-render");
+                }
+                else
+                {
+                    api.Event.UnregisterRenderer(dummyRenderer, EnumRenderStage.Opaque);
+                }
+            });
 
             _clientNetworkChannel = api.Network.RegisterChannel("th3dungeon-debug");
             _clientNetworkChannel.RegisterMessageType(typeof(List<Cuboidi>));
