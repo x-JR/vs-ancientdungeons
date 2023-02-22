@@ -167,6 +167,7 @@ namespace th3dungeon
                 
                 placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
 
+                // only works if we have a blockaccessor that has the updateHeighmap set to true
                 if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
                 {
                     accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);

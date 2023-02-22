@@ -1,4 +1,4 @@
-#define DEBUG_WIREFRAME
+// #define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +40,9 @@ namespace th3dungeon
         private readonly Vec4f _debugColor = new Vec4f(1f, 1f, 0f, 1f);
 
         private bool _debugDungeonEnabled;
-        
-        private RockStrataConfig RockStrata { get; set; }
 #endif
+        private RockStrataConfig RockStrata { get; set; }
+        
         public override bool ShouldLoad(EnumAppSide side)
         {
 #if DEBUG_WIREFRAME
@@ -143,10 +143,14 @@ namespace th3dungeon
             }
             else
             {
-                _dungeonsConfig = new DungeonsConfig();
-                _dungeonsConfig.Chance = 0.0002f;
-                _dungeonsConfig.Dungeons = new List<DungeonConfig>();
-                var dungeonsConfigs = _api.Assets.GetMany<DungeonsConfig>(Mod.Logger,"worldgen/dungeon/th3dungeonconfig.json");
+                _dungeonsConfig = new DungeonsConfig
+                {
+                    ChunkRange = modConfig?.ChunkRange ?? 6,
+                    Chance = modConfig?.Chance ?? 0.001f,
+                    Debug =  modConfig?.Debug ?? false,
+                    Dungeons = new List<DungeonConfig>()
+                };
+                var dungeonsConfigs = _api.Assets.GetMany<DungeonsConfig>(Mod.Logger,"worldgen/th3dungeon/th3dungeonconfig.json");
                 
                 // merge all configs
                 var dungeonCount = dungeonsConfigs.Count;
@@ -166,7 +170,12 @@ namespace th3dungeon
                     }
 
                     _dungeonsConfig.Debug = _dungeonsConfig.Debug || dungeonConfig.Value.Debug;
-
+                    float sumModDungeon = 0;
+                    dungeonConfig.Value.Dungeons.ForEach(dungeon => sumModDungeon += dungeon.Chance);
+                    if (Math.Abs(sumModDungeon - 1f) > 0.001)
+                    {
+                        Mod.Logger.Fatal($"DungeonsConfig {dungeonConfig.Key.Domain}:{dungeonConfig.Key.Path} does not add up to 1. [{sumModDungeon}]");
+                    }
                     foreach (var dungeon in dungeonConfig.Value.Dungeons)
                     {
                         dungeon.Chance /= dungeonCount;
@@ -307,8 +316,8 @@ namespace th3dungeon
             var chunkXd = data.ChunkX + dx;
             var chunkZd = data.ChunkZ + dz;
             // error with top rooms so we place in center
-            // int x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
-            // int z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+            // var x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
+            // var z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
             var x = chunkXd * _chunkSize + 15;
             var z = chunkZd * _chunkSize + 15;
 
@@ -524,23 +533,15 @@ namespace th3dungeon
             data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
             var startRoomTop = GetRandomRoom(data.DungeonConfig.StartRoomsTop);
 
-            // TODO: fix getting the height
             if (height == 0)
             {
-                // Mod.Logger.VerboseDebug($"height : 0 ");
                 return;
             }
             if (x / _chunkSize == data.ChunkX && z / _chunkSize == data.ChunkZ)
             {
                 height += 1;
-                // Mod.Logger.VerboseDebug($"height : {height} | {data.ChunkX} {chunkZ}");
             }
-            // else
-            // {
-            //     height -= startRoomTop.Rotations[rotation].GetHeightAtPos(startRoomTop.Rotations[rotation].SizeX / 2, startRoomTop.Rotations[rotation].SizeZ / 2) - 1;
-            //     // Mod.Logger.VerboseDebug($"height offset : {height} | {data.ChunkX} {chunkZ}");
-            //     return;
-            // }
+            // Mod.Logger.VerboseDebug($"Height: {height}");
 
             var y = data.DungeonConfig.Stairs.Rotations[0].SizeY;
             var rot = rotation;

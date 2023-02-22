@@ -1,0 +1,251 @@
+{
+  "ChunkRange": 6,
+  "Debug": false,
+  "Chance": 0.001,
+  "Dungeons": [
+    {
+      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon1/categories/",
+      "Chance": 0.35,
+      "ReinforcementLevel": 0,
+      "SealevelOffset": -70,
+      "RoomsToGenerate": 50,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/stairs1.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/end/",
+      "GenerateEntrance": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.50
+        },
+        {
+          "name": "turn",
+          "chance": 0.30
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.1
+        }
+      ],
+      "replaceWithRockType": {
+        "rock-granite": "game:rock-{rock}",
+        "stonebricks-granite": "game:stonebricks-{rock}",
+        "drystone-granite": "game:drystone-{rock}",
+        "rockpolished-granite": "game:rockpolished-{rock}",
+        "cobblestone-granite": "game:cobblestone-{rock}",
+        "loosestones-granite-free": "game:loosestones-{rock}-free",
+        "looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "gravel-granite": "game:gravel-{rock}",
+        "stonebrickstairs-granite-*": "game:stonebrickstairs-{rock}-*",
+
+        "cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        
+        "stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "stonebrickstairs-granite-up-west-free": "game:stonebrickstairs-{rock}-up-west-free",
+        "stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "stonebrickstairs-granite-up-north-free": "game:stonebrickstairs-{rock}-up-north-free",
+        "stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "stonebrickstairs-granite-up-east-free": "game:stonebrickstairs-{rock}-up-east-free",
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon1/categories/",
+      "Chance": 0.35,
+      "SealevelOffset": -70,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/stairs1.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/end/",
+      "GenerateEntrance": false,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.50
+        },
+        {
+          "name": "turn",
+          "chance": 0.30
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.1
+        }
+      ],
+      "replaceWithRockType": {
+        "rock-granite": "game:rock-{rock}",
+        "stonebricks-granite": "game:stonebricks-{rock}",
+        "drystone-granite": "game:drystone-{rock}",
+        "rockpolished-granite": "game:rockpolished-{rock}",
+        "cobblestone-granite": "game:cobblestone-{rock}",
+        "loosestones-granite-free": "game:loosestones-{rock}-free",
+        "looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "gravel-granite": "game:gravel-{rock}",
+        "stonebrickstairs-granite-*": "game:stonebrickstairs-{rock}-*",
+
+        "cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        
+        "stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "stonebrickstairs-granite-up-west-free": "game:stonebrickstairs-{rock}-up-west-free",
+        "stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "stonebrickstairs-granite-up-north-free": "game:stonebrickstairs-{rock}-up-north-free",
+        "stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "stonebrickstairs-granite-up-east-free": "game:stonebrickstairs-{rock}-up-east-free",
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon2/categories/",
+      "Chance": 0.15,
+      "SealevelOffset": -60,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/ladder.json",
+      "StairsRotation": false,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/end/",
+      "GenerateEntrance": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.70
+        },
+        {
+          "name": "turn",
+          "chance": 0.10
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.10
+        }
+      ],
+      "replaceWithRockType": {
+        "rock-granite": "game:rock-{rock}",
+        "stonebricks-granite": "game:stonebricks-{rock}",
+        "drystone-granite": "game:drystone-{rock}",
+        "rockpolished-granite": "game:rockpolished-{rock}",
+        "cobblestone-granite": "game:cobblestone-{rock}",
+        "loosestones-granite-free": "game:loosestones-{rock}-free",
+        "looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "gravel-granite": "game:gravel-{rock}",
+        "stonebrickstairs-granite-*": "game:stonebrickstairs-{rock}-*",
+
+        "cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        
+        "stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "stonebrickstairs-granite-up-west-free": "game:stonebrickstairs-{rock}-up-west-free",
+        "stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "stonebrickstairs-granite-up-north-free": "game:stonebrickstairs-{rock}-up-north-free",
+        "stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "stonebrickstairs-granite-up-east-free": "game:stonebrickstairs-{rock}-up-east-free",
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon2/categories/",
+      "Chance": 0.15,
+      "SealevelOffset": -60,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/ladder.json",
+      "StairsRotation": false,
+      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/end/",
+      "GenerateEntrance": false,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.70
+        },
+        {
+          "name": "turn",
+          "chance": 0.10
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.10
+        }
+      ],
+      "replaceWithRockType": {
+        "rock-granite": "game:rock-{rock}",
+        "stonebricks-granite": "game:stonebricks-{rock}",
+        "drystone-granite": "game:drystone-{rock}",
+        "rockpolished-granite": "game:rockpolished-{rock}",
+        "cobblestone-granite": "game:cobblestone-{rock}",
+        "loosestones-granite-free": "game:loosestones-{rock}-free",
+        "looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "gravel-granite": "game:gravel-{rock}",
+        "stonebrickstairs-granite-*": "game:stonebrickstairs-{rock}-*",
+
+        "cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        
+        "stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "stonebrickstairs-granite-up-west-free": "game:stonebrickstairs-{rock}-up-west-free",
+        "stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "stonebrickstairs-granite-up-north-free": "game:stonebrickstairs-{rock}-up-north-free",
+        "stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "stonebrickstairs-granite-up-east-free": "game:stonebrickstairs-{rock}-up-east-free",
+      }
+    }
+  ]
+}
