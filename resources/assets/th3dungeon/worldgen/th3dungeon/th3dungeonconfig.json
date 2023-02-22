@@ -4,17 +4,17 @@
   "Chance": 0.0008,
   "Dungeons": [
     {
-      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon1/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/categories/",
       "Chance": 0.35,
       "ReinforcementLevel": 0,
       "SealevelOffset": -70,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -2,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/start/",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/stairs1.json",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/stairs1.json",
       "StairsRotation": true,
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": true,
       "categories": [
         {
@@ -65,17 +65,17 @@
       }
     },
     {
-      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon1/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/categories/",
       "Chance": 0.35,
       "SealevelOffset": -70,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
       "StartTopOffsetY": -2,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/start/",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/stairs1.json",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/stairs1.json",
       "StairsRotation": true,
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon1/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": false,
       "categories": [
         {
@@ -126,17 +126,17 @@
       }
     },
     {
-      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon2/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/categories/",
       "Chance": 0.15,
       "SealevelOffset": -60,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
       "StartTopOffsetY": -2,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/start/",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/ladder.json",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/ladder.json",
       "StairsRotation": false,
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": true,
       "categories": [
         {
@@ -187,17 +187,17 @@
       }
     },
     {
-      "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon2/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/categories/",
       "Chance": 0.15,
       "SealevelOffset": -60,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
       "StartTopOffsetY": -2,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/start/",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/ladder.json",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/ladder.json",
       "StairsRotation": false,
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/bd_dungeon2/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": false,
       "categories": [
         {

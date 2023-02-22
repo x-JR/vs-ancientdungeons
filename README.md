@@ -42,17 +42,17 @@ Once the "Dungeons": [] is defined in the `ModConfig/th3dungeonconfig.json` it w
   "Chance": 0.0008,
   "Dungeons": [
     {
-      "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/default/categories/",
       "Chance": 0.5,
       "ReinforcementLevel": 0,
       "SealevelOffset": -16,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
-      "StairsPath": "th3dungeon:worldgen/dungeon/default/stairs2.json",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/default/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/default/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/default/stairs2.json",
       "StairsRotation": true,
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/default/end/",
       "GenerateEntrance": true,
       "categories": [
         {
@@ -74,17 +74,17 @@ Once the "Dungeons": [] is defined in the `ModConfig/th3dungeonconfig.json` it w
       ]
     },
     {
-      "BasePath": "yourmod:worldgen/dungeon/yourDungeonType1/categories/",
+      "BasePath": "yourmod:worldgen/th3dungeon/yourDungeonType1/categories/",
       "Chance": 0.5,
       "ReinforcementLevel": 0,
       "SealevelOffset": -16,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
-      "StartRoomPath": "yourmod:worldgen/dungeon/yourDungeonType1/start/",
-      "StartRoomTopPath": "yourmod:worldgen/dungeon/yourDungeonType1/starttop/",
-      "StairsPath": "yourmod:worldgen/dungeon/yourDungeonType1/stairs2.json",
+      "StartRoomPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/start/",
+      "StartRoomTopPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/starttop/",
+      "StairsPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/stairs2.json",
       "StairsRotation": true,
-      "EndRoomPath": "yourmod:worldgen/dungeon/yourDungeonType1/end/",
+      "EndRoomPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/end/",
       "GenerateEntrance": true,
       "categories": [
         {
@@ -147,7 +147,7 @@ for example a category with long straight rooms and a high chance will produce d
   "Dungeons": [
     {
       // base path for this dungeon config, this folder should contain the category folders
-      "BasePath": "th3dungeon:worldgen/dungeon/noentrance/categories/",
+      "BasePath": "th3dungeon:worldgen/th3dungeon/noentrance/categories/",
       // chance for this configuration to be choosen out of all , needs to add up to 1
       "Chance": 1,
       // this is where the dungeon will start underground and most of its rooms will be around that height
@@ -160,15 +160,15 @@ for example a category with long straight rooms and a high chance will produce d
       // to overlap the startroomtop with the stairs
         "StartTopOffsetY": -1,
       // path to the start room (room under ground sealevel + SealevelOffset)
-      "StartRoomPath": "th3dungeon:worldgen/dungeon/default/start/",
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/default/start/",
       // room on the surface, connects to start room (underground) witht the variable height stairs room
-      "StartRoomTopPath": "th3dungeon:worldgen/dungeon/default/starttop/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/default/starttop/",
       // path to the stars room (the stairs room is a partial room, this means it will be stacked ontop of it and rotated 90 degrees each step until it reaches the top)
-      "StairsPath": "th3dungeon:worldgen/dungeon/stairs.json",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/stairs.json",
       // if stairs should be rotated (false: usefull for stairs using ladders)
       "StairsRotation": true,
       // path to folder where the endrooms are, they are used to close off open ends
-      "EndRoomPath": "th3dungeon:worldgen/dungeon/default/end/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/default/end/",
       // those are the main part of the dungeon, the categories here correspond to folder within the mod to load the rooms from
       "categories": [
         {
@@ -226,11 +226,11 @@ This mod contains the dungeon generator, the needed doorway-block to connect roo
 
 If you want to add your own dungeons you can do so by:
 Making your own mod that adds more rooms and place everything in the following folder
-`yourmod/worldgen/dungeon/`
+`yourmod/worldgen/th3dungeon/`
 from here you can add a folder structure like the following:
 
 ```
-assets/yourmod/worldgen/dungeon/
+assets/yourmod/worldgen/th3dungeon/
 ├─ yourDungeonType1/
 │  ├─ categories/
 │  │  ├─ rooms/
@@ -250,7 +250,7 @@ assets/yourmod/worldgen/dungeon/
 ├─ th3dungeonconfig.json
 ```
 
-in every folder you can put as many rooms/schematics as you want. And with the following config you should be good to go. You can name the folders what ever you want. Here is a `th3dungeonconfig.json` for the above folder structure. It is important that you have the `th3dungeonconfig.json` at exactly this location in your mod `assets/yourmod/worldgen/dungeon/th3dungeonconfig.json`, since the th3dungoen mod will search all mods for `.../worldgen/dungeon/th3dungeonconfig.json` files to merge them into one big config.
+in every folder you can put as many rooms/schematics as you want. And with the following config you should be good to go. You can name the folders what ever you want. Here is a `th3dungeonconfig.json` for the above folder structure. It is important that you have the `th3dungeonconfig.json` at exactly this location in your mod `assets/yourmod/worldgen/th3dungeon/th3dungeonconfig.json`, since the th3dungoen mod will search all mods for `.../worldgen/th3dungeon/th3dungeonconfig.json` files to merge them into one big config.
 
 
 
@@ -261,17 +261,17 @@ in every folder you can put as many rooms/schematics as you want. And with the f
   "Chance": 0.0008,
   "Dungeons": [
     {
-      "BasePath": "yourmod:worldgen/dungeon/yourDungeonType1/categories/",
+      "BasePath": "yourmod:worldgen/th3dungeon/yourDungeonType1/categories/",
       "Chance": 1,
       "ReinforcementLevel": 0,
       "SealevelOffset": -16,
       "RoomsToGenerate": 50,
       "StartTopOffsetY": -1,
-      "StartRoomPath": "yourmod:worldgen/dungeon/yourDungeonType1/start/",
-      "StartRoomTopPath": "yourmod:worldgen/dungeon/yourDungeonType1/starttop/",
-      "StairsPath": "yourmod:worldgen/dungeon/yourDungeonType1/stairs2.json",
+      "StartRoomPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/start/",
+      "StartRoomTopPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/starttop/",
+      "StairsPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/stairs2.json",
       "StairsRotation": true,
-      "EndRoomPath": "yourmod:worldgen/dungeon/yourDungeonType1/end/",
+      "EndRoomPath": "yourmod:worldgen/th3dungeon/yourDungeonType1/end/",
       "GenerateEntrance": true,
       "categories": [
         {
