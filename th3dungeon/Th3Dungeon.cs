@@ -1,4 +1,4 @@
-// #define DEBUG_WIREFRAME
+#define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,7 +132,7 @@ namespace th3dungeon
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Mod.Logger.Fatal($"failed loading ModConfig/th3dungeonconfig.json {e.Message}");
             }
             
             RockStrata = _api.Assets.Get<RockStrataConfig>(new AssetLocation("game:worldgen/rockstrata.json"));
@@ -145,11 +145,15 @@ namespace th3dungeon
             {
                 _dungeonsConfig = new DungeonsConfig
                 {
-                    ChunkRange = modConfig?.ChunkRange ?? 6,
-                    Chance = modConfig?.Chance ?? 0.001f,
-                    Debug =  modConfig?.Debug ?? false,
                     Dungeons = new List<DungeonConfig>()
                 };
+                
+                if (modConfig != null)
+                {
+                    _dungeonsConfig.ChunkRange = modConfig.ChunkRange != 0 ? modConfig.ChunkRange : 6;
+                    _dungeonsConfig.Chance = modConfig.Chance != 0 ? modConfig.Chance : 0.0008f;
+                    _dungeonsConfig.Debug =  modConfig.Debug !=0 ? modConfig.Debug : 0;
+                }
                 var dungeonsConfigs = _api.Assets.GetMany<DungeonsConfig>(Mod.Logger,"worldgen/th3dungeon/th3dungeonconfig.json");
                 
                 // merge all configs
@@ -169,7 +173,6 @@ namespace th3dungeon
                         _dungeonsConfig.ChunkRange = dungeonConfig.Value.ChunkRange;
                     }
 
-                    _dungeonsConfig.Debug = _dungeonsConfig.Debug || dungeonConfig.Value.Debug;
                     float sumModDungeon = 0;
                     dungeonConfig.Value.Dungeons.ForEach(dungeon => sumModDungeon += dungeon.Chance);
                     if (Math.Abs(sumModDungeon - 1f) > 0.001)
@@ -298,7 +301,7 @@ namespace th3dungeon
         private void GenDungeonCheck(DungeonData data, int dx, int dz)
         {
             data.DungeonConfig = ChooseDungeon();
-            if (_dungeonsConfig.Debug)
+            if (_dungeonsConfig.Debug == 3)
             {
                 if (data.ChunkX + dx == 16000 && data.ChunkZ + dz == 16000)
                 {
@@ -353,8 +356,6 @@ namespace th3dungeon
                 GenEntrance(data, x, z, data.Schematic.SizeY, startRoomRotation);
             }
 
-            var placedRooms = 0;
-
             for (var i = 0; i < data.DungeonConfig.RoomsToGenerate; i++)
             {
                 if (data.DoorPos.Count <= 0) continue;
@@ -369,23 +370,20 @@ namespace th3dungeon
                 // get spawn pos offset from next room and previous room and previous facing
                 if (!GetNext(data, current)) continue;
                 
-                placedRooms++;
                 Place(data);
             }
 
-            if (_dungeonsConfig.Debug && dx == 0 && dz == 0)
+            if (_dungeonsConfig.Debug > 0 && dx == 0 && dz == 0)
             {
-                Mod.Logger.VerboseDebug($"placed: {placedRooms}");
-                Mod.Logger.VerboseDebug($"pos: {x} {z}");
-                Mod.Logger.VerboseDebug($"/tp {x - _api.WorldManager.MapSizeY / 2} 120 {z - _api.WorldManager.MapSizeY / 2}");
                 Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
                 Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
+                Mod.Logger.VerboseDebug($"/tp ={x} 120 ={z}");
             }
 
             GenRoomEnds(data, dx == 0 && dz == 0);
 
 #if DEBUG_WIREFRAME
-            if (dx == 0 && dz == 0)
+            if (_dungeonsConfig.Debug > 1 && dx == 0 && dz == 0)
             {
                 if (_generatedRoomsC == null)
                 {
@@ -595,7 +593,7 @@ namespace th3dungeon
                 }
                 else
                 {
-                    if (log)
+                    if (_dungeonsConfig.Debug > 0 && log)
                     {
                         Mod.Logger.VerboseDebug($"failed end: {data.NextSpawn.Position}");
                     }

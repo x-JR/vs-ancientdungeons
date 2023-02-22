@@ -1,7 +1,7 @@
 {
   "ChunkRange": 6,
-  "Debug": false,
-  "Chance": 0.001,
+  "Debug": 0,
+  "Chance": 0.0008,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/dungeon/bd_dungeon1/categories/",

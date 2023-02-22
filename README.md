@@ -23,8 +23,8 @@ If you dont want to have the default dungeons you can add a `th3dungeonconfig.js
 
 The default values for the config are:
 -  ChunkRange=6
--  Debug=false
--  Chance=0.0002
+-  Debug=0
+-  Chance=0.0008
 
 ```json
 {
@@ -38,8 +38,8 @@ Once the "Dungeons": [] is defined in the `ModConfig/th3dungeonconfig.json` it w
 ```json
 {
   "ChunkRange": 6,
-  "Debug": false,
-  "Chance": 0.001,
+  "Debug": 0,
+  "Chance": 0.0008,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/dungeon/default/categories/",
@@ -138,10 +138,12 @@ for example a category with long straight rooms and a high chance will produce d
   // used to for the generation it will determine how big the dungeon can be from the center so 6 will allow a dungeon to be the size of 6 chunks to for each direction so 6 in north, east , south and west so total a 12 by 12 chunks
   // be carefull a too high value my slow worldgen drastically
   "ChunkRange": 6,
-  // if set to true will only spawn one dungoen at x=0 z=0
-  "Debug": true,
+  // if set to 1 it will print spawnlocations in the debug log on the server
+  // when set to 2 it will log and also send visual debug boxes to the clients
+  // if set to 3 it will only spawn one dungoen at x=0 z=0 + all previous debug
+  "Debug": 1,
   // if debug is false this is the chance that a dungeon can spawn in a chunk
-  "Chance": 0.001,
+  "Chance": 0.0008,
   "Dungeons": [
     {
       // base path for this dungeon config, this folder should contain the category folders
@@ -187,7 +189,11 @@ for example a category with long straight rooms and a high chance will produce d
           "name": "rooms",
           "chance": 0.2
         }
-      ]
+      ],
+      // used like in vanilla to replace certain rocks with the local rocktypes where the room will be generated
+      "replaceWithRockType": {
+        "rock-granite": "game:rock-{rock}"
+      }
     }
   ]
 }
@@ -251,8 +257,8 @@ in every folder you can put as many rooms/schematics as you want. And with the f
 ```json
 {
   "ChunkRange": 6,
-  "Debug": true,
-  "Chance": 0.001,
+  "Debug": 0,
+  "Chance": 0.0008,
   "Dungeons": [
     {
       "BasePath": "yourmod:worldgen/dungeon/yourDungeonType1/categories/",
