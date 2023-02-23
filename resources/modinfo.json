@@ -7,7 +7,7 @@
         "NiclAss"
     ],
     "description": "A mod to bring procedural dungeon generation to Vintage Story",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "dependencies": {
         "game": "1.16.0"
     }
