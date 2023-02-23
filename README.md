@@ -8,6 +8,7 @@ This is a Vintage Story dungeon generator mod
 - handbuild your rooms that the dungeon generator will use to generate the dungeons
 - the generated dungeons are deterministic (means if you share your world seed it will generate the same world with the same dungeons) this is requiered to even generate the dungeons across multiple chunks
 - procedural dungeon generation, every dungeon will be unique
+- as admin or in singleplayer you can run `/mapth3dungeons 10` to add a waypoint for every dungeon within 10 chunk radius - very helpful for testing
 
 ## Using the th3dungeon mod / making custom rooms
 

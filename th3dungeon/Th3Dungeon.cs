@@ -1,14 +1,17 @@
 #define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using th3dungeon.Data;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.Client.NoObf;
+using Vintagestory.GameContent;
 
 namespace th3dungeon
 {
@@ -58,6 +61,47 @@ namespace th3dungeon
             _api.Event.InitWorldGenerator(InitWorldGen, "standard");
 
             _api.Event.ChunkColumnGeneration(GenChunkColumn, EnumWorldGenPass.TerrainFeatures, "standard");
+            
+            _api.RegisterCommand("mapth3dungeons", "adds a waypoint for every th3dungeon within the specified chunk radius", "[radius in chunks]", (player, groupId, args) =>
+            {
+                var distance = (int)args.PopInt(10);
+                var chunkRand = new LCGRandom(api.World.Seed);
+                var worldMapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
+                if (worldMapManager.MapLayers.FirstOrDefault(l => l is WaypointMapLayer) is
+                    WaypointMapLayer waypointMapLayer)
+                {
+                    var chunkX = player.Entity.Pos.AsBlockPos.X / 32;
+                    var chunkZ = player.Entity.Pos.AsBlockPos.Z / 32;
+                    var addedWaypoints = 0;
+
+                    for (var dx = -distance; dx <= distance; dx++)
+                    {
+                        for (var dz = -distance; dz <= distance; dz++)
+                        {
+                            chunkRand.InitPositionSeed(chunkX + dx, chunkZ + dz);
+                            var unused = chunkRand.NextFloat();
+                            var spawnChance = chunkRand.NextFloat();
+                            if (spawnChance <= _dungeonsConfig.Chance)
+                            {
+                                var x = 32 * (chunkX + dx);
+                                var z = 32 * (chunkZ + dz);
+                                var wp = new Waypoint
+                                {
+                                    Color = -23296, // Orange
+                                    OwningPlayerUid = player.PlayerUID,
+                                    Position = new Vec3d(x, 100, z),
+                                    Title = "Th3Dungeon",
+                                    Icon = "ruins",
+                                    Pinned = false,
+                                };
+                                waypointMapLayer.Waypoints.Add(wp);
+                                addedWaypoints++;
+                            }
+                        }
+                    }
+                    player.SendMessage(GlobalConstants.GeneralChatGroup, $"Added {addedWaypoints} waypoints", EnumChatType.CommandSuccess);
+                }
+            }, Privilege.root);
 
 #if DEBUG_WIREFRAME
             _serverNetworkChannel = api.Network.RegisterChannel("th3dungeon-debug");

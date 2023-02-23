@@ -14,6 +14,12 @@ namespace th3dungeon.Data
         public float Chance;
 
         public bool ExcludeTh3Dungeons;
+
+        public DungeonsConfig()
+        {
+            Chance = 0.0008f;
+            ChunkRange = 6;
+        }
     }
 
     public class DungeonConfig
