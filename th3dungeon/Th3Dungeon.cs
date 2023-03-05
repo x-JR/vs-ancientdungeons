@@ -113,7 +113,7 @@ namespace th3dungeon
 #if DEBUG_WIREFRAME
         private void OnPlayerNowPlaying(IServerPlayer byPlayer)
         {
-            if (_dungeonsConfig.Debug > 1 &&  _generatedRoomsC != null)
+            if (_dungeonsConfig != null && _dungeonsConfig.Debug > 1 &&  _generatedRoomsC != null)
             {
                 _serverNetworkChannel.SendPacket(_generatedRoomsC, byPlayer);
             }
