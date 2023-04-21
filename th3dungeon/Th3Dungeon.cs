@@ -1,13 +1,10 @@
 #define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using th3dungeon.Data;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
-using Vintagestory.API.Config;
-using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.Client.NoObf;
@@ -331,21 +328,20 @@ namespace th3dungeon
             // RuntimeEnv.DebugOutOfRangeBlockAccess = true; 1985799215
         }
 
-        
-
-        private void GenChunkColumn(IServerChunk[] chunks, int chunkX, int chunkZ, ITreeAttribute chunkGenParams = null)
+        private void GenChunkColumn(IChunkColumnGenerateRequest request)
         {
-            var data = new DungeonData(chunkX, chunkZ, chunks);
+            var data = new DungeonData(request.ChunkX, request.ChunkZ, request.Chunks);
 
             for (var dx = -_chunkRange; dx <= _chunkRange; dx++)
             {
                 for (var dz = -_chunkRange; dz <= _chunkRange; dz++)
                 {
-                    _chunkRand.InitPositionSeed(chunkX + dx, chunkZ + dz);
+                    _chunkRand.InitPositionSeed(request.ChunkX + dx, request.ChunkZ + dz);
                     GenDungeonCheck(data, dx, dz);
                 }
             }
         }
+
         private void GenDungeonCheck(DungeonData data, int dx, int dz)
         {
             data.DungeonConfig = ChooseDungeon();
@@ -656,6 +652,7 @@ namespace th3dungeon
             // get the correct next room rotation based on the facing
             // schematic = GetRoomRotation(data);
             data.Schematic.Place(_chunkGenBlockAccessor, _api.World, data);
+            data.Schematic.PlaceDecors(_chunkGenBlockAccessor, data);
 
             foreach (var doorPos in data.Schematic.Doors.Where(pos => !(data.NextSpawn.Position + pos.Position).Equals(data.NextSpawn.OrigPosition)))
             {

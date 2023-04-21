@@ -20,7 +20,7 @@ namespace th3dungeon
 
         public new void Init(IBlockAccessor blockAccessor)
         {
-            base.Init(blockAccessor);
+            InitMetaBlocks(blockAccessor);
             _chunkSize = blockAccessor.ChunkSize;
             _worldHeight = blockAccessor.MapSizeY;
 
@@ -167,7 +167,7 @@ namespace th3dungeon
                 
                 placed += handler(blockAccessor, curPos, newBlock, replaceMetaBlocks);
 
-                // only works if we have a blockaccessor that has the updateHeighmap set to true
+                // only works if we have a blockaccessor that has the updateHeightmap set to true
                 if (newBlock.LightHsv[2] > 0 && blockAccessor is IWorldGenBlockAccessor accessor)
                 {
                     accessor.ScheduleBlockLightUpdate(curPos.Copy(), oldBlock.BlockId, newBlock.BlockId);
@@ -214,7 +214,7 @@ namespace th3dungeon
             };
         }
 
-        public void PlaceDecors(IBlockAccessor blockAccessor, BlockPos startPos, bool synchronize, int chunkX, int chunkZ)
+        public void PlaceDecors(IBlockAccessor blockAccessor, DungeonData data)
         {
             var curPos = new BlockPos();
             for (var i = 0; i < DecorIndices.Count; i++)
@@ -225,34 +225,27 @@ namespace th3dungeon
                 var dy = (int)((index >> 20) & 0x1ff);
                 var dz = (int)((index >> 10) & 0x1ff);
 
-                if ((dx + startPos.X) / _chunkSize != chunkX || (dz + startPos.Z) / _chunkSize != chunkZ) continue;
+                if ((dx + data.NextSpawn.Position.X) / _chunkSize != data.ChunkX || (dz + data.NextSpawn.Position.Z) / _chunkSize != data.ChunkZ) continue;
                 
                 var storedBlockId = DecorIds[i];
-                var faceIndex = (byte)(storedBlockId >> 24);
-                if (faceIndex > 5) continue;
-
+                byte faceIndex = (byte)(storedBlockId >> 24);
+                if (faceIndex > 5) return;
                 var face = BlockFacing.ALLFACES[faceIndex];
                 storedBlockId &= 0xFFFFFF;
-
                 var blockCode = BlockCodes[storedBlockId];
 
                 var newBlock = blockAccessor.GetBlock(blockCode);
 
-                if (newBlock == null) continue;
+                if (newBlock == null) return;
 
-                curPos.Set(dx + startPos.X, dy + startPos.Y, dz + startPos.Z);
-
-                var chunk = blockAccessor.GetChunkAtBlockPos(curPos);
-                if (chunk == null) continue;
-                if (synchronize) blockAccessor.MarkChunkDecorsModified(curPos);
-                chunk.SetDecor(blockAccessor, newBlock, curPos, face);
-                chunk.MarkModified();
+                curPos.Set(dx + data.NextSpawn.Position.X, dy + data.NextSpawn.Position.Y, dz + data.NextSpawn.Position.Z);
+                blockAccessor.SetDecor(newBlock, curPos, face);
             }
         }
 
         protected override int PlaceReplaceable(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
-            if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, 4).Replaceable > newBlock.Replaceable)
+            if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, BlockLayersAccess.MostSolid).Replaceable > newBlock.Replaceable)
             {
                 blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
                 return 1;
@@ -263,7 +256,8 @@ namespace th3dungeon
         protected override int PlaceReplaceAllNoAir(IBlockAccessor blockAccessor, BlockPos pos, Block newBlock, bool replaceMeta)
         {
             if (newBlock.BlockId == 0) return 0;
-            
+            if (newBlock.ForFluidsLayer) blockAccessor.SetBlock(0, pos, BlockLayersAccess.Solid);
+
             blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
             return 1;
         }
@@ -310,7 +304,7 @@ namespace th3dungeon
 
                 if (be == null) continue;
                 
-                var block = blockAccessor.GetBlock(curPos);
+                var block = blockAccessor.GetBlock(curPos, BlockLayersAccess.Solid);
                 if (block.EntityClass != worldForCollectibleResolve.ClassRegistry.GetBlockEntityClass(be.GetType()))
                 {
                     worldForCollectibleResolve.Logger.Warning("Could not import block entity data for schematic at {0}. There is already {1}, expected {2}. Probably overlapping ruins.", curPos, be.GetType(), block.EntityClass);
@@ -324,7 +318,7 @@ namespace th3dungeon
 
                 be.FromTreeAttributes(tree, worldForCollectibleResolve);
                 be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
-                be.Pos = curPos.Copy();
+                be.OnPlacementBySchematic(worldForCollectibleResolve.Api as ICoreServerAPI, blockAccessor, curPos);
             }
 
             foreach (var entityData in Entities)
@@ -343,7 +337,7 @@ namespace th3dungeon
                     if (blockAccessor is IWorldGenBlockAccessor accessor)
                     {
                         accessor.AddEntity(entity);
-                        entity.OnInitialized += delegate
+                        entity.OnInitialized += () =>
                         {
                             entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
                         };
