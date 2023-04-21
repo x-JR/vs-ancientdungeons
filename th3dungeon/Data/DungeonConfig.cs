@@ -65,6 +65,7 @@ namespace th3dungeon.Data
         public Dictionary<AssetLocation, AssetLocation> ReplaceWithRockType { get; set; }
         
         public Dictionary<int, Dictionary<int, int>> ResolvedReplaceWithRockType { get; set; }
+        //public bool SuppressRivulets { get; set; }
     }
 
     public class DungeonRoomCategory
