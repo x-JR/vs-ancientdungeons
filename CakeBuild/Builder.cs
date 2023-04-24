@@ -63,6 +63,24 @@ public sealed class PackageTask : FrostingTask<BuildContext>
         context.EnsureDirectoryExists(context.PackageFolder);
         context.EnsureDirectoryExists(context.PackageFolderOut);
         context.CleanDirectory(context.PackageFolderOut);
+        context.CleanDirectory(context.PackageFolder);
+        context.CopyFiles($"../{context.Name}/bin/Release/*", $"{context.PackageFolder}/");
+        context.CopyDirectory("../resources/", context.PackageFolder);
+        context.CopyDirectory(context.PackageFolder, context.ZipFile);
+    }
+}
+
+[TaskName("Zip")]
+[IsDependentOn(typeof(BuildTask))]
+public sealed class ZipTask : FrostingTask<BuildContext>
+{
+    public override void Run(BuildContext context)
+    {
+        context.EnsureDirectoryExists(context.Packages);
+        context.EnsureDirectoryExists(context.PackageFolder);
+        context.EnsureDirectoryExists(context.PackageFolderOut);
+        context.CleanDirectory(context.PackageFolderOut);
+        context.CleanDirectory(context.PackageFolder);
         context.CopyFiles($"../{context.Name}/bin/Release/*", $"{context.PackageFolder}/");
         context.CopyDirectory("../resources/", context.PackageFolder);
         context.Zip(context.PackageFolder, context.ZipFile);

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Remove_Save" type="ShConfigurationType">
+  <configuration default="false" name="Remove_Save" type="ShConfigurationType" activateToolWindowBeforeRun="false">
     <option name="SCRIPT_TEXT" value="rm -rf $USER_HOME$/.config/VintagestoryDataModdingServer/Saves/default.vcdbs" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
