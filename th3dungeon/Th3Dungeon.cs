@@ -387,19 +387,23 @@ namespace th3dungeon
                 for (var dz = -_chunkRange; dz <= _chunkRange; dz++)
                 {
                     _chunkRand.InitPositionSeed(request.ChunkX + dx, request.ChunkZ + dz);
-                    GenDungeonCheck(data, dx, dz);
+                    data.Dx = dx;
+                    data.Dz = dz;
+                    data.ChunkXd = data.ChunkX + dx;
+                    data.ChunkZd = data.ChunkZ + dz;
+                    GenDungeonCheck(data);
                 }
             }
         }
 
-        private void GenDungeonCheck(DungeonData data, int dx, int dz)
+        private void GenDungeonCheck(DungeonData data)
         {
             data.DungeonConfig = ChooseDungeon();
             if (_dungeonsConfig.Debug == 3)
             {
-                if (data.ChunkX + dx == 16000 && data.ChunkZ + dz == 16000)
+                if (data.ChunkXd == 16000 && data.ChunkZd == 16000)
                 {
-                    GenDungeon(data, dx, dz);
+                    GenDungeon(data);
                 }
             }
             else if (_chunkRand.NextFloat() <= _dungeonsConfig.Chance)
@@ -408,15 +412,13 @@ namespace th3dungeon
             }
         }
 
-        private void GenDungeon(DungeonData data, int dx, int dz)
+        private void GenDungeon(DungeonData data)
         {
-            var chunkXd = data.ChunkX + dx;
-            var chunkZd = data.ChunkZ + dz;
             // error with top rooms so we place in center
             // var x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
             // var z = chunkZd * _chunkSize + _chunkRand.NextInt(_chunkSize);
-            var x = chunkXd * _chunkSize + 15;
-            var z = chunkZd * _chunkSize + 15;
+            var x = data.ChunkXd * _chunkSize + 15;
+            var z = data.ChunkZd * _chunkSize + 15;
 
             //choose initial room
             data.NextSpawn.Room = GetRandomRoom(data.DungeonConfig.StartRooms);
@@ -468,17 +470,17 @@ namespace th3dungeon
                 Place(data);
             }
 
-            if (_dungeonsConfig.Debug > 0 && dx == 0 && dz == 0)
+            if (_dungeonsConfig.Debug > 0 && data.Dx == 0 && data.Dz == 0)
             {
                 Mod.Logger.VerboseDebug($"GeneratedRooms: {data.GeneratedRooms.Count}");
                 Mod.Logger.VerboseDebug($"DoorPos.Count: {data.DoorPos.Count}");
                 Mod.Logger.VerboseDebug($"/tp ={x} 120 ={z}");
             }
 
-            GenRoomEnds(data, dx == 0 && dz == 0);
+            GenRoomEnds(data, data.Dx == 0 && data.Dz == 0);
 
 #if DEBUG_WIREFRAME
-            if (_dungeonsConfig.Debug > 1 && dx == 0 && dz == 0)
+            if (_dungeonsConfig.Debug > 1 && data.Dx == 0 && data.Dz == 0)
             {
                 if (_generatedRoomsC == null)
                 {
