@@ -48,7 +48,7 @@ namespace th3dungeon
 
         public override double ExecuteOrder()
         {
-            return 0.5;
+            return 0.51;
         }
 
         public override void StartServerSide(ICoreServerAPI api)
