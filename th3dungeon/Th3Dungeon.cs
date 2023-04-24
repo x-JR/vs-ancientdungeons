@@ -68,8 +68,9 @@ namespace th3dungeon
             _api.Event.ChunkColumnGeneration(GenChunkColumn, EnumWorldGenPass.TerrainFeatures, "standard");
 
             _api.Event.GameWorldSave += OnGameWorldSave;
-                
-            var dungeonDataFolder = Path.Combine(GamePaths.DataPath, "ModData", _api.WorldManager.SaveGame.SavegameIdentifier);
+
+            var dungeonDataFolder =
+                Path.Combine(GamePaths.DataPath, "ModData", _api.WorldManager.SaveGame.SavegameIdentifier);
             if (!Directory.Exists(dungeonDataFolder))
             {
                 Directory.CreateDirectory(dungeonDataFolder);
@@ -78,7 +79,9 @@ namespace th3dungeon
             else
             {
                 var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.dat");
-                _dungeonSaveData = File.Exists(dungeonDataFile) ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile)) : new DungeonSaveData();
+                _dungeonSaveData = File.Exists(dungeonDataFile)
+                    ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile))
+                    : new DungeonSaveData();
             }
 
             _api.ChatCommands.Create("mapth3dungeons")
@@ -118,12 +121,13 @@ namespace th3dungeon
                                     dungeonF = i;
                                     break;
                                 }
+
                                 chanceStart += dungeon.Chance;
                             }
 
                             var spawnChance = chunkRand.NextFloat();
                             if (!(spawnChance <= _dungeonsConfig.Chance)) continue;
-                            
+
                             var newPos = new ChunkPos(chunkX + dx, chunkZ + dz);
                             var chunkPosListTmp = _dungeonSaveData.GeneratedDungeons.ToList();
                             var hasDungeon = chunkPosListTmp.Contains(newPos);
@@ -168,8 +172,9 @@ namespace th3dungeon
         private void OnGameWorldSave()
         {
             if (!_dungeonSaveData.Modified) return;
-            
-            var dungeonDataFile = Path.Combine(GamePaths.DataPath, "ModData", _api.WorldManager.SaveGame.SavegameIdentifier, "th3dungeon.dat");
+
+            var dungeonDataFile = Path.Combine(GamePaths.DataPath, "ModData",
+                _api.WorldManager.SaveGame.SavegameIdentifier, "th3dungeon.dat");
             var data = SerializerUtil.Serialize(_dungeonSaveData);
             File.WriteAllBytes(dungeonDataFile, data);
             _dungeonSaveData.Modified = false;
@@ -267,15 +272,27 @@ namespace th3dungeon
                     Dungeons = new List<DungeonConfig>()
                 };
 
-                if (modConfig != null)
-                {
-                    _dungeonsConfig.ChunkRange = modConfig.ChunkRange != 0 ? modConfig.ChunkRange : 6;
-                    _dungeonsConfig.Chance = modConfig.Chance != 0 ? modConfig.Chance : 0.0008f;
-                    _dungeonsConfig.Debug = modConfig.Debug != 0 ? modConfig.Debug : 0;
-                }
-
                 var dungeonsConfigs =
                     _api.Assets.GetMany<DungeonsConfig>(Mod.Logger, "worldgen/th3dungeon/th3dungeonconfig.json");
+
+                var th3DungeonConfig = dungeonsConfigs.First(d =>
+                    d.Key.Domain.Equals(Mod.Info.ModID)
+                ).Value;
+
+                if (th3DungeonConfig != null)
+                {
+                    _dungeonsConfig.Chance = th3DungeonConfig.Chance;
+                    _dungeonsConfig.ChunkRange = th3DungeonConfig.ChunkRange;
+                    _dungeonsConfig.Debug = th3DungeonConfig.Debug;
+                }
+
+                if (modConfig != null)
+                {
+                    _dungeonsConfig.ChunkRange = modConfig.ChunkRange != 0 ? modConfig.ChunkRange : _dungeonsConfig.ChunkRange;
+                    _dungeonsConfig.Chance = modConfig.Chance != 0 ? modConfig.Chance : _dungeonsConfig.Chance;
+                    _dungeonsConfig.Debug = modConfig.Debug != 0 ? modConfig.Debug : _dungeonsConfig.Debug;
+                }
+
 
                 // merge all configs
                 var dungeonCount = dungeonsConfigs.Count;
@@ -462,6 +479,7 @@ namespace th3dungeon
                     _dungeonSaveData.GeneratedDungeons.Add(newPos);
                     _dungeonSaveData.Modified = true;
                 }
+
                 GenDungeon(data);
             }
         }
