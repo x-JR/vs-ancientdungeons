@@ -105,6 +105,7 @@ namespace th3dungeon
                     var chunkZ = args.Caller.Player.Entity.Pos.AsBlockPos.Z / 32;
                     var addedWaypoints = 0;
 
+                    var chunkPosListTmp = _dungeonSaveData.GeneratedDungeons.ToList();
                     for (var dx = -distance; dx <= distance; dx++)
                     {
                         for (var dz = -distance; dz <= distance; dz++)
@@ -129,7 +130,6 @@ namespace th3dungeon
                             if (!(spawnChance <= _dungeonsConfig.Chance)) continue;
 
                             var newPos = new ChunkPos(chunkX + dx, chunkZ + dz);
-                            var chunkPosListTmp = _dungeonSaveData.GeneratedDungeons.ToList();
                             var hasDungeon = chunkPosListTmp.Contains(newPos);
                             if (!hasDungeon)
                             {
@@ -143,6 +143,7 @@ namespace th3dungeon
 
                             var x = 32 * (chunkX + dx) + 15;
                             var z = 32 * (chunkZ + dz) + 15;
+                            if(waypointMapLayer.Waypoints.Any(w => w.Position.X == x && w.Position.Y == 100 && w.Position.Z == z && w.Title.Contains("Th3Dungeon:"))) continue;
                             var wp = new Waypoint
                             {
                                 Color = -23296, // Orange
