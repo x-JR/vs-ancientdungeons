@@ -9,11 +9,14 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
+using Vintagestory.Server;
 
 namespace th3dungeon
 {
     public class Th3Dungeon : ModSystem
     {
+        private static int _dungeonWolrdSeedOffset = 3132;
+        
         private ICoreServerAPI _api;
 
         private IWorldGenBlockAccessor _chunkGenBlockAccessor;
@@ -68,7 +71,7 @@ namespace th3dungeon
                 .HandleWith((args) =>
                 {
                     var distance = (int)args.Parsers[0].GetValue();
-                    var chunkRand = new LCGRandom(api.World.Seed + 1095);
+                    var chunkRand = new LCGRandom(api.World.Seed + _dungeonWolrdSeedOffset);
                     var worldMapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
                     if (!(worldMapManager.MapLayers.FirstOrDefault(l => l is WaypointMapLayer) is
                             WaypointMapLayer waypointMapLayer))
@@ -198,7 +201,7 @@ namespace th3dungeon
 
         private void InitWorldGen()
         {
-            _chunkRand = new LCGRandom(_api.WorldManager.Seed + 1095);
+            _chunkRand = new LCGRandom(_api.WorldManager.Seed + _dungeonWolrdSeedOffset);
             DungeonsConfig modConfig = null;
             try
             {
