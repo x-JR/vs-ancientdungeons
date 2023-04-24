@@ -18,7 +18,6 @@ namespace th3dungeon
     public class Th3Dungeon : ModSystem
     {
         private static int _dungeonWorldSeedOffset = 3132;
-        private static int _dungeonMinDistance = 15;
 
         private DungeonSaveData _dungeonSaveData;
 
@@ -133,7 +132,7 @@ namespace th3dungeon
                             var hasDungeon = chunkPosListTmp.Contains(newPos);
                             if (!hasDungeon)
                             {
-                                if (chunkPosListTmp.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
+                                if (chunkPosListTmp.Any(cpos => cpos.Distance(newPos) <= _dungeonsConfig.MinDistanceChunks))
                                 {
                                     continue;
                                 }
@@ -285,6 +284,7 @@ namespace th3dungeon
                     _dungeonsConfig.Chance = th3DungeonConfig.Chance;
                     _dungeonsConfig.ChunkRange = th3DungeonConfig.ChunkRange;
                     _dungeonsConfig.Debug = th3DungeonConfig.Debug;
+                    _dungeonsConfig.MinDistanceChunks = th3DungeonConfig.MinDistanceChunks;
                 }
 
                 if (modConfig != null)
@@ -292,6 +292,7 @@ namespace th3dungeon
                     _dungeonsConfig.ChunkRange = modConfig.ChunkRange != 0 ? modConfig.ChunkRange : _dungeonsConfig.ChunkRange;
                     _dungeonsConfig.Chance = modConfig.Chance != 0 ? modConfig.Chance : _dungeonsConfig.Chance;
                     _dungeonsConfig.Debug = modConfig.Debug != 0 ? modConfig.Debug : _dungeonsConfig.Debug;
+                    _dungeonsConfig.MinDistanceChunks = modConfig.MinDistanceChunks != 0 ? modConfig.MinDistanceChunks : _dungeonsConfig.MinDistanceChunks;
                 }
 
 
@@ -472,7 +473,7 @@ namespace th3dungeon
                 var hasDungeon = _dungeonSaveData.GeneratedDungeons.Contains(newPos);
                 if (!hasDungeon)
                 {
-                    if (_dungeonSaveData.GeneratedDungeons.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
+                    if (_dungeonSaveData.GeneratedDungeons.Any(cpos => cpos.Distance(newPos) <= _dungeonsConfig.MinDistanceChunks))
                     {
                         return;
                     }

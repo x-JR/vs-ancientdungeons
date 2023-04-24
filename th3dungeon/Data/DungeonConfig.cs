@@ -10,6 +10,8 @@ namespace th3dungeon.Data
         public int ChunkRange;
 
         public int Debug;
+        
+        public int MinDistanceChunks;
 
         public float Chance;
 
