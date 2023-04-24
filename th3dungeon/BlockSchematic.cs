@@ -229,14 +229,14 @@ namespace th3dungeon
                 
                 var storedBlockId = DecorIds[i];
                 byte faceIndex = (byte)(storedBlockId >> 24);
-                if (faceIndex > 5) return;
+                if (faceIndex > 5) continue;
                 var face = BlockFacing.ALLFACES[faceIndex];
                 storedBlockId &= 0xFFFFFF;
                 var blockCode = BlockCodes[storedBlockId];
 
                 var newBlock = blockAccessor.GetBlock(blockCode);
 
-                if (newBlock == null) return;
+                if (newBlock == null) continue;
 
                 curPos.Set(dx + data.NextSpawn.Position.X, dy + data.NextSpawn.Position.Y, dz + data.NextSpawn.Position.Z);
                 blockAccessor.SetDecor(newBlock, curPos, face);
