@@ -15,7 +15,8 @@ namespace th3dungeon
 {
     public class Th3Dungeon : ModSystem
     {
-        private static int _dungeonWolrdSeedOffset = 3132;
+        private static int _dungeonWorldSeedOffset = 3132;
+        private static int _dungeonMinDistance = 15;
         
         private ICoreServerAPI _api;
 
@@ -71,7 +72,7 @@ namespace th3dungeon
                 .HandleWith((args) =>
                 {
                     var distance = (int)args.Parsers[0].GetValue();
-                    var chunkRand = new LCGRandom(api.World.Seed + _dungeonWolrdSeedOffset);
+                    var chunkRand = new LCGRandom(api.World.Seed + _dungeonWorldSeedOffset);
                     var worldMapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
                     if (!(worldMapManager.MapLayers.FirstOrDefault(l => l is WaypointMapLayer) is
                             WaypointMapLayer waypointMapLayer))
@@ -201,7 +202,7 @@ namespace th3dungeon
 
         private void InitWorldGen()
         {
-            _chunkRand = new LCGRandom(_api.WorldManager.Seed + _dungeonWolrdSeedOffset);
+            _chunkRand = new LCGRandom(_api.WorldManager.Seed + _dungeonWorldSeedOffset);
             DungeonsConfig modConfig = null;
             try
             {
@@ -408,7 +409,54 @@ namespace th3dungeon
             }
             else if (_chunkRand.NextFloat() <= _dungeonsConfig.Chance)
             {
-                GenDungeon(data, dx, dz);
+                var chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon");
+                
+                var newPos = new ChunkPos(data.ChunkXd, data.ChunkZd);
+                var hasDungeon = chunkPosList?.Contains(newPos) == true;
+                if (chunkPosList != null && chunkPosList.Count > 0 && !hasDungeon)
+                {
+                    var mrx = data.ChunkXd / MagicNum.ChunkRegionSizeInChunks;
+                    var mrz = data.ChunkZd / MagicNum.ChunkRegionSizeInChunks;
+                    for (int x = -1 ; x < 2; x++)
+                    {
+                        for (int z = -1 ; z < 2; z++)
+                        {
+                            var region = _api.WorldManager.GetMapRegion(mrx + x, mrz + z);
+                            chunkPosList = region?.GetModdata<List<ChunkPos>>("th3dungeon");
+                            if (chunkPosList != null && chunkPosList.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    
+                    // get original map region and add new dungeon
+                    chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon") ?? new List<ChunkPos>();
+                    chunkPosList.Add(newPos);
+                    data.Chunks[0].MapChunk.MapRegion.SetModdata("th3dungeon", chunkPosList);
+                }
+                else if(!hasDungeon)
+                {
+                    var mrx = data.ChunkXd / MagicNum.ChunkRegionSizeInChunks;
+                    var mrz = data.ChunkZd / MagicNum.ChunkRegionSizeInChunks;
+                    for (int x = -1 ; x < 2; x++)
+                    {
+                        for (int z = -1 ; z < 2; z++)
+                        {
+                            var region = _api.WorldManager.GetMapRegion(mrx + x, mrz + z);
+                            chunkPosList = region?.GetModdata<List<ChunkPos>>("th3dungeon");
+                            if (chunkPosList != null && chunkPosList.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    // we now know none of the neighbouring map regions has a dungeon within the min distance
+                    chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon") ?? new List<ChunkPos>();
+                    chunkPosList.Add(newPos);
+                    data.Chunks[0].MapChunk.MapRegion.SetModdata("th3dungeon", chunkPosList);
+                }
+                GenDungeon(data);
             }
         }
 
@@ -494,6 +542,17 @@ namespace th3dungeon
             if (!data.Initialized)
             {
                 data.Initialized = true;
+                // foreach (var area in data.GeneratedRooms)
+                // {
+                //     var mapRegion = _chunkGenBlockAccessor.GetMapRegion(area.X1 / _chunkGenBlockAccessor.RegionSize , area.Z1 / _chunkGenBlockAccessor.RegionSize);
+                //     var structure = new GeneratedStructure
+                //     {
+                //         Location = area,
+                //         SuppressRivulets = data.DungeonConfig.SuppressRivulets,
+                //         Code = "th3dungeon"
+                //     };
+                //     mapRegion.GeneratedStructures.Add(structure);
+                // }
             }
 
             if (data.Reinforcements == null) return;
@@ -559,7 +618,10 @@ namespace th3dungeon
         {
             //add the door offset to the position => will result in new block position where the next door needs to be
             data.NextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
-
+            // if (data.NextSpawn.OrigPosition.X == 512847 && data.NextSpawn.OrigPosition.Z == 512590 && data.ChunkDZ == 0 && data.ChunkDX == 0)
+            // {
+            //     Console.WriteLine("a");
+            // }
             // search for next facing
             // iterate over the 4 possible rotations of the room
             // make the rotations random and not in order
@@ -614,13 +676,15 @@ namespace th3dungeon
                 foreach (var pos in topPositions)
                 {
                     var height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos);
+                    // if (height > 0 && height <= pos.Y) 
                     if (height <= pos.Y)
                         return false;
                 }
             }
 
             return data.GeneratedRooms.All(room => !room.Intersects(area)) &&
-                   data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
+            data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
+            // return data.GeneratedRooms.All(room => !room.Intersects(area));
         }
 
         private void GenEntrance(DungeonData data, int x, int z, int startYSize, int rotation)
