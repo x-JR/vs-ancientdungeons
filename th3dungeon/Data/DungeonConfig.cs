@@ -17,8 +17,6 @@ namespace th3dungeon.Data
 
         public DungeonsConfig()
         {
-            Chance = 0.0008f;
-            ChunkRange = 6;
         }
     }
 
