@@ -1,15 +1,17 @@
 #define DEBUG_WIREFRAME
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using th3dungeon.Data;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
+using Vintagestory.API.Util;
 using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
-using Vintagestory.Server;
 
 namespace th3dungeon
 {
@@ -17,7 +19,9 @@ namespace th3dungeon
     {
         private static int _dungeonWorldSeedOffset = 3132;
         private static int _dungeonMinDistance = 15;
-        
+
+        private DungeonSaveData _dungeonSaveData;
+
         private ICoreServerAPI _api;
 
         private IWorldGenBlockAccessor _chunkGenBlockAccessor;
@@ -63,6 +67,20 @@ namespace th3dungeon
 
             _api.Event.ChunkColumnGeneration(GenChunkColumn, EnumWorldGenPass.TerrainFeatures, "standard");
 
+            _api.Event.GameWorldSave += OnGameWorldSave;
+                
+            var dungeonDataFolder = Path.Combine(GamePaths.DataPath, "ModData", _api.WorldManager.SaveGame.SavegameIdentifier);
+            if (!Directory.Exists(dungeonDataFolder))
+            {
+                Directory.CreateDirectory(dungeonDataFolder);
+                _dungeonSaveData = new DungeonSaveData();
+            }
+            else
+            {
+                var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.dat");
+                _dungeonSaveData = File.Exists(dungeonDataFile) ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile)) : new DungeonSaveData();
+            }
+
             _api.ChatCommands.Create("mapth3dungeons")
                 .WithAlias("mth3d")
                 .WithDescription("adds a waypoint for every th3dungeon within the specified chunk radius")
@@ -105,6 +123,19 @@ namespace th3dungeon
 
                             var spawnChance = chunkRand.NextFloat();
                             if (!(spawnChance <= _dungeonsConfig.Chance)) continue;
+                            
+                            var newPos = new ChunkPos(chunkX + dx, chunkZ + dz);
+                            var chunkPosListTmp = _dungeonSaveData.GeneratedDungeons.ToList();
+                            var hasDungeon = chunkPosListTmp.Contains(newPos);
+                            if (!hasDungeon)
+                            {
+                                if (chunkPosListTmp.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
+                                {
+                                    continue;
+                                }
+
+                                chunkPosListTmp.Add(newPos);
+                            }
 
                             var x = 32 * (chunkX + dx) + 15;
                             var z = 32 * (chunkZ + dz) + 15;
@@ -132,6 +163,16 @@ namespace th3dungeon
             _serverNetworkChannel.RegisterMessageType(typeof(List<Cuboidi>));
             _api.Event.PlayerNowPlaying += OnPlayerNowPlaying;
 #endif
+        }
+
+        private void OnGameWorldSave()
+        {
+            if (!_dungeonSaveData.Modified) return;
+            
+            var dungeonDataFile = Path.Combine(GamePaths.DataPath, "ModData", _api.WorldManager.SaveGame.SavegameIdentifier, "th3dungeon.dat");
+            var data = SerializerUtil.Serialize(_dungeonSaveData);
+            File.WriteAllBytes(dungeonDataFile, data);
+            _dungeonSaveData.Modified = false;
         }
 
 #if DEBUG_WIREFRAME
@@ -409,52 +450,17 @@ namespace th3dungeon
             }
             else if (_chunkRand.NextFloat() <= _dungeonsConfig.Chance)
             {
-                var chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon");
-                
                 var newPos = new ChunkPos(data.ChunkXd, data.ChunkZd);
-                var hasDungeon = chunkPosList?.Contains(newPos) == true;
-                if (chunkPosList != null && chunkPosList.Count > 0 && !hasDungeon)
+                var hasDungeon = _dungeonSaveData.GeneratedDungeons.Contains(newPos);
+                if (!hasDungeon)
                 {
-                    var mrx = data.ChunkXd / MagicNum.ChunkRegionSizeInChunks;
-                    var mrz = data.ChunkZd / MagicNum.ChunkRegionSizeInChunks;
-                    for (int x = -1 ; x < 2; x++)
+                    if (_dungeonSaveData.GeneratedDungeons.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
                     {
-                        for (int z = -1 ; z < 2; z++)
-                        {
-                            var region = _api.WorldManager.GetMapRegion(mrx + x, mrz + z);
-                            chunkPosList = region?.GetModdata<List<ChunkPos>>("th3dungeon");
-                            if (chunkPosList != null && chunkPosList.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
-                            {
-                                return;
-                            }
-                        }
+                        return;
                     }
-                    
-                    // get original map region and add new dungeon
-                    chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon") ?? new List<ChunkPos>();
-                    chunkPosList.Add(newPos);
-                    data.Chunks[0].MapChunk.MapRegion.SetModdata("th3dungeon", chunkPosList);
-                }
-                else if(!hasDungeon)
-                {
-                    var mrx = data.ChunkXd / MagicNum.ChunkRegionSizeInChunks;
-                    var mrz = data.ChunkZd / MagicNum.ChunkRegionSizeInChunks;
-                    for (int x = -1 ; x < 2; x++)
-                    {
-                        for (int z = -1 ; z < 2; z++)
-                        {
-                            var region = _api.WorldManager.GetMapRegion(mrx + x, mrz + z);
-                            chunkPosList = region?.GetModdata<List<ChunkPos>>("th3dungeon");
-                            if (chunkPosList != null && chunkPosList.Any(cpos => cpos.Distance(newPos) <= _dungeonMinDistance))
-                            {
-                                return;
-                            }
-                        }
-                    }
-                    // we now know none of the neighbouring map regions has a dungeon within the min distance
-                    chunkPosList = data.Chunks[0].MapChunk.MapRegion.GetModdata<List<ChunkPos>>("th3dungeon") ?? new List<ChunkPos>();
-                    chunkPosList.Add(newPos);
-                    data.Chunks[0].MapChunk.MapRegion.SetModdata("th3dungeon", chunkPosList);
+
+                    _dungeonSaveData.GeneratedDungeons.Add(newPos);
+                    _dungeonSaveData.Modified = true;
                 }
                 GenDungeon(data);
             }
@@ -683,7 +689,7 @@ namespace th3dungeon
             }
 
             return data.GeneratedRooms.All(room => !room.Intersects(area)) &&
-            data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
+                   data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
             // return data.GeneratedRooms.All(room => !room.Intersects(area));
         }
 
