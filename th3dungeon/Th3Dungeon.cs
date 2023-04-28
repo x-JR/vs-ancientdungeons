@@ -17,7 +17,7 @@ namespace th3dungeon
 {
     public class Th3Dungeon : ModSystem
     {
-        private static int _dungeonWorldSeedOffset = 3132;
+        private const int DungeonWorldSeedOffset = 3132;
 
         private DungeonSaveData _dungeonSaveData;
 
@@ -92,7 +92,7 @@ namespace th3dungeon
                 .HandleWith((args) =>
                 {
                     var distance = (int)args.Parsers[0].GetValue();
-                    var chunkRand = new LCGRandom(api.World.Seed + _dungeonWorldSeedOffset);
+                    var chunkRand = new LCGRandom(api.World.Seed + DungeonWorldSeedOffset);
                     var worldMapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
                     if (!(worldMapManager.MapLayers.FirstOrDefault(l => l is WaypointMapLayer) is
                             WaypointMapLayer waypointMapLayer))
@@ -248,7 +248,7 @@ namespace th3dungeon
 
         private void InitWorldGen()
         {
-            _chunkRand = new LCGRandom(_api.WorldManager.Seed + _dungeonWorldSeedOffset);
+            _chunkRand = new LCGRandom(_api.WorldManager.Seed + DungeonWorldSeedOffset);
             DungeonsConfig modConfig = null;
             try
             {
@@ -474,6 +474,13 @@ namespace th3dungeon
                 if (!hasDungeon)
                 {
                     if (_dungeonSaveData.GeneratedDungeons.Any(cpos => cpos.Distance(newPos) <= _dungeonsConfig.MinDistanceChunks))
+                    {
+                        return;
+                    }
+                    
+                    var worldChunk = _chunkGenBlockAccessor.GetChunk(data.ChunkXd, 0, data.ChunkZd);
+                    var height = worldChunk?.MapChunk.WorldGenTerrainHeightMap[15 * _chunkSize + 15];
+                    if(height == null || height < _api.World.SeaLevel)
                     {
                         return;
                     }
