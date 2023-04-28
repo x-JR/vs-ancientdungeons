@@ -2,6 +2,7 @@
   "ChunkRange": 6,
   "Debug": 0,
   "Chance": 0.005,
+  "MinDistanceChunks": 10,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/categories/",
@@ -16,6 +17,7 @@
       "StairsRotation": false,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": true,
+      "SuppressRivulets": true,
       "categories": [
         {
           "name": "straight",
