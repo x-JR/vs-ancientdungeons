@@ -120,6 +120,7 @@
       "StairsRotation": false,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": false,
+      "SuppressRivulets": true,
       "categories": [
         {
           "name": "straight",
@@ -222,6 +223,7 @@
       "StairsRotation": false,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": true,
+      "SuppressRivulets": true,
       "categories": [
         {
           "name": "straight",
@@ -324,6 +326,7 @@
       "StairsRotation": false,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": false,
+      "SuppressRivulets": true,
       "categories": [
         {
           "name": "straight",
@@ -422,6 +425,7 @@
       "StartRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon3/start/",
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon3/end/",
       "GenerateEntrance": false,
+      "SuppressRivulets": true,
       "categories": [
         {
           "name": "straight",
