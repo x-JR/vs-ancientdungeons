@@ -441,7 +441,7 @@ namespace th3dungeon
 
         private void GenChunkColumn(IChunkColumnGenerateRequest request)
         {
-            var data = new DungeonData(request.ChunkX, request.ChunkZ, request.Chunks);
+            var data = new DungeonData(request);
 
             for (var dx = -_chunkRange; dx <= _chunkRange; dx++)
             {
@@ -529,7 +529,7 @@ namespace th3dungeon
 
             for (var i = 0; i < data.DungeonConfig.RoomsToGenerate; i++)
             {
-                if (data.DoorPos.Count <= 0) continue;
+                if (data.DoorPos.Count <= 0) break;
 
                 //chose next room to spawn
                 data.NextSpawn.Room = ChooseRoom(data);
@@ -568,17 +568,6 @@ namespace th3dungeon
             if (!data.Initialized)
             {
                 data.Initialized = true;
-                // foreach (var area in data.GeneratedRooms)
-                // {
-                //     var mapRegion = _chunkGenBlockAccessor.GetMapRegion(area.X1 / _chunkGenBlockAccessor.RegionSize , area.Z1 / _chunkGenBlockAccessor.RegionSize);
-                //     var structure = new GeneratedStructure
-                //     {
-                //         Location = area,
-                //         SuppressRivulets = data.DungeonConfig.SuppressRivulets,
-                //         Code = "th3dungeon"
-                //     };
-                //     mapRegion.GeneratedStructures.Add(structure);
-                // }
             }
 
             if (data.Reinforcements == null) return;
@@ -644,10 +633,7 @@ namespace th3dungeon
         {
             //add the door offset to the position => will result in new block position where the next door needs to be
             data.NextSpawn.OrigPosition = current.Position.AddCopy(current.Facing);
-            // if (data.NextSpawn.OrigPosition.X == 512847 && data.NextSpawn.OrigPosition.Z == 512590 && data.ChunkDZ == 0 && data.ChunkDX == 0)
-            // {
-            //     Console.WriteLine("a");
-            // }
+
             // search for next facing
             // iterate over the 4 possible rotations of the room
             // make the rotations random and not in order
@@ -662,7 +648,7 @@ namespace th3dungeon
                     // the new spawn position is the original new door position - the offset from the origin of the door position
                     data.NextSpawn.Position = data.NextSpawn.OrigPosition - nex.Position;
 
-                    // get the area that the new room will occupie
+                    // get the area that the new room will occupy
                     var area = new Cuboidi(data.NextSpawn.Position,
                         data.NextSpawn.Position.AddCopy(data.Schematic.SizeX, data.Schematic.SizeY,
                             data.Schematic.SizeZ));
@@ -675,9 +661,21 @@ namespace th3dungeon
                         data.DoorPos.Remove(current);
                     }
 
+
                     if (!data.Initialized)
                     {
                         data.GeneratedRooms.Add(area);
+                        if (area.X1 / _chunkGenBlockAccessor.ChunkSize == data.ChunkX && area.Z1 / _chunkGenBlockAccessor.ChunkSize == data.ChunkZ )
+                        {
+                            var mapRegion = _chunkGenBlockAccessor.GetMapRegion(area.X1 / _chunkGenBlockAccessor.RegionSize , area.Z1 / _chunkGenBlockAccessor.RegionSize);
+                            var structure = new GeneratedStructure
+                            {
+                                Location = area,
+                                SuppressRivulets = data.DungeonConfig.SuppressRivulets,
+                                Code = $"th3dungeon-{data.NextSpawn.Room.Name}"
+                            };
+                            mapRegion.GeneratedStructures.Add(structure);
+                        }
                     }
 
                     return true;
@@ -699,18 +697,14 @@ namespace th3dungeon
                     new BlockPos(area.X2, area.Y2, area.Z2)
                 };
 
-                foreach (var pos in topPositions)
+                if ((from pos in topPositions let height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos) where height > 0 && height <= pos.Y select pos).Any())
                 {
-                    var height = _chunkGenBlockAccessor.GetTerrainMapheightAt(pos);
-                    // if (height > 0 && height <= pos.Y) 
-                    if (height <= pos.Y)
-                        return false;
+                    return false;
                 }
             }
 
             return data.GeneratedRooms.All(room => !room.Intersects(area)) &&
-                   data.GeneratedStructures.All(structure => !structure.Location.Intersects(area));
-            // return data.GeneratedRooms.All(room => !room.Intersects(area));
+                   data.Chunks[0].MapChunk.MapRegion.GeneratedStructures.Where(s => !s.Code.StartsWith("th3")).All(structure => !structure.Location.Intersects(area));
         }
 
         private void GenEntrance(DungeonData data, int x, int z, int startYSize, int rotation)

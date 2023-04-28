@@ -50,21 +50,18 @@ namespace th3dungeon.Data
 
         public bool Initialized;
 
-        public List<GeneratedStructure> GeneratedStructures;
-
         public IServerChunk[] Chunks;
 
         public Dictionary<int, BlockReinforcement>[] Reinforcements;
 
-        public DungeonData(int chunkX, int chunkZ, IServerChunk[] chunks)
+        public DungeonData(IChunkColumnGenerateRequest request)
         {
             DoorPos = new List<DoorPos>();
             NextSpawn = new SpawnTransform();
             GeneratedRooms = new List<Cuboidi>();
-            ChunkX = chunkX;
-            ChunkZ = chunkZ;
-            GeneratedStructures = chunks[0].MapChunk.MapRegion.GeneratedStructures;
-            Chunks = chunks;
+            Chunks = request.Chunks;
+            ChunkX = request.ChunkX;
+            ChunkZ = request.ChunkZ;
         }
     }
 }
