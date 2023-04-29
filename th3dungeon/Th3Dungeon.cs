@@ -83,9 +83,48 @@ namespace th3dungeon
                     : new DungeonSaveData();
             }
 
+            // _api.ChatCommands.Create("ins").WithDescription("seas").RequiresPrivilege(Privilege.root).HandleWith((args) =>
+            // {
+            //     var cur = args.Caller.Player.Entity.Pos.AsBlockPos;
+            //     var mapRegion = _api.WorldManager.GetMapRegion(cur.X / MagicNum.MapRegionSize, cur.Z / MagicNum.MapRegionSize);
+            //     var mapRegionGeneratedStructures = mapRegion.GeneratedStructures;
+            //     var a = mapRegionGeneratedStructures.Count;
+            //     return  TextCommandResult.Success();
+            // });
+
+            _api.ChatCommands.Create("deleteth3dungeons")
+                .WithAlias("dth3d")
+                .WithDescription("deletes th3dungeons within the specified chunk radius from the generated list")
+                .WithAdditionalInformation("mainly for testing but maybe helpful for regenerating when changing world gen params")
+                .RequiresPrivilege(Privilege.root)
+                .RequiresPlayer()
+                .WithArgs(_api.ChatCommands.Parsers.OptionalInt("chunk_range", 10))
+                .HandleWith((args) =>
+                {
+                    var distance = (int)args.Parsers[0].GetValue();
+                    var chunkX = args.Caller.Player.Entity.Pos.AsBlockPos.X / 32;
+                    var chunkZ = args.Caller.Player.Entity.Pos.AsBlockPos.Z / 32;
+                    var pos = new ChunkPos();
+                    var removed = 0;
+                    for (var dx = -distance; dx <= distance; dx++)
+                    {
+                        for (var dz = -distance; dz <= distance; dz++)
+                        {
+                            pos.X = chunkX + dx;
+                            pos.Z = chunkZ + dz;
+                            if (_dungeonSaveData.GeneratedDungeons.Remove(_dungeonSaveData.GeneratedDungeons.Find(cp => cp.Equals(pos))))
+                            {
+                                removed++;
+                                _dungeonSaveData.Modified = true;
+                            }
+                        }
+                    }
+                    return TextCommandResult.Success($"Removed {removed} dungeon spawn positions from th3dungeon.bin");
+                });
+
             _api.ChatCommands.Create("mapth3dungeons")
                 .WithAlias("mth3d")
-                .WithDescription("adds a waypoint for every th3dungeon within the specified chunk radius")
+                .WithDescription("adds a waypoint for every potential th3dungeon spawn within the specified chunk radius (not 100% accurate)")
                 .RequiresPrivilege(Privilege.root)
                 .RequiresPlayer()
                 .WithArgs(_api.ChatCommands.Parsers.OptionalInt("chunk_range", 10))
@@ -453,6 +492,11 @@ namespace th3dungeon
                     data.ChunkXd = data.ChunkX + dx;
                     data.ChunkZd = data.ChunkZ + dz;
                     GenDungeonCheck(data);
+                    // if (data.Logs != null)
+                    // {
+                    //     Mod.Logger.VerboseDebug(string.Join("\n", data.Logs));
+                    //     data.Logs = null;
+                    // }
                 }
             }
         }
@@ -489,6 +533,7 @@ namespace th3dungeon
                     _dungeonSaveData.Modified = true;
                 }
 
+                // data.Logs = new List<string> { $"X={data.ChunkX} + {data.Dx} : Z={data.ChunkZ} + {data.Dz}" };
                 GenDungeon(data);
             }
         }
@@ -525,7 +570,7 @@ namespace th3dungeon
 
             //adjust start pos after initial room cuboid is added
             data.Schematic.AdjustStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
-
+            //Mod.Logger.VerboseDebug(string.Join("\n ", data.Chunks[0].MapChunk.MapRegion.GeneratedStructures.Select(g => $"{g.Code}: {g.Location}")));
             //spawn initial room
             Place(data);
 
@@ -684,6 +729,7 @@ namespace th3dungeon
                             mapRegion.GeneratedStructures.Add(structure);
                         }
                     }
+                    // data.Logs.Add($"{data.NextSpawn.Room.Name}: {area}");
 
                     return true;
                 }

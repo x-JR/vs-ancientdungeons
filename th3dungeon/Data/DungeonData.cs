@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
@@ -17,6 +16,8 @@ namespace th3dungeon.Data
         public BlockSchematic Schematic;
 
         public DungeonConfig DungeonConfig;
+
+        //public List<string> Logs;
 
         /// <summary>
         /// chunk x coordinate

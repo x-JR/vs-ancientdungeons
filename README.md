@@ -8,8 +8,9 @@ This is a Vintage Story dungeon generator mod
 - handbuild your rooms that the dungeon generator will use to generate the dungeons
 - the generated dungeons are deterministic (means if you share your world seed it will generate the same world with the same dungeons) this is requiered to even generate the dungeons across multiple chunks
 - procedural dungeon generation, every dungeon will be unique
-- as admin or in singleplayer you can run `/mapth3dungeons 10` or `/mth3d 10` to add a waypoint for every dungeon within 10 chunk radius - very helpful for testing
+- as admin or in singleplayer you can run `/mapth3dungeons 10` or `/mth3d 10` to add a waypoint for potential dungeon spawns within 10 chunk radius - very helpful for testing
   - Note: since version 0.1.2 this command is not 100% accurate due to generation changes 
+- admin command to delete dungeons `/deleteth3dungeons 10`  or `/dth3d 10` from the `th3dungeon.bin` file (helpful for regeneration) 
 
 ## Behaviour
   - dungeons will only spawn underground and no longer in water
