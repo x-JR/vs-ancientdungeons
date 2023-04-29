@@ -77,7 +77,7 @@ namespace th3dungeon
             }
             else
             {
-                var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.dat");
+                var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.bin");
                 _dungeonSaveData = File.Exists(dungeonDataFile)
                     ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile))
                     : new DungeonSaveData();
@@ -174,7 +174,7 @@ namespace th3dungeon
             if (!_dungeonSaveData.Modified) return;
 
             var dungeonDataFile = Path.Combine(GamePaths.DataPath, "ModData",
-                _api.WorldManager.SaveGame.SavegameIdentifier, "th3dungeon.dat");
+                _api.WorldManager.SaveGame.SavegameIdentifier, "th3dungeon.bin");
             var data = SerializerUtil.Serialize(_dungeonSaveData);
             File.WriteAllBytes(dungeonDataFile, data);
             _dungeonSaveData.Modified = false;

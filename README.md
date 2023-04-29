@@ -8,7 +8,14 @@ This is a Vintage Story dungeon generator mod
 - handbuild your rooms that the dungeon generator will use to generate the dungeons
 - the generated dungeons are deterministic (means if you share your world seed it will generate the same world with the same dungeons) this is requiered to even generate the dungeons across multiple chunks
 - procedural dungeon generation, every dungeon will be unique
-- as admin or in singleplayer you can run `/mapth3dungeons 10` to add a waypoint for every dungeon within 10 chunk radius - very helpful for testing
+- as admin or in singleplayer you can run `/mapth3dungeons 10` or `/mth3d 10` to add a waypoint for every dungeon within 10 chunk radius - very helpful for testing
+  - Note: since version 0.1.2 this command is not 100% accurate due to generation changes 
+
+## Behaviour
+  - dungeons will only spawn underground and no longer in water
+  - the provided dungeons shouldn't contain any water sources within them (underground)
+  - due to some issues the dungeons sometimes wont generate perfectly, this means missing parts of a room or miss placed rooms (this seems to be less of an issue when the dungeon is generated when normal exploring but can be more of a problem when teleporting towards a dungeon that hasn't been yet generated)
+  - Dungeons spawn positions are saved to a separate file `ModData/<WorldID>/th3dungeon.bin` this was needed to boost performance while preventing overlapping of dungeons 
 
 ## Using the th3dungeon mod / making custom rooms
 
@@ -41,6 +48,7 @@ Once the "Dungeons": [] is defined in the `ModConfig/th3dungeonconfig.json` it w
   "ChunkRange": 6,
   "Debug": 0,
   "Chance": 0.0008,
+  "MinDistanceChunks": 10,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/default/categories/",
@@ -55,6 +63,8 @@ Once the "Dungeons": [] is defined in the `ModConfig/th3dungeonconfig.json` it w
       "StairsRotation": true,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/default/end/",
       "GenerateEntrance": true,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
@@ -145,6 +155,8 @@ for example a category with long straight rooms and a high chance will produce d
   "Debug": 1,
   // if debug is false this is the chance that a dungeon can spawn in a chunk
   "Chance": 0.0008,
+  // this is the minum distance a dungeon has to be from any other dungeon (in chunks [32 blocks])
+  "MinDistanceChunks": 10,
   "Dungeons": [
     {
       // base path for this dungeon config, this folder should contain the category folders
@@ -171,6 +183,10 @@ for example a category with long straight rooms and a high chance will produce d
       "StairsPath": "th3dungeon:worldgen/th3dungeon/stairs.json",
       // if stairs should be rotated (false: usefull for stairs using ladders)
       "StairsRotation": true,
+      // this allows to prevent generation of single water sources within the dungeon
+      "SuppressRivulets": true,
+      // ensures all rooms stay below surface
+      "OnlyBelowSurface": true,
       // path to folder where the endrooms are, they are used to close off open ends
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/default/end/",
       // those are the main part of the dungeon, the categories here correspond to folder within the mod to load the rooms from
