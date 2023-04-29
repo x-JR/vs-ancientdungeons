@@ -12,6 +12,7 @@ using Vintagestory.API.Server;
 using Vintagestory.API.Util;
 using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
+using Vintagestory.ServerMods;
 
 namespace th3dungeon
 {
@@ -444,35 +445,7 @@ namespace th3dungeon
 
                 if (dungeon.ReplaceWithRockType == null) return;
 
-                dungeon.ResolvedReplaceWithRockType = new Dictionary<int, Dictionary<int, int>>();
-
-                foreach (var val in dungeon.ReplaceWithRockType)
-                {
-                    var blockIdByRockId = new Dictionary<int, int>();
-                    foreach (var strat in RockStrata.Variants)
-                    {
-                        var rockBlock = _api.World.GetBlock(strat.BlockCode);
-                        var resolvedLoc = val.Value.Clone();
-                        resolvedLoc.Path = resolvedLoc.Path.Replace("{rock}", rockBlock.LastCodePart());
-
-                        var resolvedBlock = _api.World.GetBlock(resolvedLoc);
-                        if (resolvedBlock == null) continue;
-                        blockIdByRockId[rockBlock.Id] = resolvedBlock.Id;
-
-                        var quartzBlock =
-                            _api.World.GetBlock(new AssetLocation("ore-quartz-" + rockBlock.LastCodePart()));
-                        if (quartzBlock != null)
-                        {
-                            blockIdByRockId[quartzBlock.Id] = resolvedBlock.Id;
-                        }
-                    }
-
-                    var sourceBlocks = _api.World.SearchBlocks(val.Key);
-                    foreach (var sourceBlock in sourceBlocks)
-                    {
-                        dungeon.ResolvedReplaceWithRockType[sourceBlock.Id] = blockIdByRockId;
-                    }
-                }
+                dungeon.ResolvedReplaceWithRockType = WorldGenStructuresConfigBase.ResolveRockTypeRemaps(dungeon.ReplaceWithRockType,RockStrata,_api);
             });
             Mod.Logger.Event($"{_dungeonsConfig.Dungeons.Count} Dungeons Loaded");
             // RuntimeEnv.DebugOutOfRangeBlockAccess = true; 1985799215
