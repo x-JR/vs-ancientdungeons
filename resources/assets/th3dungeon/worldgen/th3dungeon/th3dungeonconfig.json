@@ -18,6 +18,7 @@
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": true,
       "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
@@ -121,6 +122,7 @@
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon1/end/",
       "GenerateEntrance": false,
       "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
@@ -224,6 +226,7 @@
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": true,
       "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
@@ -327,6 +330,7 @@
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon2/end/",
       "GenerateEntrance": false,
       "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
@@ -426,6 +430,7 @@
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/bd_dungeon3/end/",
       "GenerateEntrance": false,
       "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
       "categories": [
         {
           "name": "straight",
