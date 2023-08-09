@@ -2,10 +2,10 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
-/.idea.th3dungeon.iml
-/modules.xml
-/contentModel.xml
 /projectSettingsUpdater.xml
+/contentModel.xml
+/modules.xml
+/.idea.Th3Dungeon.iml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files
