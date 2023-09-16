@@ -24,6 +24,10 @@ for some basic inspiration on what is needed to make a room take a look at this 
 
 https://drive.google.com/file/d/1ibl9OXsPLLmGfWUgXnTWsWlDNPe2i72v/view?usp=sharing
 
+## Bachelor Thesis about Th3Dungeon
+If you wanna read up more how the mod works without analyzing the code yourself take a look at the my Bachelors Thesis about this mod.
+[Thesis](resources/bachelor_thesis_th3dungeon.pdf)
+
 ### Configuration
 If you use multiple mods that provide more dungeons every mods dungeons share the same chance to spawn. This means that if you have th3dungon and one additional mod that adds dungeons, 50% of the time a th3dungon will spawn and the other 50% the other mods dungeons. Then within each mods dungeons the corresponding chance values will be used to spawn a mods dungeon type.
 
