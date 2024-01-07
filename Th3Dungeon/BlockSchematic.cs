@@ -318,7 +318,7 @@ namespace th3dungeon
 
                 be.FromTreeAttributes(tree, worldForCollectibleResolve);
                 be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
-                be.OnPlacementBySchematic(worldForCollectibleResolve.Api as ICoreServerAPI, blockAccessor, curPos);
+                be.OnPlacementBySchematic(worldForCollectibleResolve.Api as ICoreServerAPI, blockAccessor, curPos, null, 0, null, true);
             }
 
             foreach (var entityData in Entities)
