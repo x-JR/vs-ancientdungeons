@@ -1,0 +1,647 @@
+{
+  "ChunkRange": 6,
+  "Debug": 0,
+  "Chance": 0.005, //0.005
+  "MinDistanceChunks": 8, //10
+  "Dungeons": [
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/categories/",
+      "Chance": 0.05, //0.15
+      "ReinforcementLevel": 0,
+      "SealevelOffset": -70,
+      "RoomsToGenerate": 50,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-ladder.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/end/",
+      "GenerateEntrance": true,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.50
+        },
+        {
+          "name": "turn",
+          "chance": 0.30
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.1
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/categories/",
+      "Chance": 0.15, //0.15
+      "SealevelOffset": -70,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-start2-noentrance.json",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-ladder.json",
+      "StairsRotation": false,
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/end/",
+      "GenerateEntrance": false,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.50
+        },
+        {
+          "name": "turn",
+          "chance": 0.30
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.1
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/categories/",
+      "Chance": 0.05, //0.15
+      "SealevelOffset": -60,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/th3dungeon2-ladder.json",
+      "StairsRotation": false,
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/end/",
+      "GenerateEntrance": true,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.70
+        },
+        {
+          "name": "turn",
+          "chance": 0.10
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.10
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/categories/",
+      "Chance": 0.15, //0.15
+      "SealevelOffset": -60,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 100,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/th3dungeon2-ladder.json",
+      "StairsRotation": false,
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/end/",
+      "GenerateEntrance": false,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.70
+        },
+        {
+          "name": "turn",
+          "chance": 0.10
+        },
+        {
+          "name": "updown",
+          "chance": 0.10
+        },
+        {
+          "name": "rooms",
+          "chance": 0.10
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/categories/",
+      "Chance": 0.4, //0.40
+      "SealevelOffset": -60,
+      "ReinforcementLevel": 0,
+      "RoomsToGenerate": 25,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/start/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/end/",
+      "GenerateEntrance": false,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.30
+        },
+        {
+          "name": "turn",
+          "chance": 0.20
+        },
+        {
+          "name": "updown",
+          "chance": 0.20
+        },
+        {
+          "name": "cross",
+          "chance": 0.30
+        }
+      ]
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/categories/",
+      "Chance": 0.05, //0.15
+      "ReinforcementLevel": 0,
+      "SealevelOffset": -35,
+      "RoomsToGenerate": 35,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/start/",
+      "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/starttop/",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/th3dungeon4-ladder.json",
+      "StairsRotation": true,
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/end/",
+      "GenerateEntrance": true,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.75
+        },
+        {
+          "name": "rooms",
+          "chance": 0.25
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+
+      }
+    },
+    {
+      "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/categories/",
+      "Chance": 0.15, //0.15
+      "ReinforcementLevel": 0,
+      "SealevelOffset": -35,
+      "RoomsToGenerate": 35,
+      "StartTopOffsetY": -2,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/startwithnotop/",
+      "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/end/",
+      "GenerateEntrance": false,
+      "SuppressRivulets": true,
+      "OnlyBelowSurface": true,
+      "categories": [
+        {
+          "name": "straight",
+          "chance": 0.75
+        },
+        {
+          "name": "rooms",
+          "chance": 0.25
+        }
+      ],
+      "replaceWithRockType": {
+        "game:cobblestone-granite": "game:cobblestone-{rock}",
+        "game:cobblestoneslab-granite-down-free": "game:cobblestoneslab-{rock}-down-free",
+        "game:cobblestonestairs-granite-up-south-free": "game:cobblestonestairs-{rock}-up-south-free",
+        "game:cobblestonestairs-granite-up-north-free": "game:cobblestonestairs-{rock}-up-north-free",
+        "game:cobblestonestairs-granite-up-west-free": "game:cobblestonestairs-{rock}-up-west-free",
+        "game:cobblestonestairs-granite-up-east-free": "game:cobblestonestairs-{rock}-up-east-free",
+        "game:rock-granite": "game:rock-{rock}",
+        "game:cobblestonestairs-granite-down-south-free": "game:cobblestonestairs-{rock}-down-south-free",
+        "game:cobblestonestairs-granite-down-north-free": "game:cobblestonestairs-{rock}-down-north-free",
+        "game:cobblestonestairs-granite-down-west-free": "game:cobblestonestairs-{rock}-down-west-free",
+        "game:cobblestonestairs-granite-down-east-free": "game:cobblestonestairs-{rock}-down-east-free",
+        "game:cobbleskull-granite": "game:cobbleskull-{rock}",
+        "game:cobblestoneslab-granite-up-free": "game:cobblestoneslab-{rock}-up-free",
+        "game:loosestones-granite-free": "game:loosestones-{rock}-free",
+        "game:cobblestoneslab-granite-east-free": "game:cobblestoneslab-{rock}-east-free",
+        "game:cobblestoneslab-granite-south-free": "game:cobblestoneslab-{rock}-south-free",
+        "game:looseflints-granite-free": "game:looseflints-{rock}-free",
+        "game:cobblestoneslab-granite-west-free": "game:cobblestoneslab-{rock}-west-free",
+        "game:cobblestoneslab-granite-north-free": "game:cobblestoneslab-{rock}-north-free",
+        "game:polishedrockslab-granite-west-free": "game:polishedrockslab-{rock}-west-free",
+        "game:polishedrockslab-granite-east-free": "game:polishedrockslab-{rock}-east-free",
+        "game:polishedrockslab-granite-down-free": "game:polishedrockslab-{rock}-down-free",
+        "game:gravel-granite": "game:gravel-{rock}",
+        "game:stonebricks-granite": "game:stonebricks-{rock}",
+        "game:polishedrockslab-granite-south-free": "game:polishedrockslab-{rock}-south-free",
+        "game:polishedrockslab-granite-north-free": "game:polishedrockslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-north-free": "game:stonebrickstairs-{rock}-down-north-free",
+        "game:stonebrickstairs-granite-down-south-free": "game:stonebrickstairs-{rock}-down-south-free",
+        "game:stonebrickslab-granite-north-free": "game:stonebrickslab-{rock}-north-free",
+        "game:stonebrickstairs-granite-down-west-free": "game:stonebrickstairs-{rock}-down-west-free",
+        "game:rockpolished-granite": "game:rockpolished-{rock}",
+        "game:stonebrickslab-granite-up-free": "game:stonebrickslab-{rock}-up-free",
+        "game:stonebrickstairs-granite-down-east-free": "game:stonebrickstairs-{rock}-down-east-free",
+        "game:stonebrickstairs-granite-up-south-free": "game:stonebrickstairs-{rock}-up-south-free",
+        "game:stonebrickslab-granite-east-free": "game:stonebrickslab-{rock}-east-free",
+
+        "game:stonebrickstairs-granite-up-east-free":"game:stonebrickstairs-{rock}-up-east-free",
+
+        "game:stonebrickstairs-granite-up-north-free":"game:stonebrickstairs-{rock}-up-north-free",
+        "game:stonebrickstairs-granite-up-west-free":"game:stonebrickstairs-{rock}-up-west-free",
+        "game:agedstonebricks-granite":"game:agedstonebricks-{rock}",
+        "game:crackedrock-granite":"game:crackedrock-{rock}",
+        "game:drystone-granite": "game:drystone-{rock}",
+        "game:looseboulders-granite-free": "game:looseboulders-{rock}-free",
+        "game:polishedrockold-cobbled-granite": "game:rockpolished-{rock}",
+        "game:polishedrockold-full-granite":"game:drystone-{rock}",
+        "game:stonebrickslab-granite-down-free":"game:stonebrickslab-{rock}-down-free",
+
+        "game:drystonefence-granite-ew-free":"game:drystonefence-{rock}-ew-free",
+        "game:drystonefence-granite-sw-free":"game:drystonefence-{rock}-sw-free",
+        "game:drystonefence-granite-nw-free":"game:drystonefence-{rock}-nw-free",
+        "game:drystonefence-granite-esw-free":"game:drystonefence-{rock}-esw-free",
+        "game:drystonefence-granite-nes-free":"game:drystonefence-{rock}-nes-free",
+        "game:drystonefence-granite-nsw-free":"game:drystonefence-{rock}-nsw-free",
+        "game:drystonefence-granite-new-free":"game:drystonefence-{rock}-new-free",
+        "game:drystonefence-granite-es-free":"game:drystonefence-{rock}-es-free",
+        "game:drystonefence-granite-en-free":"game:drystonefence-{rock}-en-free",
+        "game:drystonefence-granite-ne-free":"game:drystonefence-{rock}-ne-free",
+        "game:drystonefence-granite-s-free":"game:drystonefence-{rock}-s-free",
+        "game:drystonefence-granite-w-free":"game:drystonefence-{rock}-w-free",
+        "game:drystonefence-granite-n-free":"game:drystonefence-{rock}-n-free",
+        "game:drystonefence-granite-e-free":"game:drystonefence-{rock}-e-free",
+
+        "game:drystonefence-granite-empty-free":"game:drystonefence-{rock}-empty-free",
+
+        "game:stonebrickslab-granite-west-free":"game:stonebrickslab-{rock}-west-free",
+        "game:stonebrickslab-granite-south-free":"game:stonebrickslab-{rock}-south-free",
+        "game:ore-flint-granite": "game:ore-flint-{rock}"
+
+      }
+    }
+  ]
+}
