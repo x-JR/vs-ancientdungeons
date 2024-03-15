@@ -61,6 +61,8 @@ namespace th3dungeon
             _api = api;
 
             _chunkSize = api.WorldManager.ChunkSize;
+            var loreContent = api.World.Config.GetBool("loreContent", true);
+            if (!loreContent) return;
 
             _api.Event.GetWorldgenBlockAccessor(OnWorldGenBlockAccessor);
             _api.Event.InitWorldGenerator(InitWorldGen, "standard");
