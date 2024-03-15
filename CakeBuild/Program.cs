@@ -102,6 +102,20 @@ public sealed class PackageTask : FrostingTask<BuildContext>
     }
 }
 
+[TaskName("PackageEntrance")]
+public sealed class PackageTaskEntrance : FrostingTask<BuildContext>
+{
+    public override void Run(BuildContext context)
+    {
+        context.EnsureDirectoryExists("../Releases");
+        context.CleanDirectory("../Releases");
+        context.EnsureDirectoryExists("../Releases/Th3DungonTopEntrance");
+        context.CopyDirectory("../Th3DungonTopEntrance", $"../Releases/Th3DungonTopEntrance/");
+        var modInfo = context.DeserializeJsonFromFile<ModInfo>($"../Th3DungonTopEntrance/modinfo.json");
+        context.Zip($"../Releases/Th3DungonTopEntrance", $"../Releases/Th3DungonTopEntrance_{modInfo.Version}.zip");
+    }
+}
+
 [TaskName("Default")]
 [IsDependentOn(typeof(PackageTask))]
 public class DefaultTask : FrostingTask

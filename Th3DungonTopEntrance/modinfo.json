@@ -1,0 +1,16 @@
+{
+    "type": "content",
+    "modid": "th3dungeontopentrance",
+    "name": "Th3DungeonTopEntrance",
+    "authors": [
+        "Th3Dilli",
+        "NiclAss"
+    ],
+    "side": "Server",
+    "description": "A config mod to add to each dungeon a entrance visible at the surface.",
+    "version": "0.1.0",
+    "dependencies": {
+        "game": "1.19.0",
+        "th3dungeon": "0.2.0"
+    }
+}
