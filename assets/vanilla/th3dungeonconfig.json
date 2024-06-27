@@ -119,7 +119,7 @@
       "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-start2-noentrance.json",
       "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/starttop/",
       "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-ladder.json",
-      "StairsRotation": false,
+      "StairsRotation": true,
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/end/",
       "GenerateEntrance": false,
       "SuppressRivulets": true,

@@ -2,6 +2,13 @@
   {
     "op": "replace",
     "path": "/Dungeons",
+    "file": "th3dungeon:worldgen/th3dungeon/th3dungeonconfig.json",
+    "side": "Server",
+    "dependsOn": [
+      {
+        "modid": "th3dungeon"
+      }
+    ],
     "value": [
       {
         "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/categories/",
@@ -118,7 +125,7 @@
         "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-start2-noentrance.json",
         "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/starttop/",
         "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/th3dungeon1-ladder.json",
-        "StairsRotation": false,
+        "StairsRotation": true,
         "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/end/",
         "GenerateEntrance": true,
         "SuppressRivulets": true,
@@ -647,13 +654,6 @@
           "game:ore-flint-granite": "game:ore-flint-{rock}"
 
         }
-      }
-    ],
-    "file": "th3dungeon:worldgen/th3dungeon/th3dungeonconfig.json",
-    "side": "Server",
-    "dependsOn": [
-      {
-        "modid": "th3dungeon"
       }
     ]
   }
