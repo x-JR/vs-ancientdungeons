@@ -35,9 +35,9 @@ namespace th3dungeon
         private int _chunkRange = 5;
 
 #if DEBUG_WIREFRAME
-        private DrawWireframeCube _drawWireframeCube;
+        private WireframeCube _drawWireframeCube;
 
-        private ClientMain _game;
+        private ICoreClientAPI _capi;
 
         private IServerNetworkChannel _serverNetworkChannel;
 
@@ -233,8 +233,8 @@ namespace th3dungeon
 
         public override void StartClientSide(ICoreClientAPI api)
         {
-            _game = (ClientMain)api.World;
-            _drawWireframeCube = new DrawWireframeCube(_game, -1);
+            _capi = api;
+            _drawWireframeCube = WireframeCube.CreateUnitCube(_capi, -1);
             var dummyRenderer = new DummyRenderer
             {
                 action = OnRender,
@@ -278,7 +278,7 @@ namespace th3dungeon
                 var halfSizeX = room.SizeX / 2f;
                 var halfSizeY = room.SizeY / 2f;
                 var halfSizeZ = room.SizeZ / 2f;
-                _drawWireframeCube.Render(_game, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ,
+                _drawWireframeCube.Render(_capi, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ,
                     halfSizeX, halfSizeY, halfSizeZ, 4f, _debugColor);
             }
         }

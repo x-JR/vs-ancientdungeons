@@ -6,6 +6,7 @@ using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
+using Vintagestory.ServerMods;
 
 namespace th3dungeon
 {
@@ -20,7 +21,6 @@ namespace th3dungeon
 
         public new void Init(IBlockAccessor blockAccessor)
         {
-            InitMetaBlocks(blockAccessor);
             _chunkSize = blockAccessor.ChunkSize;
             _worldHeight = blockAccessor.MapSizeY;
 
@@ -153,7 +153,7 @@ namespace th3dungeon
 
                 var newBlock = blockAccessor.GetBlock(blockCode);
 
-                if (newBlock == null || (replaceMetaBlocks && newBlock == undergroundBlock)) continue;
+                if (newBlock == null || (replaceMetaBlocks && newBlock.Id == UndergroundBlockId)) continue;
 
                 var oldBlock = blockAccessor.GetBlock(curPos);
 
@@ -232,7 +232,7 @@ namespace th3dungeon
                 if (faceIndex > 5) continue;
                 var face = BlockFacing.ALLFACES[faceIndex];
                 storedBlockId &= 0xFFFFFF;
-                var blockCode = BlockCodes[storedBlockId];
+                var blockCode = BlockCodes[(int)storedBlockId];
 
                 var newBlock = blockAccessor.GetBlock(blockCode);
 
@@ -247,7 +247,7 @@ namespace th3dungeon
         {
             if (newBlock.ForFluidsLayer || blockAccessor.GetBlock(pos, BlockLayersAccess.MostSolid).Replaceable > newBlock.Replaceable)
             {
-                blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+                blockAccessor.SetBlock(replaceMeta && (IsFillerOrPath(newBlock) || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
                 return 1;
             }
             return 0;
@@ -258,7 +258,7 @@ namespace th3dungeon
             if (newBlock.BlockId == 0) return 0;
             if (newBlock.ForFluidsLayer) blockAccessor.SetBlock(0, pos, BlockLayersAccess.Solid);
 
-            blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+            blockAccessor.SetBlock(replaceMeta && (IsFillerOrPath(newBlock) || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
             return 1;
         }
 
@@ -266,7 +266,7 @@ namespace th3dungeon
         {
             if (blockAccessor.GetMostSolidBlock(pos).BlockId != 0) return 0;
             
-            blockAccessor.SetBlock(replaceMeta && (newBlock == fillerBlock || newBlock == pathwayBlock || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
+            blockAccessor.SetBlock(replaceMeta && (IsFillerOrPath(newBlock) || IsDoor(newBlock)) ? empty : newBlock.BlockId, pos);
             return 1;
         }
 
@@ -339,13 +339,13 @@ namespace th3dungeon
                         accessor.AddEntity(entity);
                         entity.OnInitialized += () =>
                         {
-                            entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                            entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, GenStructures.ReplaceMetaBlocks);
                         };
                     }
                     else
                     {
                         worldForCollectibleResolve.SpawnEntity(entity);
-                        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, GenStructures.ReplaceMetaBlocks);
                     }
 
                 }
