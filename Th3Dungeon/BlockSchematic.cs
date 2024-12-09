@@ -30,6 +30,7 @@ namespace th3dungeon
             _doorWest = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-west"));
 
             Doors = new List<DoorPos>();
+            base.Init(blockAccessor);
         }
 
         public void LoadMeta(IBlockAccessor blockAccessor, IWorldAccessor worldForResolve, string fileNameForLogging)
