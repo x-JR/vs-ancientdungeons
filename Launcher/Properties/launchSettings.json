@@ -4,7 +4,7 @@
       "hotReloadEnabled": true,
       "targetProject": "$(SolutionDir)/Launcher/Launcher.csproj",
       "commandName": "Project",
-      "commandLineArgs": "--tracelog --addModPath $(SolutionDir)/Th3Dungeon/bin/$(Configuration)/Mods --dataPath $(VINTAGE_STORY_DATA_MODDING)",
+      "commandLineArgs": "--tracelog -p preset-surviveandbuild -o test --addModPath $(SolutionDir)/Th3Dungeon/bin/$(Configuration)/Mods --dataPath $(VINTAGE_STORY_DATA_MODDING)",
       "workingDirectory": "$(SolutionDir)/Launcher/bin/$(Configuration)/"
     }
   }
