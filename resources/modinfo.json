@@ -4,11 +4,14 @@
     "name": "Th3Dungeon",
     "authors": [
         "Th3Dilli",
-        "NiclAss"
+        "NiclAss",
+        "Dampus",
+        "StAdrian",
+        "Ogdred"
     ],
     "description": "A mod to bring procedural dungeon generation to Vintage Story",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "dependencies": {
-        "game": "1.20.0-rc.1"
+        "game": "1.20.1"
     }
 }
