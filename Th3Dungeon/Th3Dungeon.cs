@@ -240,6 +240,10 @@ namespace th3dungeon
                 action = OnRender,
                 RenderOrder = 0.5
             };
+            if (_debugDungeonEnabled)
+            {
+                api.Event.RegisterRenderer(dummyRenderer, EnumRenderStage.Opaque, "dungeon-render");
+            }
 
             api.ChatCommands.Create("debugdungeon")
                 .WithAlias("dth3d")
@@ -275,10 +279,10 @@ namespace th3dungeon
 
             foreach (var room in _generatedRoomsC)
             {
-                var halfSizeX = room.SizeX / 2f;
-                var halfSizeY = room.SizeY / 2f;
-                var halfSizeZ = room.SizeZ / 2f;
-                _drawWireframeCube.Render(_capi, room.X1 + halfSizeX, room.Y1 + halfSizeY, room.Z1 + halfSizeZ,
+                var halfSizeX = room.SizeX ;
+                var halfSizeY = room.SizeY ;
+                var halfSizeZ = room.SizeZ ;
+                _drawWireframeCube.Render(_capi, room.X1 , room.Y1 , room.Z1 ,
                     halfSizeX, halfSizeY, halfSizeZ, 4f, _debugColor);
             }
         }
@@ -784,7 +788,7 @@ namespace th3dungeon
                 startPos.Z -= data.Schematic.SizeZ / 2;
                 var area = new Cuboidi(startPos,
                     data.NextSpawn.Position.AddCopy(data.DungeonConfig.Stairs.Rotations[rot].SizeX,
-                        data.DungeonConfig.Stairs.Rotations[rot].SizeY,
+                        data.DungeonConfig.StartTopOffsetY,
                         data.DungeonConfig.Stairs.Rotations[rot].SizeZ));
                 data.GeneratedRooms.Add(area);
             }
