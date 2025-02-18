@@ -7,7 +7,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/categories/",
       "Chance": 0.15,
-      //0.15
       "ReinforcementLevel": 0,
       "SealevelOffset": -70,
       "RoomsToGenerate": 50,
@@ -107,7 +106,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon1/categories/",
       "Chance": 0.05,
-      //0.15
       "SealevelOffset": -70,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
@@ -207,7 +205,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/categories/",
       "Chance": 0.05,
-      //0.15
       "SealevelOffset": -60,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
@@ -307,7 +304,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon2/categories/",
       "Chance": 0.10,
-      //0.15
       "SealevelOffset": -60,
       "ReinforcementLevel": 0,
       "RoomsToGenerate": 100,
@@ -471,7 +467,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/categories/",
       "Chance": 0.05,
-      //0.15
       "ReinforcementLevel": 0,
       "SealevelOffset": -35,
       "RoomsToGenerate": 35,
@@ -563,7 +558,6 @@
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon4/categories/",
       "Chance": 0.10,
-      //0.15
       "ReinforcementLevel": 0,
       "SealevelOffset": -35,
       "RoomsToGenerate": 35,
@@ -660,7 +654,7 @@
       "GenerateEntrance": false,
       "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/starttop/",
       "StartTopOffsetY": -20,
-      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/ladder.json",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/th3dungeon5-ladder.json",
       "StairsRotation": false,
       "SuppressRivulets": true,
       "OnlyBelowSurface": true,
@@ -759,7 +753,7 @@
       "GenerateEntrance": false,
       "StartRoomTopPath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/starttop/",
       "StartTopOffsetY": -8,
-      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/ladder.json",
+      "StairsPath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/th3dungeon6-ladder.json",
       "StairsRotation": false,
       "SuppressRivulets": true,
       "OnlyBelowSurface": true,
