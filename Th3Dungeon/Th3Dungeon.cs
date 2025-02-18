@@ -507,17 +507,19 @@ namespace th3dungeon
                     {
                         return;
                     }
-
-                    _dungeonSaveData.GeneratedDungeons.Add(newPos);
-                    _dungeonSaveData.Modified = true;
                 }
 
                 // data.Logs = new List<string> { $"X={data.ChunkX} + {data.Dx} : Z={data.ChunkZ} + {data.Dz}" };
-                GenDungeon(data);
+                var didGenerate = GenDungeon(data);
+                if (!hasDungeon && didGenerate)
+                {
+                    _dungeonSaveData.GeneratedDungeons.Add(newPos);
+                    _dungeonSaveData.Modified = true;
+                }
             }
         }
 
-        private void GenDungeon(DungeonData data)
+        private bool GenDungeon(DungeonData data)
         {
             // error with top rooms so we place in center
             // var x = chunkXd * _chunkSize + _chunkRand.NextInt(_chunkSize);
@@ -535,6 +537,11 @@ namespace th3dungeon
 
             // take sea level since that should be consistent (surface will change depending if blocks are added on top while generating)
             data.NextSpawn.Position = new BlockPos(x, _api.World.SeaLevel + data.DungeonConfig.SealevelOffset, z);
+
+            if (data.DungeonConfig.GenerateEntrance && data.DungeonConfig.MaxYDiff > 0 && !CanSpawnTopHere(data))
+            {
+                return false;
+            }
 
             // add start room to overlap check
             if (!data.Initialized)
@@ -601,7 +608,7 @@ namespace th3dungeon
                 data.Initialized = true;
             }
 
-            if (data.Reinforcements == null) return;
+            if (data.Reinforcements == null) return true;
             {
                 for (var i = 0; i < data.Chunks.Length; i++)
                 {
@@ -609,6 +616,111 @@ namespace th3dungeon
                         data.Chunks[i].SetModdata("reinforcements", data.Reinforcements[i]);
                 }
             }
+            return true;
+        }
+
+        private bool CanSpawnTopHere(DungeonData data)
+        {
+            var startPos = data.Schematic.GetStartPos(data.NextSpawn.Position, EnumOrigin.BottomCenter);
+            
+            int centerY = _chunkGenBlockAccessor.GetTerrainMapheightAt(data.NextSpawn.Position);
+            int wdt = data.Schematic.SizeX;
+            int len = data.Schematic.SizeZ;
+
+            var tmpPos = new BlockPos(startPos.X, 0, startPos.Z, startPos.dimension);
+            int topLeftY = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+            tmpPos.Y = topLeftY + 1;
+            if (_chunkGenBlockAccessor.GetBlock(tmpPos, BlockLayersAccess.Fluid).IsLiquid()) return false;
+
+            tmpPos.Set(startPos.X + wdt, 0, startPos.Z);
+            int topRightY = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+            tmpPos.Y = topRightY + 1;
+            if (_chunkGenBlockAccessor.GetBlock(tmpPos, BlockLayersAccess.Fluid).IsLiquid()) return false;
+
+            tmpPos.Set(startPos.X, 0, startPos.Z + len);
+            int botLeftY = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+            tmpPos.Y = botLeftY + 1;
+            if (_chunkGenBlockAccessor.GetBlock(tmpPos, BlockLayersAccess.Fluid).IsLiquid()) return false;
+
+            tmpPos.Set(startPos.X + wdt, 0, startPos.Z + len);
+            int botRightY = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+            tmpPos.Y = botRightY + 1;
+            if (_chunkGenBlockAccessor.GetBlock(tmpPos, BlockLayersAccess.Fluid).IsLiquid()) return false;
+
+            int maxY = GameMath.Max(centerY, topLeftY, topRightY, botLeftY, botRightY);
+            int minY = GameMath.Min(centerY, topLeftY, topRightY, botLeftY, botRightY);
+            // improve flatness check for larger structures
+            if (data.Schematic.SizeX >= 30)
+            {
+                var size = (int)(data.Schematic.SizeX * 0.15 + 8);
+                for (int i = size; i < data.Schematic.SizeX; i+=size)
+                {
+                    tmpPos.Set(startPos.X + i, 0, startPos.Z);
+                    var topSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    tmpPos.Set(startPos.X + i, 0, startPos.Z + len);
+                    var botSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    tmpPos.Set(startPos.X + i, 0, startPos.Z + len / 2);
+                    var centerSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    maxY = GameMath.Max(maxY, topSide, botSide, centerSide);
+                    minY = GameMath.Min(minY, topSide, botSide, centerSide);
+                }
+            }
+            else if (data.Schematic.SizeX >= 15) // check center on X
+            {
+                var size = data.Schematic.SizeX / 2;
+                tmpPos.Set(startPos.X + size, 0, startPos.Z);
+                var topSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                tmpPos.Set(startPos.X + size, 0, startPos.Z + len);
+                var botSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                tmpPos.Set(startPos.X + size, 0, startPos.Z + len / 2);
+                var centerSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                maxY = GameMath.Max(maxY, topSide, botSide, centerSide);
+                minY = GameMath.Min(minY, topSide, botSide, centerSide);
+            }
+            if (data.Schematic.SizeZ >= 30)
+            {
+                var size = (int)(data.Schematic.SizeZ * 0.15 + 8);
+                for (int i = size; i < data.Schematic.SizeZ; i+=size)
+                {
+                    tmpPos.Set(startPos.X + wdt, 0, startPos.Z + i);
+                    var rightSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    tmpPos.Set(startPos.X, 0, startPos.Z + i);
+                    var leftSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    tmpPos.Set(startPos.X + wdt / 2, 0, startPos.Z + i);
+                    var centerSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                    maxY = GameMath.Max(maxY, rightSide, leftSide, centerSide);
+                    minY = GameMath.Min(minY, rightSide, leftSide, centerSide);
+                }
+            }
+            else if (data.Schematic.SizeZ >= 15) // check center on Z
+            {
+                var size = data.Schematic.SizeZ / 2;
+                tmpPos.Set(startPos.X + wdt, 0, startPos.Z + size);
+                var rightSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                tmpPos.Set(startPos.X, 0, startPos.Z + size);
+                var leftSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                tmpPos.Set(startPos.X + wdt / 2, 0, startPos.Z + size);
+                var centerSide = _chunkGenBlockAccessor.GetTerrainMapheightAt(tmpPos);
+
+                maxY = GameMath.Max(maxY, rightSide, leftSide, centerSide);
+                minY = GameMath.Min(minY, rightSide, leftSide, centerSide);
+            }
+
+            int diff = Math.Abs(maxY - minY);
+            if (diff > 5) return false;
+
+            return true;
         }
 
         private DungeonRoom GetRandomRoom(List<DungeonRoom> rooms)

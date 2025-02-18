@@ -50,6 +50,8 @@ namespace th3dungeon.Data
 
         public bool StairsRotation;
 
+        public int MaxYDiff = -1;
+
         public Dictionary<string, List<DungeonRoom>> Rooms;
 
         public List<DungeonRoom> StartRooms;
