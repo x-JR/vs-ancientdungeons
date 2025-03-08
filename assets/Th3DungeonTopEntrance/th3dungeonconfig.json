@@ -618,7 +618,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/categories/",
-      "Chance": 0.15,
+      "Chance": 0.2,
       "ReinforcementLevel": 0,
       "SealevelOffset": -65,
       "RoomsToGenerate": 40,
@@ -717,7 +717,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/categories/",
-      "Chance": 0.15,
+      "Chance": 0.2,
       "ReinforcementLevel": 0,
       "SealevelOffset": -75,
       "RoomsToGenerate": 55,
