@@ -735,6 +735,11 @@ namespace th3dungeon
                 }
             }
 
+            if (!_chunkGenBlockAccessor.IsValidPos(area.X1, area.Y1, area.Z1) || !_chunkGenBlockAccessor.IsValidPos(area.X2, area.Y2, area.Z2))
+            {
+                return false;
+            }
+
             return data.GeneratedRooms.All(room => !room.Intersects(area)) &&
                    data.Chunks[0].MapChunk.MapRegion.GeneratedStructures.Where(s => !s.Code.StartsWith("th3")).All(structure => !structure.Location.Intersects(area));
         }
