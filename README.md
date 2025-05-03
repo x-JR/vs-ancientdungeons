@@ -41,6 +41,9 @@ The default values for the config are:
 
 ```json
 {
+  // This options lets you exclude the dungeons from this mod if you have anyother mods that add more mods
+  // this options should only be needed for other modders addoing their own dungon mods that need this one as a base
+  // if you are not a modder ignore this
   "ExcludeTh3Dungeons": true
 }
 ```
