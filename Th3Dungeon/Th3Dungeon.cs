@@ -696,7 +696,7 @@ namespace th3dungeon
                     if (!data.Initialized)
                     {
                         data.GeneratedRooms.Add(area);
-                        if (area.X1 / _chunkGenBlockAccessor.ChunkSize == data.ChunkX && area.Z1 / _chunkGenBlockAccessor.ChunkSize == data.ChunkZ )
+                        if (area.X1 / GlobalConstants.ChunkSize == data.ChunkX && area.Z1 / GlobalConstants.ChunkSize == data.ChunkZ )
                         {
                             var mapRegion = _chunkGenBlockAccessor.GetMapRegion(area.X1 / _chunkGenBlockAccessor.RegionSize , area.Z1 / _chunkGenBlockAccessor.RegionSize);
                             var structure = new GeneratedStructure
@@ -705,7 +705,7 @@ namespace th3dungeon
                                 SuppressRivulets = data.DungeonConfig.SuppressRivulets,
                                 Code = $"th3dungeon-{data.NextSpawn.Room.Name}"
                             };
-                            mapRegion.GeneratedStructures.Add(structure);
+                            mapRegion.AddGeneratedStructure(structure);
                         }
                     }
                     // data.Logs.Add($"{data.NextSpawn.Room.Name}: {area}");
@@ -741,7 +741,9 @@ namespace th3dungeon
             }
 
             return data.GeneratedRooms.All(room => !room.Intersects(area)) &&
-                   data.Chunks[0].MapChunk.MapRegion.GeneratedStructures.Where(s => !s.Code.StartsWith("th3")).All(structure => !structure.Location.Intersects(area));
+                   data.Chunks[0].MapChunk.MapRegion.GeneratedStructures?
+                       .Where(s => !s.Code.StartsWith("th3"))
+                       .All(structure => !structure.Location.Intersects(area)) == true;
         }
 
         private void GenEntrance(DungeonData data, int x, int z, int startYSize, int rotation)
@@ -789,7 +791,7 @@ namespace th3dungeon
 
             if (!data.Initialized)
             {
-                startPos.X -= data.Schematic.SizeX / 2;
+                startPos!.X -= data.Schematic.SizeX / 2;
                 startPos.Z -= data.Schematic.SizeZ / 2;
                 var area = new Cuboidi(startPos,
                     data.NextSpawn.Position.AddCopy(data.DungeonConfig.Stairs.Rotations[rot].SizeX,
