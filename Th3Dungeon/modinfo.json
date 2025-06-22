@@ -1,6 +1,6 @@
 {
-    "type": "code",
-    "modid": "th3dungeon",
+    "type": "Code",
+    "modId": "th3dungeon",
     "name": "Th3Dungeon",
     "authors": [
         "Th3Dilli",
@@ -10,7 +10,7 @@
         "Ogdred"
     ],
     "description": "A mod to bring procedural dungeon generation to Vintage Story",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "dependencies": {
         "game": "1.20.1"
     }
