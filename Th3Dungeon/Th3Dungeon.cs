@@ -80,10 +80,19 @@ namespace th3dungeon
             }
             else
             {
-                var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.bin");
-                _dungeonSaveData = File.Exists(dungeonDataFile)
-                    ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile))
-                    : new DungeonSaveData();
+                try
+                {
+                    var dungeonDataFile = Path.Combine(dungeonDataFolder, "th3dungeon.bin");
+                    _dungeonSaveData = File.Exists(dungeonDataFile)
+                        ? SerializerUtil.Deserialize<DungeonSaveData>(File.ReadAllBytes(dungeonDataFile))
+                        : new DungeonSaveData();
+                }
+                catch (Exception ex)
+                {
+                    _api.Logger.Warning("Failed to load dungeon data, will create a new data. Existing dungeons that have not finished generating may be left incomplete");
+                    _api.Logger.Error(ex);
+                    _dungeonSaveData = new DungeonSaveData();
+                }
             }
 
             // _api.ChatCommands.Create("ins").WithDescription("seas").RequiresPrivilege(Privilege.root).HandleWith((args) =>
