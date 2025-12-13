@@ -1,8 +1,8 @@
 {
-  "ChunkRange": 8,
+  "ChunkRange": 10,
   "Debug": 0,
   "Chance": 0.005,
-  "MinDistanceChunks": 10,
+  "MinDistanceChunks": 12,
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/categories/",
@@ -70,7 +70,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/categories/",
-      "Chance": 0.35,
+      "Chance": 0.25,
       "ReinforcementLevel": 0,
       "SealevelOffset": -65,
       "RoomsToGenerate": 40,
@@ -169,7 +169,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/categories/",
-      "Chance": 0.30,
+      "Chance": 0.25,
       "ReinforcementLevel": 0,
       "SealevelOffset": -75,
       "RoomsToGenerate": 55,
