@@ -6,11 +6,11 @@
   "Dungeons": [
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/categories/",
-      "Chance": 0.10,
-      "SealevelOffset": -60,
+      "Chance": 0.25, 
+      "SealevelOffset": -35,
       "ReinforcementLevel": 0,
-      "RoomsToGenerate": 25,
-      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/start/",
+      "RoomsToGenerate": 45,
+      "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/startnoladder/",
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/end/",
       "GenerateEntrance": false,
       "SuppressRivulets": true,
@@ -22,7 +22,7 @@
         },
         {
           "name": "turn",
-          "chance": 0.30
+          "chance": 0.25
         },
         {
           "name": "updown",
@@ -30,7 +30,7 @@
         },
         {
           "name": "cross",
-          "chance": 0.20
+          "chance": 0.25
         }
       ]
     },
@@ -70,7 +70,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon5/categories/",
-      "Chance": 0.15,
+      "Chance": 0.35,
       "ReinforcementLevel": 0,
       "SealevelOffset": -65,
       "RoomsToGenerate": 40,
@@ -169,7 +169,7 @@
     },
     {
       "BasePath": "th3dungeon:worldgen/th3dungeon/th3dungeon6/categories/",
-      "Chance": 0.15,
+      "Chance": 0.30,
       "ReinforcementLevel": 0,
       "SealevelOffset": -75,
       "RoomsToGenerate": 55,
