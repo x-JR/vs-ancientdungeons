@@ -39,7 +39,7 @@
       "Chance": 0.10,
       "SealevelOffset": -60,
       "ReinforcementLevel": 0,
-      "RoomsToGenerate": 25,
+      "RoomsToGenerate": 45,
       "StartRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/start/",
       "EndRoomPath": "th3dungeon:worldgen/th3dungeon/th3dungeon3/end/",
       "GenerateEntrance": true,
