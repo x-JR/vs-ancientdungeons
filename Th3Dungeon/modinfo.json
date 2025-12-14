@@ -7,10 +7,11 @@
         "NiclAss",
         "Dampus",
         "StAdrian",
-        "Ogdred"
+        "Ogdred",
+        "QPTech"
     ],
     "description": "A mod to bring procedural dungeon generation to Vintage Story",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "dependencies": {
         "game": "1.20.1"
     }
