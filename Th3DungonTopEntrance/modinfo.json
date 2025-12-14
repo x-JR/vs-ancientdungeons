@@ -8,9 +8,9 @@
     ],
     "side": "Server",
     "description": "A config mod to add to each dungeon a entrance visible at the surface.",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "dependencies": {
         "game": "1.20.1",
-        "th3dungeon": "0.4.0"
+        "th3dungeon": "0.4.5"
     }
 }
