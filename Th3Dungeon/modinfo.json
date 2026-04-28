@@ -1,6 +1,6 @@
 {
     "type": "Code",
-    "modId": "th3dungeon",
+    "modId": "th3dungeonupdated",
     "name": "Th3Dungeon",
     "authors": [
         "Th3Dilli",
@@ -11,8 +11,8 @@
         "QPTech"
     ],
     "description": "A mod to bring procedural dungeon generation to Vintage Story",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "dependencies": {
-        "game": "1.21.0"
+        "game": "*"
     }
 }

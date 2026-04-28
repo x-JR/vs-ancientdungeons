@@ -20,6 +20,8 @@ namespace th3dungeon
     {
         private const int DungeonWorldSeedOffset = 3132;
 
+        private const string AssetDomain = "th3dungeon";
+
         private DungeonSaveData _dungeonSaveData;
 
         private ICoreServerAPI _api;
@@ -331,7 +333,7 @@ namespace th3dungeon
                     _api.Assets.GetMany<DungeonsConfig>(Mod.Logger, "worldgen/th3dungeon/th3dungeonconfig.json");
 
                 var th3DungeonConfig = dungeonsConfigs.First(d =>
-                    d.Key.Domain.Equals(Mod.Info.ModID)
+                    d.Key.Domain.Equals(AssetDomain)
                 ).Value;
 
                 if (th3DungeonConfig != null)
@@ -354,7 +356,7 @@ namespace th3dungeon
                 // merge all configs
                 var dungeonCount = dungeonsConfigs.Count;
                 if (modConfig != null && modConfig.ExcludeTh3Dungeons &&
-                    dungeonsConfigs.Any(config => config.Key.Domain.Equals(Mod.Info.ModID)))
+                    dungeonsConfigs.Any(config => config.Key.Domain.Equals(AssetDomain)))
                 {
                     dungeonCount--;
                 }
@@ -362,7 +364,7 @@ namespace th3dungeon
                 foreach (var dungeonConfig in dungeonsConfigs)
                 {
                     if (modConfig != null && modConfig.ExcludeTh3Dungeons &&
-                        dungeonConfig.Key.Domain.Equals(Mod.Info.ModID))
+                        dungeonConfig.Key.Domain.Equals(AssetDomain))
                     {
                         continue;
                     }
@@ -744,7 +746,7 @@ namespace th3dungeon
                 }
             }
 
-            if (!_chunkGenBlockAccessor.IsValidPos(area.X1, area.Y1, area.Z1) || !_chunkGenBlockAccessor.IsValidPos(area.X2, area.Y2, area.Z2))
+            if (!_chunkGenBlockAccessor.IsValidPos(new BlockPos(area.X1, area.Y1, area.Z1)) || !_chunkGenBlockAccessor.IsValidPos(new BlockPos(area.X2, area.Y2, area.Z2)))
             {
                 return false;
             }

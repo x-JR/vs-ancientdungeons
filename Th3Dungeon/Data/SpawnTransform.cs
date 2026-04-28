@@ -12,8 +12,8 @@ namespace th3dungeon.Data
 
         public SpawnTransform()
         {
-            Position = new BlockPos();
-            OrigPosition = new BlockPos();
+            Position = new BlockPos(0);
+            OrigPosition = new BlockPos(0);
         }
 
         public SpawnTransform(DungeonRoom room, BlockPos position)

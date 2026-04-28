@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using th3dungeon.Data;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
@@ -21,7 +22,7 @@ namespace th3dungeon
 
         public new void Init(IBlockAccessor blockAccessor)
         {
-            _chunkSize = blockAccessor.ChunkSize;
+            _chunkSize = GlobalConstants.ChunkSize;
             _worldHeight = blockAccessor.MapSizeY;
 
             _doorNorth = blockAccessor.GetBlock(new AssetLocation("th3dungeon:th3doorway-north"));
@@ -99,7 +100,7 @@ namespace th3dungeon
 
         public int Place(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, DungeonData data, bool replaceMetaBlocks = true)
         {
-            var curPos = new BlockPos();
+            var curPos = new BlockPos(0);
             var placed = 0;
 
             PlaceBlockDelegate handler = null;
@@ -217,7 +218,7 @@ namespace th3dungeon
 
         public void PlaceDecors(IBlockAccessor blockAccessor, DungeonData data)
         {
-            var curPos = new BlockPos();
+            var curPos = new BlockPos(0);
             for (var i = 0; i < DecorIndices.Count; i++)
             {
                 var index = DecorIndices[i];
@@ -273,7 +274,7 @@ namespace th3dungeon
 
         public void PlaceEntitiesAndBlockEntities(IBlockAccessor blockAccessor, IWorldAccessor worldForCollectibleResolve, BlockPos startPos, int chunkX, int chunkZ)
         {
-            var curPos = new BlockPos();
+            var curPos = new BlockPos(0);
 
             var schematicSeed = worldForCollectibleResolve.Rand.Next();
 
@@ -318,7 +319,7 @@ namespace th3dungeon
                 tree.SetInt("posz", curPos.Z);
 
                 be.FromTreeAttributes(tree, worldForCollectibleResolve);
-                be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed);
+                be.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, true);
                 be.OnPlacementBySchematic(worldForCollectibleResolve.Api as ICoreServerAPI, blockAccessor, curPos, null, 0, null, true);
             }
 
@@ -340,13 +341,13 @@ namespace th3dungeon
                         accessor.AddEntity(entity);
                         entity.OnInitialized += () =>
                         {
-                            entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, GenStructures.ReplaceMetaBlocks);
+                            entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, true);
                         };
                     }
                     else
                     {
                         worldForCollectibleResolve.SpawnEntity(entity);
-                        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, GenStructures.ReplaceMetaBlocks);
+                        entity.OnLoadCollectibleMappings(worldForCollectibleResolve, BlockCodes, ItemCodes, schematicSeed, true);
                     }
 
                 }

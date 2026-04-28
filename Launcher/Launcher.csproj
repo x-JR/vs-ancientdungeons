@@ -8,12 +8,12 @@
 
     <ItemGroup>
         <Reference Include="VintagestoryLib">
-            <HintPath>$(VINTAGE_STORY_PRE)/VintagestoryLib.dll</HintPath>
+            <HintPath>$(VINTAGE_STORY)/VintagestoryLib.dll</HintPath>
         </Reference>
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="$(VINTAGE_STORY_PRE)/**">
+        <Content Include="$(VINTAGE_STORY)/**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
